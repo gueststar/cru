@@ -402,7 +402,7 @@ CMake. It also depends on
   performance. A glacially slow working prototype version of `cru` is
   buildable without the Judy library but is recommended only for
   developers interested in porting `cru` to a Judy replacement. See
-  [CMakeLists.txt](https://github.com/gueststar/cru/blob/master/CMakeLists.txt)
+  [CMakeLists.txt](https://github.com/gueststar/cru/blob/main/CMakeLists.txt)
   for details.
 
 `Cru` will be configured for optional memory and thread safety tests
@@ -435,7 +435,7 @@ here is a moderately detailed description of how `cru` is tested.
 There are 56 test programs at last count to exercise the API by
 building operating on graphs and partitions. The tests build graphs of
 a fixed size determined by the `DIMENSION` constant in 
-[readme.h](https://github.com/gueststar/cru/blob/master/test/readme.h)
+[readme.h](https://github.com/gueststar/cru/blob/main/test/readme.h)
 under the `test` directory, with the number of threads fixed by the
 `LANES` constant. The test suite ships with these constants set to low
 values, but they can be edited by a developer wishing to experiment on
@@ -452,9 +452,9 @@ errors and data races.
 
 A `bash` script called `ktest` is created in the build directory at
 configuration time from
-[ktest.in](https://github.com/gueststar/cru/blob/master/test/ktest.in)
+[ktest.in](https://github.com/gueststar/cru/blob/main/test/ktest.in)
 under the `test` directory according to rules in
-[CMakeLists.txt](https://github.com/gueststar/cru/blob/master/CMakeLists.txt)
+[CMakeLists.txt](https://github.com/gueststar/cru/blob/main/CMakeLists.txt)
 in the project root. When invoked manually, `ktest` verifies
 correct handling of kill switch events, the feature whereby API
 functions can be stopped while in progress and made to return early.
@@ -513,7 +513,7 @@ safety*) afforded by the runtime environment.
 
 Heap overflow testing is performed by the manually invoked `mtest`
 script created under the build directory from
-[mtest.in](https://github.com/gueststar/cru/blob/master/test/mtest.in)
+[mtest.in](https://github.com/gueststar/cru/blob/main/test/mtest.in)
 under the `test` directory at configuration time. This
 script runs each of the 56 test programs multiple times under various
 simulated memory constraints against a version of the library
@@ -551,7 +551,7 @@ involvement. To my knowledge it hasn't been used in production.
 
 To anyone thinking about contributing any code, thank you and please
 refer to the [coding
-standards](https://github.com/gueststar/nthm/blob/master/CONTRIBUTING.md)
+standards](https://github.com/gueststar/nthm/blob/main/CONTRIBUTING.md)
 in the [nthm](https://github.com/gueststar/nthm) repo. You're invited
 to advance `cru` in whatever direction suits your interests. If I,
 some rando on Github, may say so, don't be deterred by pointer
