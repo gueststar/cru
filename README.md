@@ -475,7 +475,7 @@ available.
 
 For the kill test to succeed, every test program must either terminate
 normally or report an error code of `CRU_INTKIL` in each of the
-31 $*$ 56 $*$ 3 cases, with no unreclaimed storage or memory access
+31 $\times$ 56 $\times$ 3 cases, with no unreclaimed storage or memory access
 violations.
 
 ### Heap overflow testing
