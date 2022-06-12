@@ -1,0 +1,65 @@
+.TH CRU 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru \- co-recursion utilities
+.SH SYNOPSIS
+#include <cru/cru.h>
+.SH DESCRIPTION
+.BR cru
+is a C library for high-performance, high-level operations on memory
+resident graphs, with possible applications to model checking, finite
+element analysis, and financial derivatives valuation among other
+things. The library is designed with robust memory management to
+handle graphs typically on the order of millions to tens of millions
+of vertices, and allows the flexibility of graph vertices and edge
+labels being scalar values or pointers to dynamic storage as the
+application requires.
+.P
+Everything
+.BR cru
+does is concurrent with configurably many threads and with all
+necessary thread synchronization managed automatically. Some things
+possible with
+.BR cru
+are:
+.TP
+*
+building a gigantic graph from a seed by simple production rules
+with duplicate vertices automatically pruned
+.TP
+*
+traversing a graph depth first, breadth first, backwards, forwards, or
+in order of best concurrency to compute any metrics about it
+.TP
+*
+classifying, clustering, and collecting graph
+vertices by arbitrary criteria
+.TP
+*
+inserting, transplanting, overwriting, or removing edges and
+vertices at multiple sites in a graph according to user-defined
+rewrite rules depending on local conditions
+.TP
+*
+non-destructively deep-copying or sharing a graph
+.TP
+*
+forming a product of two graphs by some definition
+.P
+Please refer to the README file or the project page for more of an
+overview, and to these manual pages for detailed API specifications
+starting with the
+.BR cru_function_types(7)
+and
+.BR cru_data_types(7)
+pages.
+.SH FILES
+.I @DOCDIR@/README.md
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

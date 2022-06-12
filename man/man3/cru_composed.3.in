@@ -1,0 +1,191 @@
+.TH CRU_COMPOSED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_composed \- edge composing function in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_composed
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_composer
+.I c
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+Some graph algorithms might benefit when an edge into a vertex having
+another edge out of it can be replaced by an edge directly from the
+origin of the former to the terminus of the latter, in effect
+bypassing the vertex. This function creates new edges of that form in
+an existing graph
+.I g
+based on criteria specified in
+.I c
+initialized by the caller according to the usual
+.BR cru_composer
+calling conventions. The parameter
+.I c
+may also be
+NULL,
+in which case no edges are created.
+.\"killsw
+In this case, no edges are created and the given graph is reclaimed.
+.\"lanes
+.P
+For purposes of memory management,
+.I g
+is consumed by
+.BR cru_composed
+and should not be used subsequently or reclaimed by the caller.
+The other parameters are not consumed.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+by modifying it in place. Applications should treat the returned
+value as opaque but may pass it as a parameter to other library
+functions. In the event of any error, a
+NULL
+pointer is returned. A
+NULL
+pointer is also returned if the given parameter
+.I g
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_TPCMPR
+The
+.BR m_free
+and
+.BR r_free
+fields differ but the
+.BR vacuous_case
+field is
+NULL
+in any of
+.I c->co_props.local.vertex,
+.I c->co_props.local.incident,
+.I c->co_props.local.outgoing,
+.I c->co_props.adjacent.vertex,
+.I c->co_props.adjacent.incident,
+or
+.I c->co_props.adjacent.outgoing.
+.TP
+.BR CRU_UNDCQO
+The field
+.I c->labeler.qop
+is
+NULL
+but the graph
+.I g
+contains dynamically allocated edge labels.
+.TP
+.BR CRU_UNDEQU
+The graph
+.I g
+contains dynamically allocated edge labels but no edge equality
+predicate was defined when it was built.
+.TP
+.BR CRU_UNDHSH
+The graph
+.I g
+contains dynamically allocated edge labels but no
+edge hash function was defined when it was built.
+.TP
+.BR CRU_UNDRED
+A
+.BR reduction
+field is
+NULL
+in any one of
+.I c->co_props.local.incident,
+.I c->co_props.local.outgoing,
+.I c->co_props.adjacent.incident,
+or
+.I c->co_props.adjacent.outgoing
+whose other fields are not all
+NULL.
+.TP
+.BR CRU_UNDVAC
+The
+.BR vacuous_case
+field is
+NULL
+in either of
+.I c->co_props.local.incident
+or
+.I c->co_props.adjacent.incident
+whose other fields are not all
+NULL,
+but the graph
+.I g
+contains a vertex with no incident edges,
+or the
+.BR vacuous_case
+field is
+NULL
+in either of
+.I c->co_props.local.outgoing
+or
+.I c->co_props.adjacent.outgoing
+whose other fields are not all
+NULL,
+but the graph
+.I g
+contains a vertex with no outgoing edges.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.P
+.I @INCDIR@/function_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

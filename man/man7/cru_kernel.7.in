@@ -1,0 +1,78 @@
+.TH CRU_KERNEL 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_kernel \- a pair of related operations on vertices and edges
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_kernel_s
+.br
+{
+.br
+struct
+.BR cru_prop_s
+.BR v_op;
+.br
+struct
+.BR cru_fold_s
+.BR e_op;
+.br
+} *
+.BR cru_kernel;
+.SH DESCRIPTION
+The
+.BR cru_kernel
+structure specifies a related pair of user-defined operations, one for
+vertices and one for edges, to be passed by applications to
+.BR cru
+library functions that use them when visiting the site of each vertex
+in a graph. The
+.BR v_op
+field holds the vertex operation specification, and the
+.BR e_op
+field holds that of the edges.
+.TP
+*
+The vertex operation is allowed to depend on
+the vertex, its incident and outgoing edge labels, and its adjacent vertices
+by the usual calling conventions of a
+.BR cru_prop.
+.TP
+*
+The edge operation is allowed to depend on the label of an edge
+and on the vertices at either end. The function referenced by the
+.BR e_op.map
+field is called the edge label as the
+middle operand, the vertex currently being visited as its left operand,
+and the adjacent vertex as its right operand.
+.P
+The latter point implies that when operating on an outgoing edge from a vertex
+being visited, the
+.BR e_op.map
+function has the edge's origin as its left operand and the terminus as its right
+operand. When operating on an incoming edge to a vertex being visited, the
+left operand is the terminus of the edge and the right operand is its origin.
+.P
+When the 
+.BR cru_kernel
+structure is a field in a
+.BR cru_mutator
+or a
+.BR cru_filter
+structure, no function is required for the
+.BR v_op.vertex.reduction.
+All reduction functions are required when the
+.BR cru_kernel
+is a field in a
+.BR cru_merger.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

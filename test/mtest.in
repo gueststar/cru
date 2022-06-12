@@ -1,0 +1,142 @@
+#!@BASH@
+
+# Run this from a successful build directory to test that memory
+# allocation failures are handled correctly. On each iteration of each
+# test program, this script runs the test program so as to allow some
+# limited number of memory allocations, but then simulates an
+# allocation error. If SOFT_LIMIT is defined in confg.h.in, then
+# subsequent memory allocations succeed as normal for the rest of the
+# test run iteration. If SOFT_LIMIT is not defined, then a failed
+# memory allocation is simulated on every subsequent attempt during
+# the iteration. Each test program is run once with each possible
+# limit ranging from one to the minimum necessary for normal
+# termination. Test programs are modified by this script to termintate
+# with EXIT_SUCCESS if they detect the standard error code for memory
+# overflow, indicating that an out-of-memory error was handled
+# correctly. If a test program terminates with any other error code,
+# this script displays the number of allowed allocations causing the
+# error next to the name of the program. Continued iterations are
+# likely to cause further numbers to come swarming out if there's a
+# first one. Low dimensional graphs and concurrency (as defined in
+# readme.h) are recommended for the avoidance of prohibitive run
+# times. A production version of the library will be rebuilt at the
+# end if all tests pass, but left the way it is for further
+# investigation otherwise. If you need to interrupt this script,
+# you can rebuild the library for production by running untest.
+
+# The log file can be set as an environment variable.
+if [[ ! $LOGFILE ]]; then
+	 LOGFILE=/dev/null
+fi;
+
+# Test all programs by default as defined in CMakelists.txt.
+test_programs="@X_FILES@"
+
+# If specific programs are given on the command line, test only those
+# and test using only the currently set hard or soft limit modality.
+if [[ "$@" ]]; then
+	 test_programs=$@
+fi
+
+# Memory testing utility functions are available only when the library
+# is built with the WRAP symbol defined in the ../src/config.h.in
+# header file, so rebuild it if necessary. Also redefine the exit
+# macro in the test configuration file to anticipate memory overflow
+# errors as noted above and use the smallest valid reserve packet
+# limit in pack.c.
+
+if @GREP@ "^#undef WRAP" @CMAKE_CURRENT_BINARY_DIR@/src/config.h > /dev/null; then
+	 @SED@ -i "s/^#undef\ WRAP/#define\ WRAP/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
+	 @SED@ -i \
+     "s/^#define\ EXIT.*/#define\ EXIT\ exit\ ((err\ ?\ (err\ !=\ ENOMEM)\ :\ 0)\ ?\ EXIT_FAILURE\ :\ EXIT_SUCCESS)/" \
+	  @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
+	 @SED@ -i \
+	  "s/^#define\ RESERVE_PACKET_LIMIT.*/#define\ RESERVE_PACKET_LIMIT\ 0x1/" \
+	  @CMAKE_CURRENT_SOURCE_DIR@/src/pack.c
+	 rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+	 # Don't build documentation.
+	 rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+	 @SED@ -i "/GEN_DOCS/s/ON/OFF/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+	 echo "rebuilding to enable testing utilities"
+	 make > /dev/null
+fi
+
+# Test programs given a command line argument of zero are expected to
+# print the minimum number of allowed allocations needed for normal
+# termination.
+QUERY_SUFFICIENT_ALLOCATIONS=0
+
+anyfailed=0
+for i in 0 1
+do
+	 (@GREP@ -q "\#define SOFT_LIMIT" @CMAKE_CURRENT_BINARY_DIR@/src/config.h) && echo "simulating intermittent heap overflow"
+	 (@GREP@ -q "\#undef SOFT_LIMIT" @CMAKE_CURRENT_BINARY_DIR@/src/config.h) && echo "simulating persistent heap overflow"
+	 for test_program in $test_programs
+	 do
+		  failed=0
+		  echo -n -e "$test_program \t"
+		  SUFFICIENT_ALLOCATIONS=$(@CMAKE_CURRENT_BINARY_DIR@/$test_program $QUERY_SUFFICIENT_ALLOCATIONS)
+		  if ! echo $SUFFICIENT_ALLOCATIONS | @GREP@ -E -q '^[0-9]+$'; then
+				failed=1;
+				anyfailed=1
+				SUFFICIENT_ALLOCATIONS=0
+				echo -n "is untestable"     # the test program printed something other than a single decimal number
+		  fi;
+		  for (( allowed_allocations = 1; allowed_allocations < SUFFICIENT_ALLOCATIONS; allowed_allocations++))
+		  do
+				if ! @CMAKE_CURRENT_BINARY_DIR@/$test_program $allowed_allocations > $LOGFILE 2> $LOGFILE; then
+					 if [[ failed -eq 0 ]]; then
+						  echo -n "failed on"
+						  failed=1
+						  anyfailed=1
+					 fi;
+					 echo -n " $allowed_allocations"
+				fi
+		  done
+		  if [[ failed -eq 0 ]]; then
+				echo -n "succeeded"
+		  fi;
+		  echo ""
+	 done
+	 if [[ "$@" ]]; then
+		  break
+	 fi
+	 if [[ i -eq 1 ]]; then
+		  break
+	 fi;
+	 if @GREP@ -q "\#define SOFT_LIMIT" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in; then
+		  @SED@ -i "s/#define\ SOFT_LIMIT/#undef\ SOFT_LIMIT/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
+	 else
+		  @SED@ -i "s/#undef\ SOFT_LIMIT/#define\ SOFT_LIMIT/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
+	 fi;
+	 echo "rebuilding for alternative simulation"
+	 make > /dev/null
+done
+
+# If not all tests succeeded or not all were run, leave the build the
+# way it is for further investigation.
+if [[ anyfailed -eq 1 ]]; then
+	 echo "not rebuilt for production due to failed tests"
+	 exit 1
+fi
+
+if [[ "$@" ]]; then
+	 echo "not rebuilt for production because not all tests were run"
+	 exit 0
+fi
+
+# If all tests succeeded, rebuild for production and put the exit
+# macro back the way it was.
+@SED@ -i \
+ "s/^#define\ EXIT.*/#define\ EXIT\ exit\ (err\ ?\ EXIT_FAILURE\ :\ EXIT_SUCCESS)/" \
+ @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
+@SED@ -i "s/^#[[:blank:]]*find_library\ (JUDY\ Judy)/find_library\ (JUDY\ Judy)/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+@SED@ -i \
+ "s/^#define\ RESERVE_PACKET_LIMIT.*/#define\ RESERVE_PACKET_LIMIT\ 0x100/" \
+ @CMAKE_CURRENT_SOURCE_DIR@/src/pack.c
+@SED@ -i "s/^#define\ WRAP/#undef\ WRAP/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
+rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+@SED@ -i "/GEN_DOCS/s/OFF/ON/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+echo "rebuilding for production"
+make > /dev/null
+exit 0

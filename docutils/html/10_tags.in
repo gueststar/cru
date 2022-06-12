@@ -1,0 +1,43 @@
+#!@SED@ -f
+
+# Perform the first pass to convert nroff to html by transforming
+# whatever depends only on the current input line, mainly headings,
+# links, and typography.
+
+# html escapes
+s/</\&lt;/g
+s/>/\&gt;/g
+s/\\~/\&ensp;/g
+s/\\-/-/g
+s/\\\\n/\\n/g
+
+# section headings
+s/\(^\.SH\)\([[:blank:]]\+\)\(.*\)/<h6\ style="color:\ @SECTION_HEADING_COLOR@;">\3<\/h6>/
+
+# hyperlinks to other names of functions and types
+s/\(^\.BR\)\([[:blank:]]\+\)\(\(\&ensp;\)*\)\(@LINK_TARGETS@\)[[:blank:]]*\(([[:digit:]])\)\?\([[:punct:]]*\)[[:blank:]]*\(\\c\)\?$/<a\ class="font-monospace\ link-light"\ href="\5.html"\ style="color:\ #5c76ff;text-decoration:\ inherit">\3\5<\/a>\7\8/
+s/\.<\/a>$/\<\/a>\./
+
+# struct names ending with _s linked to the same pages as those of pointers to them
+s/\(^\.BR\)\([[:blank:]]\+\)\(@LINK_TARGETS@\)\(_s$\|_s[[:blank:]].*\|_s[[:punct:]].*\)/<a\ class="font-monospace\ link-light"\ href="\3.html"\ style="color:\ #5c76ff;text-decoration:\ inherit">\3\4<\/a>/
+
+# deleted spaces preceding parenthetic section numbers
+s/[[:blank:]]\(([[:digit:]])\)\(,\?\)$/\1\2/
+
+# project page url
+s/\(^\.UR\)\([[:blank:]]\+\)\(\([[:alnum:]]\|\:\|\.\|\/\)*\)/<a\ class="font-monospace\ link-light"\ href="\3"\ style="color:\ @LINK_COLOR@;text-decoration:\ inherit;">\3<\/a>/
+/^\.UE/d
+
+# mail links
+s/\(^\.MT\)\([[:blank:]]\+\)\(\([[:alnum:]]\|@\|\.\)*\)/(<a\ class="font-monospace\ link-light" href="mailto:\3"\ style="color:\ @LINK_COLOR@;text-decoration:\ inherit;">\3<\/a>)/
+/^\.ME/d
+
+# emphasis
+s/\(^\.I\)\([[:blank:]]\+\)\(.*\)/<em>\3<\/em>/
+
+# bold
+s/\(^\.BR\)\([[:blank:]]\+\)\(\(\(\&ensp;\)*\)\(\([[:alnum:]]\|_\|\.\|-\)*\)\)/<strong\ class="font-monospace"\ style="color:\ #45b74a;">\4\6<\/strong>/
+s/\.<\/strong>$/\<\/strong>\./
+
+# breaks
+s/^\.br[[:blank:]]*$/<br>/

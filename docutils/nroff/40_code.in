@@ -1,0 +1,20 @@
+#!@SED@ -f
+
+# Surround code examples delimited with .nf and .fi by extra spaces
+# except at the end of a section.
+
+# Unconditionally put a space before the beginning of a code example.
+/^\.nf/i\
+.sp
+
+# If it's not the end of a code example, recycle.
+/^\.fi/!{p; d}
+
+# Look ahead.
+N
+
+# If the next line starts a section, recycle.
+/\n\.SH/{p; d}
+
+# If tne next line doesn't start a section, append a space to the code example.
+s/\n/\n\.sp\n/

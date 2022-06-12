@@ -1,0 +1,183 @@
+.TH CRU_FUNCTION_TYPES 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_function_types \- function types defined and used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.SH DESCRIPTION
+Many 
+.BR cru
+library API functions have arguments that are pointers to C structs
+meant to be initialized in advance by the caller, with some of their
+fields initialized as pointers to user-defined "callback"
+functions. Each callback function is required to conform to one of the
+prototypes documented in this manual and to adhere to certain other
+calling conventions.
+.P
+As an overview, callback functions can be classified as
+.TP
+*
+utilities with various idiosyncratic mnemonic type signatures
+.TP
+*
+operators following the
+naming convention
+.BR cru_xop
+which return a pointer or a pointer-sized value
+.TP
+*
+or predicates
+following the naming convention
+.BR cru_xpred
+which return a condition flag in a signed integer
+.P
+where
+.BR x
+can be one of
+.BR n
+,
+.BR u
+,
+.BR b
+,
+.BR t
+or 
+.BR q
+for nullary, unary, binary, ternary or quarternary. All parameters to
+operators and predicates are untyped pointers or compatibly sized
+scalars cast as such, except for the last parameter, which is a
+pointer to a signed integer. The choice between scalars and pointers
+depends on how an application developer chooses to represent graphs
+and their properties.
+.SH RETURN VALUE
+When operators with type definitions of the form
+.BR cru_xop
+return a pointer to dynamic storage, convenience and probably
+performance are favored by having it allocate a new one on each
+invocation. However, applications may opt to trade performance for
+space efficiency by returning a pointer to a shared copy when sharing
+is possible. In this case, both the operator and the corresponding
+.BR cru_destructor
+are responsible for managing a thread-safe reference counting scheme
+whose validity is not enforceable by
+.BR cru
+using
+.BR pthreads
+primitives or alternatives.
+.SH ERRORS
+The integer pointer required as the last parameter to most callback
+functions, denotable as
+.I err,
+is usable by applications to report error conditions. For example, if
+a callback function needs to allocate memory for whatever reason but
+fails because
+.BR malloc
+returns
+NULL,
+it
+can instead assign a value of
+.BR ENOMEM
+to
+.I *err
+as defined in the system header file 
+.I <errno.h>.
+Any non-zero value assigned to
+.I *err
+causes an orderly termination of the API function that called the
+callback function and makes it report the same error condition to its
+caller. The application is not otherwise interrupted and can
+continue. Some further considerations are relevant:
+.TP
+*
+This error reporting convention is not applicable to 
+.BR cru_hash
+functions whose only parameter is the datum to be hashed, but is
+applicable to all other callback functions.
+.TP
+* 
+The error parameter can be assumed to be zero on entry to any callback
+function, even if an error is concurrently or previously reported by
+another callback function. The error code need not be assigned if no
+error is to be reported. Assigning it zero is allowed and has no
+effect.
+.TP
+* 
+If multiple callback functions called concurrently by the same API
+function report conflicting errors, only the first one detetected is
+reported to the API function's caller. The order of detection is
+generally non-deterministic.
+.TP
+*
+In addition reporting POSIX standard error codes such as those defined in
+.I <errno.h>,
+applications may use arbitrary non-clashing error codes for any
+purpose.  However, negative integers from -1 down to
+.BR -CRU_MAX_FAIL
+inclusive are reserved. To avoid confusion, applications should avoid
+using them as error codes.
+.SH NOTES
+Some additional calling conventions concern mutability and concurrency.
+.P
+A callback function passed a pointer to the heap should never free or
+deallocate it unless that function is specifically designated as a
+.BR cru_destructor.
+In other words, callback functions other than destructors are expected
+only to "borrow" their arguments, not to "consume" them.
+.P
+Similarly, callback functions passed vertices, edge labels, or vertex
+properties should treat them as read-only and not attempt to modify
+them in place for any reason other than reference counting as noted
+above, whose thread safety becomes the responsibility of the
+application. If the operand is a scalar value, modifying it has no
+persistent effect. If it is a pointer, modifying the memory it
+references (for example, by marking it "visited") may cause a data
+race or may non-deterministically expose inconsistent views of the
+graph to other worker threads. Graph mutation and traversal should be
+effected only according to the supported API.
+.P
+If a callback function interacts with storage or other resources
+unrelated to
+.BR cru
+(such as profilers or databases), it must do so in a thread-safe
+way, for example by using
+.BR pthreads
+mutex locking mechanisms, under the assumption that the same code may
+be running in many threads. Thread-safe access without locking is
+provided only to graphs
+.BR cru
+creates and only through the supported API.
+.SH EXAMPLE
+This user-defined function tests whether two vertices coincide by
+pointer equality. The error parameter is required by the API even if
+not by the function.
+.nf
+   int
+   my_equality (cru_vertex x, cru_vertex y, int *err)
+
+   {
+     return (x == y);
+   }
+.fi
+Cast to a
+.BR cru_bpred,
+this function can be used in a declaration such as the following.
+.nf
+   struct cru_order_s my_vertex_order = {
+      .equal = (cru_bpred) my_equality};
+.fi
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

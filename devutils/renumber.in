@@ -1,0 +1,72 @@
+#!@BASH@
+
+# Run this script with no parameters to renumber all of the error
+# codes consecutively in the source and test files, and to update the
+# error codes header file accordingly. This operation helps to avoid
+# duplicates or gaps in the sequence if any code has been created,
+# removed, or changed. Be sure not to have any source files open in an
+# editor when running this script or the changes might be overwritten
+# when the files are saved.
+
+TEMPFILE=@CMAKE_CURRENT_BINARY_DIR@/tempfile
+HDRFILE=@CMAKE_CURRENT_SOURCE_DIR@/include/@CMAKE_PROJECT_NAME@/error_codes.h
+
+# renumber the reserved error codes in the header file
+@CMAKE_CURRENT_BINARY_DIR@/reserve $HDRFILE > $TEMPFILE
+# read the first unreserved error code from the end of the header file
+COUNT=$(@SED@ -n "h;\${x;s/^..//;p}" $TEMPFILE)
+# strip and replace the header file
+@SED@ -n "h;\$!{x;p}" $TEMPFILE > $HDRFILE
+
+MAX=0
+for DIR in src test
+do
+	 for INFILE in @CMAKE_CURRENT_SOURCE_DIR@/$DIR/*.c
+	 do
+		  # prefix the input file with the starting count and renumber it
+		  @SED@ -e "1s/\(.*\)/\/\/$COUNT\n\1/" $INFILE | @CMAKE_CURRENT_BINARY_DIR@/numb > $TEMPFILE
+		  # read the ending count from the intermediate file in preparation for the next input file
+		  COUNT=$(@SED@ -n "h;\${x;s/^..//;p}" $TEMPFILE)
+		  # strip and replace the input file
+		  @SED@ -n "h;\$!{x;p}" $TEMPFILE > $INFILE
+	 done
+	 if [[ MAX -eq 0 ]]; then
+		  MAX=$COUNT
+		  (( MAX-- ))
+		  # update the header file
+		  @SED@ -i "/define\ @PROJECT_NAMESPACER@_MAX_ERR/s/[0-9]\+[[:blank:]]*$/$MAX/" $HDRFILE
+		  @SED@ -i "/define\ @PROJECT_NAMESPACER@_MIN_FAIL/s/[0-9]\+[[:blank:]]*$/$COUNT/" $HDRFILE
+	 fi;
+done
+
+# update the header file some more
+MAX=$COUNT
+(( MAX-- ))
+@SED@ -i "/define\ @PROJECT_NAMESPACER@_MAX_FAIL/s/[0-9]\+[[:blank:]]*$/$MAX/" $HDRFILE
+
+# renumber the muggles starting at 1
+COUNT=1
+for DIR in src test
+do
+	 for INFILE in @CMAKE_CURRENT_SOURCE_DIR@/$DIR/*.c
+	 do
+		  # prefix the input file with the starting count and renumber it
+		  @SED@ -e "1s/\(.*\)/\/\/$COUNT\n\1/" $INFILE | @CMAKE_CURRENT_BINARY_DIR@/mug > $TEMPFILE
+		  # read the ending count from the intermediate file in preparation for the next input file
+		  COUNT=$(@SED@ -n "h;\${x;s/^..//;p}" $TEMPFILE)
+		  # strip and replace the input file
+		  @SED@ -n "h;\$!{x;p}" $TEMPFILE > $INFILE
+	 done
+done
+
+# renumber the kill sites starting at 1
+COUNT=1
+for INFILE in @CMAKE_CURRENT_SOURCE_DIR@/src/*.c
+do
+	 # prefix the input file with the starting count and renumber it
+	 @SED@ -e "1s/\(.*\)/\/\/$COUNT\n\1/" $INFILE | @CMAKE_CURRENT_BINARY_DIR@/kin > $TEMPFILE
+	 # read the ending count from the intermediate file in preparation for the next input file
+	 COUNT=$(@SED@ -n "h;\${x;s/^..//;p}" $TEMPFILE)
+	 # strip and replace the input file
+	 @SED@ -n "h;\$!{x;p}" $TEMPFILE > $INFILE
+done

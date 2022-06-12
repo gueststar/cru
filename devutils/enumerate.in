@@ -1,0 +1,52 @@
+#!@SED@ -nf
+
+# Consecutively renumber all error codes in a file, starting with a
+# count given by a comment on the first line, and leave the final
+# count in a comment on the last line. Error codes are detected as any
+# consecutive sequence of decimal digits enclosed in parentheses and
+# preceded by a defined error code macro. This script isn't meant to
+# be invoked manually but to be called by the renumber shell script.
+
+# get the initial count from the first line of the input file
+1{s/^..//; x; d}
+
+# delimit the sites where a count needs to be written
+:a
+/./{
+   s/^\(.*\(@ERROR_CODE_MACRO@\)(\)\([0-9]\+\)\(.*$\)/\1\n\4/
+   ta}
+
+# detect a line containing delimited sites
+:b
+/\n/{
+   # pull the count out of the hold space
+   G
+   # insert the count and remove delimiters
+   s/\(\n\)\(.*\)\n\([0-9]\+\)$/\3\2/
+   x
+   # increment the count in the hold space by Bruno Haible's method
+   :c
+   s/9\(_*\)$/_\1/
+   tc
+   s/^\(_*\)$/1\1/; td
+   s/8\(_*\)$/9\1/; td
+   s/7\(_*\)$/8\1/; td
+   s/6\(_*\)$/7\1/; td
+   s/5\(_*\)$/6\1/; td
+   s/4\(_*\)$/5\1/; td
+   s/3\(_*\)$/4\1/; td
+   s/2\(_*\)$/3\1/; td
+   s/1\(_*\)$/2\1/; td
+   s/0\(_*\)$/1\1/; td
+   :d
+   y/_/0/
+   x
+   # check for more sites in the same line
+   bb
+}
+
+# print the line including any renumbered codes
+p
+
+# print the final count as a comment on the last line
+${x; s/^/\/\//; p}

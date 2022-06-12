@@ -1,0 +1,306 @@
+.TH CRU_FOLD 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_fold \- specification for operating on a set of operands
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_fold_s
+.br
+{
+.br
+.BR cru_top
+.BR map;
+.br
+.BR cru_bop
+.BR reduction;
+.br
+.BR cru_nop
+.BR vacuous_case;
+.br
+.BR cru_destructor
+.BR r_free;
+.br
+.BR cru_destructor
+.BR m_free;
+.br
+} *
+.BR cru_fold;
+.SH DESCRIPTION
+With each field in a
+.BR cru_fold
+structure pointing to a user-defined function of the indicated
+type, applications pass it to various
+.BR cru
+library functions that use it to compute a user-defined result from
+a set of arbitrarily many edge labels, vertices, or properties in a
+graph.
+.P
+There are two main ways of organizing the computation. The simpler
+way starts with the
+.BR map
+function being applied to every member of the set of operands. Then
+the
+.BR reduction
+is applied to pairs of result values returned by the
+.BR map
+if there are more than one, which are discarded afterwards. Then the
+.BR reduction
+is further applied to pairs of results obtained by previous reductions
+if any, which are also discarded. Sufficiently many reductions are
+evaluated with intermediate results discarded until only a single
+result remains.
+.P
+In the other way of organizing the computation, the
+.BR map
+is also applied initially to every member of the set, and in addition, the
+.BR vacuous_case
+is evaluated. If there are any operands in the set, the
+.BR reduction
+is then applied to the pair of a
+.BR map
+result as its left operand and the
+.BR vacuous_case
+result as its right, both of which are discarded.
+While any unused
+.BR map
+results remain, the
+.BR reduction
+is evaluated with one of them as its left operand
+and the previous
+.BR reduction
+result as its right, both of which are discarded.
+The result overall is that of the
+.BR vacuous_case
+if the set of operands is empty, or last
+.BR reduction
+evaluated otherwise.
+.P
+Applications select the simpler way by initializing the
+.BR vacuous_case
+field to
+NULL
+and the other way by initializing it as a pointer to a user-defined
+nullary operator. Some differences necessarily follow.
+.TP
+*
+The simpler way is defined only for non-empty sets of operands.
+.TP
+*
+The simpler way requires the results of the
+.BR map
+and the
+.BR reduction
+to have identical types.
+.TP
+*
+The simpler way requires both operands of the
+.BR reduction
+to have the same type as its result.
+.P
+In the alternative:
+.TP
+* 
+The result overall for any empty set of operands is given by the
+.BR vacuous_case.
+.TP
+*
+The
+.BR reduction
+and the
+.BR vacuous_case
+must have identical result types.
+.TP
+*
+Only the right operand of the
+.BR reduction
+must match its result type.
+.TP
+*
+The
+.BR map
+can have any result type, but the left operand type of the
+.BR reduction
+must match it.
+.P
+In either case, functions given by the two destructor fields reclaim
+the discarded intermediate results. The
+.BR r_free
+function reclaims results returned by the
+.BR reduction,
+and the
+.BR m_free
+function reclaims results returned by the
+.BR map.
+These destructors must be suitable for their operand types. Either or
+both of these fields can be set to
+NULL,
+in which case
+.BR cru
+infers that the corresponding result type is a scalar in no need of
+reclamation. Some other inferences are then possible:
+.TP
+*
+If both the
+.BR m_free
+and the
+.BR map
+fields are
+NULL,
+then
+.BR cru
+infers a default
+.BR map
+operator that unconditionally returns its middle operand.
+.TP
+*
+If both the
+.BR r_free
+and the
+.BR reduction
+fields are
+NULL,
+then
+.BR cru
+infers a default
+.BR reduction
+operator that returns the lesser of its two operands
+cast as unsigned integers.
+.SH ERRORS
+It is an error to omit a destructor when the corresponding result is
+dynamically allocated. This error is not detectable by
+.BR cru
+but may cause memory leaks. Other errors are reportable by whatever
+API function is being called under these circumstances:
+.TP
+.BR CRU_UNDVAC
+Evaluation is requested on an empty set of operands but no
+.BR vacuous_case
+is defined.
+.TP
+.BR CRU_UNDMAP
+A
+.BR map
+operator is required but not specified or inferrable.
+.TP
+.BR CRU_UNDRED
+A
+.BR reduction
+operator is required but not specified or inferrable.
+.TP
+.BR CRU_TPCMPR
+No
+.BR vacuous_case
+is specified but the destructors differ,
+indicating that the
+.BR map
+and
+.BR reduction
+result types are incompatible.
+If the
+.BR cru_fold
+structure is the
+.BR vertex
+field of a
+.BR cru_prop
+structure belonging to a
+.BR cru_mapreducer
+top level structure,
+then this error is reported whenever the destructors differ,
+with or without a
+.BR vacuous_case
+defined.
+.P
+If neither destructor is specified because both result types are scalars,
+type conflicts are still an error but are not detected.
+.SH NOTES
+The
+.BR cru_fold
+structure is part of the
+.BR cru_prop
+and
+.BR cru_kernel
+derived structures,
+and the
+.BR cru_inducer
+top level structure.
+.P
+Applications should ensure that the vacuous case result is
+semantically appropriate for the reduction. For example, the sum of an
+empty set of numbers is zero, the product of an empty set of numbers
+is conventionally taken to be unity, etcetera.
+.P
+There is no specified ordering among the operands to a reduction.
+Applications relying on stronger assumptions will likely fail
+intermittently or be broken completely by an eventual update to
+.BR cru.
+To ensure deterministic results, the
+.BR reduction
+.BR r
+must satisfy
+.BR r
+(
+.BR x,
+.BR r
+(
+.BR y,
+.BR z)\~)
+=
+.BR r
+(
+.BR y,
+.BR r
+(
+.BR x,
+.BR z)\~)
+for
+.BR map
+results
+.BR x
+and
+.BR y
+if there is a
+.BR vacuous_case
+defined, or must be associative and commutative otherwise.
+.SH EXAMPLE
+Given two user-defined functions as shown,
+.nf
+   uintptr_t
+   sum (uintptr_t l, uintptr_t r, int *err)
+   {
+      return (l + r);
+   }
+
+   uintptr_t
+   square (uintptr_t l, uintptr_t m, uintptr_t r, int *err)
+   {
+      return (m * m);
+   }
+.fi
+this example declares the structure
+.BR sum_of_squares
+of type
+.I struct
+.BR cru_fold_s
+to specify the computation of the sum of the squares of a non-empty
+set of numbers.
+.nf
+   struct cru_fold_s sum_of_squares = {
+      .reduction = (cru_bop) sum,
+      .map = (cru_top) square};
+.fi
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

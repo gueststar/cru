@@ -1,0 +1,124 @@
+.TH CRU_INDUCED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_induced \- compute a graph metric inductively
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void *
+.BR cru_induced
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_inducer
+.I i
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function computes a metric about a graph
+.I g
+without modifying it
+according to user-defined criteria set by
+.I i
+\~following the usual
+.BR cru_inducer
+calling conventions, which associate a result with each vertex allowed
+to depend on the results associated with its adjacent vertices.
+Alternatively, a NULL value of
+.I i
+\~is allowed and causes a NULL value to be returned.
+.\"killsw
+In this case, a NULL value is returned.
+.\"lanes
+.P
+For purposes of memory management, no parameters are consumed.
+.SH RETURN VALUE
+On successful completion, the returned value the result computed
+for the graph
+.I g
+according to the
+.BR cru_inducer
+specification
+.I i.
+In the event of any error, a NULL pointer is returned.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_INCINV
+The field
+.I i->in_zone.offset
+is non-zero but the vertex
+.I i->in_zone.initial_vertex
+is not in the graph
+.I g.
+.TP
+.BR CRU_UNDMAP
+The
+.I i->in_fold.map
+field is
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.I i->in_fold.reduction
+field is
+NULL and not inferrable.
+.TP
+.BR CRU_UNDVAC
+The
+.I i->in_fold.vacuous_case
+field is
+NULL.
+.SH NOTES
+A nullary operator is always required via the
+.I i->in_fold.vacuous_case
+field because deadlock avoidance presupposes a vertex in the graph
+having no prerequisites.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

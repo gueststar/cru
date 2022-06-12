@@ -1,0 +1,47 @@
+.TH CRU_NEW_KILL_SWITCH 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_free_kill_switch \- free the memory used by a kill switch
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_kill_switch
+.BR cru_new_kill_switch
+(
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function allocates and returns a
+.BR cru_kill_switch
+usable as a parameter to other library functions
+to enable early termination via the
+.BR cru_kill
+function.
+.SH RETURN VALUE
+On successful completion, a kill switch is returned. The application
+should treat it as an opaque type but may pass it as a parameter to
+other
+.BR cru
+library functions. In the event of any error, a NULL value is
+returned.
+.SH ERRORS
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate a kill switch.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

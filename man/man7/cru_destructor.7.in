@@ -1,0 +1,145 @@
+.TH CRU_DESTRUCTOR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_destructor \- memory reclamation function used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void (*
+.BR cru_destructor
+)(void *, int *)
+.SH DESCRIPTION
+A user-defined function matching this prototype is passed a non-
+NULL
+pointer to a disused vertex, edge label, or property of some
+application-specific form, and a pointer to an integer error code
+initialized to zero. The function is expected to reclaim all storage
+addressed by the pointer appropriately for the application, whether
+contiguous or otherwise.
+.SH ERRORS
+If a destructor function sets the error code to any non-zero value,
+the
+.BR cru
+API function that called it terminates early and propagates the same
+error code to its caller. In the interest of orderly termination,
+further calls to the same destructor may be made regardless, with the
+error code re-initialzed to zero on entry.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Applications pass destructors to
+.BR cru
+API functions via pointers to them in any of these four fields:
+.TP
+*
+the
+.BR v_free
+field in a
+.BR cru_destructor_pair
+.TP
+*
+the
+.BR e_free
+field in a
+.BR cru_destructor_pair
+.TP
+*
+the
+.BR r_free
+field in a
+.BR cru_fold
+.TP
+*
+the
+.BR m_free
+field in a
+.BR cru_fold.
+.P
+The first two are for reclaiming vertices and edge labels, respectively,
+of a graph built with that
+.BR cru_destructor_pair
+structure in the
+.BR bu_sig
+field of its
+.BR cru_builder.
+The
+.BR r_free
+field is for results returned by functions specified by the
+.BR reduction
+and the
+.BR vacuous_case
+fields
+in the same
+.BR cru_fold
+and the
+.BR m_free
+field is for those of the
+.BR map
+field in it.
+.P
+If any of the destructor fields is 
+NULL,
+.BR cru
+infers that the corresponding vertex, edge, or function
+result is a scalar value in no need of reclamation, and may also
+infer default hash functions and relations for them.
+.P
+Applications ordinarily allocate separate storage locations for every
+vertex, edge, or function result. In this case case, no locking of the
+arguments is required of the destructors.
+.P
+Some applications may opt to trade performance for space efficiency by
+using shared storage, typically with some form of reference
+counting. This approach is also valid, but requires additional care.
+Destructors in this case must ensure thread-safe mutually exclusive
+access to any shared storage using
+.BR pthreads
+primitives or alternatives.
+.P
+Missing or deficient destructors can cause memory leaks.
+Their correctness is not enforceable.
+.SH EXAMPLE
+If the vertices in a graph are large enough to make shared copies worthwhile,
+.nf
+   typedef struct
+   {
+      uintptr_t reference_count;
+      unsigned very_large_contents[0x10000];
+   } *my_vertex_type;
+.fi
+then a simple reference counting destructor can be safely implemented
+as shown
+.nf
+   static pthread_mutex_t global_lock = PTHREAD_MUTEX_INITIALIZER;
+
+   void
+   my_vertex_destructor (my_vertex_type v, int *err)
+   {
+      pthread_mutex_lock (&global_lock);
+      if (! (v->reference_count)--)
+         free (v);
+      pthread_mutex_unlock (&global_lock);
+   }
+.fi
+under the assumption of vertices allocated with initial reference
+counts of zero to be incremented once for each shared copy.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

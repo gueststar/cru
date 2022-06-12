@@ -1,0 +1,99 @@
+#!@SED@ -f
+
+# Throw in some recurring boilerplate.
+
+/^\.\\"killsw$/c\
+.P\
+The value passed through\
+.I k\
+may be either a\
+.BR cru_kill_switch\
+previously obtained by the\
+.BR cru_new_kill_switch\
+function or a\
+NULL\
+pointer denoted alternatively by\
+.BR UNKILLABLE.\
+If code running in another thread passes the\
+kill switch to\
+.BR cru_kill\
+while the operation is in progress, then the operation is interrupted.
+
+/^\.\\"lanes$/c\
+.P\
+The\
+.I lanes\
+parameter specifies the number of worker threads to be used for the\
+operation. Higher numbers up to the number of CPU cores on the host\
+are conducive to higher performance.\
+.TP\
+*\
+A value of 0, denoted alternatively by\
+.BR CONCURRENTLY,\
+requests a number of threads equal to the number of\
+cores.\
+.TP\
+*\
+A value of 1, denoted alternatively by\
+.BR SEQUENTIALLY,\
+requests single threaded operation.
+
+/^\.\\"errs$/c\
+The\
+.I err\
+parameter is used to report any events preventing successful\
+completion of the requested operation to the caller. If\
+.I *err\
+is zero on entry and the operation does not succeed, then\
+.I *err\
+is assigned a non-zero number. Positive numbers are for POSIX or\
+user-defined error codes, and negative numbers down to\
+.BR -CRU_MAX_FAIL\
+are specific to\
+.BR cru.\
+.P\
+Values of\
+.I *err\
+listed below refer to errors that are detected and handled. Unlisted values in\
+the range of\
+.BR -CRU_INT_ERR\
+through\
+.BR -CRU_MAX_ERR\
+likely indicate internal\
+errors attributable to bugs in\
+.BR cru.\
+Any other unlisted values may indicate memory corruption or\
+invalid usage of the API.
+
+/^\.\\"cb_errs$/c\
+The\
+.I err\
+parameter is used to report any events preventing successful\
+completion of the requested operation to the caller. If\
+.I *err\
+is zero on entry and the operation does not succeed, then\
+.I *err\
+is assigned a non-zero number. If the operation does not succeed\
+because a user-defined callback function reports an error, then the\
+number reported by the callback function is assigned to\
+.I *err.\
+Positive numbers are for POSIX or user-defined error codes,\
+negative numbers down to\
+.BR -CRU_MAX_FAIL\
+are specific to\
+.BR cru,\
+and other negative numbers are allowed as user-defined error codes.\
+.P\
+Values of\
+.I *err\
+listed below refer to errors that are detected and handled. Unlisted values in\
+the range of\
+.BR -CRU_INT_ERR\
+through\
+.BR -CRU_MAX_ERR\
+likely indicate internal\
+errors attributable to bugs in\
+.BR cru.\
+Any other unlisted values may indicate memory corruption, invalid\
+usage of the API, or conditions relevant to user-defined callback\
+functions.

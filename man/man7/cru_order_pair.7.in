@@ -1,0 +1,89 @@
+.TH CRU_ORDER_PAIR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_order_pair \- pair of comparison structures for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_order_pair_s
+.br
+{
+.br
+struct
+.BR cru_order_s
+.BR v_order;
+.br
+struct
+.BR cru_order_s
+.BR e_order;
+.br
+} *
+.BR cru_order_pair;
+.SH DESCRIPTION
+Applications initialize this structure to encapsulates all information
+needed by
+.BR cru
+library functions for comparison among edges and vertices in a graph.
+The
+.BR v_order
+field is for comparison of vertices
+and the
+.BR e_order
+field is for comparison of edge labels. Each field has the usual
+interpretation as a
+.BR cru_order
+structure.
+.SH NOTES
+The
+.BR cru_order_pair
+structure is a field in the
+.BR cru_sig
+structure and
+.BR cru_mutator
+top level structure. The
+.BR cru_sig
+structure is a field in the
+.BR cru_builder,
+the
+.BR cru_crosser,
+and the
+.BR cru_fabricator
+top level structures.
+.P
+When a
+.BR cru_order_pair
+structure is the
+.BR orders
+field in a
+.BR cru_sig
+structure whose
+.BR destructors
+field specifies a
+NULL
+vertex destructor,
+.BR cru
+infers a scalar vertex type and therefore a corresponding default
+.BR v_order
+field if it is omitted. A similar convention applies to the
+.BR e_order
+field.
+.P
+The
+.BR e_order
+field is not strictly necessary for building a graph, and may be
+omitted or zero-filled. However, an edge ordering is required for some
+operations on existing graphs, namely composition, merging,
+deduplication, postponement, and stretching. If any of these these
+operations is anticipated, an edge ordering must be defined or
+inferrable in advance.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

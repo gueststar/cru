@@ -1,0 +1,80 @@
+.TH CRU_CTOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_ctop \- conditional ternary operator for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_ctop_s
+.br
+{
+.br
+.BR cru_tpred
+.BR tpred;
+.br
+.BR cru_top
+.BR top;
+.br
+} *
+.BR cru_ctop;
+.SH DESCRIPTION
+A conditional ternary operator represents a ternary operator whose
+result is required only if some predicate is true of its operands.
+When conditional operators are passed to
+.BR cru
+library functions, they are used only as follows:
+.TP
+*
+First the predicate is applied to the operands.
+.TP
+*
+If the predicate returns any non-zero value, then a result is
+obtained from the operator applied to those same operands.
+.TP
+*
+If the predicate returns zero, the operator is not invoked and
+therefore not required to produce any valid result.
+.P
+A
+NULL
+.BR tpred
+field causes the operator to be invoked unconditionally.
+.SH ERRORS
+The
+.BR top
+field defaults to an operator that returns a copy of its middle
+operand if left unspecified, but only when used to operate on a graph
+whose edge labels are scalar values. Otherwise, it must be initialized
+to something other than
+NULL
+to prevent an error of
+.BR CRU_UNDCTO
+from being reported for an undefined conditional ternary operator.
+.SH NOTES
+Conditional ternary operators form the
+.BR cru_ctop_pair
+structures built into the
+.BR sp_ctops
+field of a
+.BR cru_splitter
+used in splitting operations. The middle operand is an edge label and
+the first and last are properties of the edge's originating and
+terminal vertices, respectively. The properties are computed according to
+the
+.BR cru_prop
+structure built into the
+.BR sp_prop
+field of the same splitter.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

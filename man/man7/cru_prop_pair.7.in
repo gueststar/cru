@@ -1,0 +1,63 @@
+.TH CRU_PROP_PAIR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_prop_pair \- a pair of vertex property specifications
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_prop_pair_s
+.br
+{
+.br
+struct
+.BR cru_prop_s
+.BR local;
+.br
+struct
+.BR cru_prop_s
+.BR adjacent;
+.br
+} *
+.BR cru_prop_pair;
+.SH DESCRIPTION
+Applications can initialize two
+.BR cru_prop
+structures as fields in this structure to be used jointly for
+evaluating vertex properties in the course of composition operations
+performed by the
+.BR cru_composed
+library function. Each vertex can have two properties, one given by
+each field, and each property is allowed to depend on the vertex, its
+edges, and its adjacent vertices in either direction according to the
+usual calling conventions for
+.BR cru_prop
+structures.
+.P
+When a pair of end-to-end edges is under consideration for the
+creation of a new edge representing their composition, the local
+vertex property of the originating vertex and the adjacent property of
+the intermediate vertex inform the result.
+.P
+Either or both of these fields can be omitted or filled with zeros.
+If so, the corresponding property defaults to a verbatim copy of the
+vertex.
+.SH NOTES
+The
+.BR cru_prop_pair
+structure is a field in the
+.BR cru_composer
+top level structure. The property values are passed as parameters to the
+quartenary operator and predicate in the
+.BR labeler
+field of the same structure.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

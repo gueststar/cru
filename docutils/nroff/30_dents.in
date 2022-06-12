@@ -1,0 +1,67 @@
+#!@SED@ -nf
+
+# Indent structs and parameter lists of function prototypes if they're
+# broken across lines and grouped by parentheses or braces.
+
+x
+# not inside parentheses or braces
+/./!{
+   x
+   # check for an opening parenthesis or brace
+   /^\((\|{\)$/{
+      # if found, start storing a parameter list or struct
+      h
+      # recycle
+      d}
+   # if not found, print the line outside of the parentheses or braces
+   p
+   # recycle
+   d}
+x
+
+# if this line inside parentheses or braces is not a break
+/^\.br/!{
+   x
+   # and it's the first line after the opening parenthesis or brace
+   /^($/bb
+   x
+   bc
+   # then consider it not indentable
+   :b
+   # print the opening parenthesis
+   p
+   # flush the opening parenthesis
+   s/.*//
+   x
+   # print the non-break
+   p
+   # recycle
+   d}
+
+:c
+# indent a line inside the parentheses or braces
+/\(^\(\.BR\)\)\|\(^[a-z]\)/{
+   s/\(\(\.BR[[:blank:]]\)\?\)\(.*\)/\1\\~\\~\\~\3/
+   # store each subsequent line without indenting down to the next break or closing parenthesis or brace
+   :a
+   H
+   n
+   /\(^\(\.BR\)\)\|\(^[a-z]\)/ba
+}
+
+# if there's a closing parenthesis or brace
+/^\()\|}\)/{
+   # print the parameter list or struct
+   x
+   p
+   # print the closing parenthesis or brace
+   x
+   p
+   # flush the parameter list or struct
+   s/.*//
+   x
+   # recycle
+   d}
+
+# if it's a break, hold it
+H

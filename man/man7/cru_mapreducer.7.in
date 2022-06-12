@@ -1,0 +1,62 @@
+.TH CRU_MAPREDUCER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_mapreducer \- parallel graph metric computation specification
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_mapreducer_s
+.br
+{
+.br
+struct
+.BR cru_zone_s
+.BR ma_zone;
+.br
+struct
+.BR cru_prop_s
+.BR ma_prop;
+.br
+} *
+.BR cru_mapreducer;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_mapreduced
+library function with necessary information initialized by the
+application to compute an arbitrary user-defined metric
+about a graph. The metric is computed according to the usual
+calling conventions for a
+.BR cru_prop
+as given by the
+.BR ma_prop
+field. The computation can pertain to a section of the graph
+restricted by the
+.BR cru_zone
+structure in the
+.BR ma_zone
+field. Alternatively, the
+.BR ma_zone
+field may be omitted or zero-filled, in which case the whole graph is
+used.
+.P
+Unlike an induction, all vertices are visited effectively in parallel
+in the course of this operation. The value derived from each vertex
+can depend on its adjacent vertices in either direction but not on the
+values derived from its adjacent vertices.
+.SH NOTES
+The reduction phase proceeds under the assumption of a commutative and
+associative user-defined vertex reduction operator. Non-deterministic
+results are possible if this condition is not met but
+.BR cru
+has no way of enforcing it.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

@@ -1,0 +1,179 @@
+.TH CRU_SPLIT 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_split \- instigate vertex mitosis
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_split
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_splitter
+.I s
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function replaces selected vertices in a graph
+.I g
+with parallel pairs of newly created vertices according to
+user-defined criteria set by
+.I s
+following the usual
+.BR cru_splitter
+calling conventions. Alternatively, a NULL value of
+.I s
+is allowed and causes the graph to be returned unmodified.
+.\"killsw
+In this case, the whole graph is reclaimed.
+.\"lanes
+.P
+For purposes of memory management,
+the graph
+.I g
+is consumed and should not be accessed or reclaimed afterwards.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+by the replacement of existing vertices
+with newly created vertices and edges as specified by the given
+.BR cru_splitter
+structure
+.I s.
+Applications should treat the returned value as opaque but may pass it
+as a parameter to other library functions. In the event of any error,
+a NULL
+pointer is returned. A
+NULL
+pointer is also returned if the given parameter
+.I g
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_UNDANA
+The
+.I s->ana
+field is NULL and not inferrable.
+.TP
+.BR CRU_UNDCAT
+The
+.I s->cata
+field is NULL and not inferrable.
+.TP
+.BR CRU_INTOVF
+A number of vertices was created approaching or exceeding a limit
+previously associated with the graph
+.I g.
+.TP
+.BR CRU_TPCMPR
+The
+.BR m_free
+and
+.BR r_free
+fields differ
+where the
+.BR vacuous_case
+field is
+NULL
+in either of the
+.I s->sp_prop.incident
+or
+.I s->sp_prop.outgoing
+structures.
+.TP
+.BR CRU_UNDMAP
+The
+.BR map
+field in either of
+.I s->sp_prop.incident
+or
+.I s->sp_prop.outgoing
+is
+NULL
+but at least one other field in it is not
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.BR reduction
+field is
+NULL
+in either of
+.I s->sp_prop.incident
+or
+.I s->sp_prop.outgoing
+whose other fields are not all
+NULL.
+.TP
+.BR CRU_UNDVAC
+The
+.I s->sp_prop.incident.vacuous_case
+field is
+NULL,
+at least one other field of
+.I s->sp_prop.incident
+is not
+NULL, and there is a vertex in the graph
+.I g
+with no incoming edges,
+or the
+.I s->sp_prop.outgoing.vacuous_case
+field is
+NULL, at least one other field of
+.I s->sp_prop.outgoing
+is not NULL, and there is a vertex in the graph with no outgoing
+edges.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

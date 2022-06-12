@@ -1,0 +1,67 @@
+.TH CRU_UOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_uop \- unary operator function type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void* (*
+.BR cru_uop
+)(void *, int *)
+.SH DESCRIPTION
+A user-defined unary operator takes a single operand and a pointer to
+an initially zero error code as arguments. Unary operators serve
+various purposes, but the operand invariably represents either a
+vertex or an edge label in a graph. It can be either a scalar value or
+a pointer to heap allocated storage. The operator must treat the operand
+as read only but may assign the error code.
+.SH RETURN VALUE
+The return value represents an edge label or a vertex in a graph
+depending on the context, and may be either a scalar value or a
+pointer to the heap depending on how the application developer chooses
+to represent them. In the case of a pointer, the result ordinarily
+refers to newly allocated storage. However, applications may opt to
+return a pointer to shared storage provided the operator and the
+corresponding
+.BR cru_destructor
+function implement thread-safe reference
+counting.
+.SH ERRORS
+If a unary operator sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Applications pass unary operators to
+.BR cru
+through the
+.BR v_fab
+and
+.BR e_fab
+fields of a
+.BR cru_fabricator,
+which are passed to the
+.BR cru_fabricated
+library function.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

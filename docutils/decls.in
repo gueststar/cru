@@ -1,0 +1,43 @@
+#!@SED@ -nf
+
+# Extract declarations from header files and format them for nroff.
+# This script is invoked automatically at build time by
+# @CMAKE_CURRENT_BUILD_DIR@/configure_manpages.cmake,
+# but a demonstration of what it does is possible by running
+# cat @CMAKE_CURRENT_SOURCE_DIR@/include/@CMAKE_PROJECT_NAME@/*.h | @CMAKE_CURRENT_BINARY_DIR@/docutils/decls
+
+# insert hard coded manual page titles not derived from specific declarations
+1i\
+.BR @CMAKE_PROJECT_NAME@ (7),\
+.BR @CMAKE_PROJECT_NAME@_data_types (7),\
+.BR @CMAKE_PROJECT_NAME@_function_types (7),
+
+# if a line starts with typedef
+/^typedef/{
+   # skip opaque types
+   /[[:alnum:]];$/ba
+   # get the identifier out of the definition
+   s/.*\(@CMAKE_PROJECT_NAME@_\([[:alnum:]]\|_\)\+\).*/.BR\ \1/
+   # get rid of _s at the end of struct names
+   s/_s$//
+   # associate it with manual section 7
+   s/$/\ (7),/
+   p}
+
+# if a line starting with a function name follows a line starting with extern
+:a
+/^extern.*\n@CMAKE_PROJECT_NAME@_/{
+   # get the function name
+   s/.*\n//
+   # associate it with section 3
+   s/[[:blank:]].*/\ (3),/
+   s/^/.BR\ /
+   p}
+
+# if two lines have been combined without matching the pattern above, ignore them
+/\n/d
+
+# if a line starts with extern, combine it with the next line and retry the match
+/^extern/{
+   N
+   ba}

@@ -1,0 +1,200 @@
+# This script configures the sed scripts needed to build the
+# documentation, and then builds it by piping the nroff manual page
+# input files through them. This script itself is run through cmake to
+# have some variable substitutions performed on it.
+#
+# The variables MAINTAINER_EMAIL and MANUAL_TITLE need to be set by
+# CMakeLists.txt or whatever cmake script configures this one. A
+# condition variable HTML_DOCS_ON controls whether html formatted
+# documents are generated. Presence of some standard utilities should
+# have been checked in advance.
+
+find_program(FIND find)
+find_program(DATE date)
+find_program(SED sed)
+find_program(SORT sort)
+find_program(XARGS xargs)
+
+if (NOT FIND)
+   message(FATAL_ERROR "find utility not found")
+elseif (NOT DATE)
+   message(FATAL_ERROR "date utility not found")
+elseif (NOT SED)
+   message(FATAL_ERROR "sed utility not found")
+elseif (NOT SORT)
+   message(FATAL_ERROR "sort utility not found")
+elseif (NOT XARGS)
+   message(FATAL_ERROR "xargs utility not found")
+endif ()
+
+# Redefine some variables that aren't automatically inherited.
+set (MAINTAINER_EMAIL @MAINTAINER_EMAIL@)
+set (MANUAL_TITLE @MANUAL_TITLE@)
+set (CMAKE_PROJECT_HOMEPAGE_URL @CMAKE_PROJECT_HOMEPAGE_URL@)
+set (CMAKE_CURRENT_SOURCE_DIR @CMAKE_CURRENT_SOURCE_DIR@)
+set (CMAKE_PROJECT_NAME @CMAKE_PROJECT_NAME@)
+set (DOCDIR @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_DOCDIR@)
+set (INCDIR @CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@/@CMAKE_PROJECT_NAME@)
+# This is used by the breaks script.
+set (BREAK_THRESHOLD 50)
+
+# Format dated manual page titles.
+execute_process(
+  OUTPUT_VARIABLE DATE_VERSION_TITLE
+  COMMAND ${DATE} +"%B %d, %Y\" \"@MANUAL_TITLE@ VERSION @CMAKE_PROJECT_VERSION@\" \"@MANUAL_TITLE@ MANUAL")
+
+# Make a list of manual pages.
+execute_process(
+  OUTPUT_VARIABLE MAN_FILES
+  COMMAND ${CMAKE_COMMAND} -E touch @CMAKE_CURRENT_BINARY_DIR@/tempfile
+  WORKING_DIRECTORY @CMAKE_CURRENT_SOURCE_DIR@
+  COMMAND ${FIND} man -name "*.in"
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Make a list of nroff processing sed scripts.
+execute_process(
+  OUTPUT_VARIABLE NROFF_PIPE_FILES
+  WORKING_DIRECTORY @CMAKE_CURRENT_SOURCE_DIR@
+  COMMAND ${CMAKE_COMMAND} -E env ${FIND} docutils/nroff -name "*.in"
+  COMMAND ${CMAKE_COMMAND} -E env ${SORT} -n
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Perform cmake variable substitutions in the nroff processing sed scripts.
+string(REPLACE "\n" ";" NROFF_PIPE_FILE_LIST ${NROFF_PIPE_FILES})
+foreach(NROFF_PIPE_FILE IN LISTS NROFF_PIPE_FILE_LIST)
+  string(REGEX REPLACE ".in$" "" NROFF_PIPE_FILE ${NROFF_PIPE_FILE})
+  configure_file(
+	 @CMAKE_CURRENT_SOURCE_DIR@/${NROFF_PIPE_FILE}.in @CMAKE_CURRENT_BINARY_DIR@/${NROFF_PIPE_FILE}
+	 @ONLY)
+endforeach ()
+string(REGEX REPLACE ".in\n" "\n" NROFF_PIPE_FILES ${NROFF_PIPE_FILES})
+string(REGEX REPLACE ".in$" "" NROFF_PIPE_FILES ${NROFF_PIPE_FILES})
+string(REPLACE "\n" ";" NROFF_PIPE_FILE_LIST ${NROFF_PIPE_FILES})
+
+if (@HTML_DOCS_ON@)
+  # html styling
+  set (TITLE_COLOR "var(--bs-gray)")
+  set (SECTION_HEADING_COLOR "#ff5c5c")
+  set (TEXT_COLOR "var(--bs-white)")
+  set (BACKGROUND_COLOR "var(--bs-dark)")
+  set (LINK_COLOR "#5c76ff")
+  set (KEYWORD_COLOR "#45b74a")
+  # for blocks of verbatim quoted code fragments
+  set (CODE_COLOR "rgb(31,255,63)")
+  set (CODE_BACKGROUND_COLOR "rgb(0,0,0)")
+  # the indentation of text in a section under an unindented heading, like an nroff rendered manpage
+  set (SECTION_INDENTATION 40px)
+  # the indentation of a code block or of text in a bullet point or labled list within a section
+  set (SUBSECTION_INDENTATION 80px)
+  # Make a list of html processing sed scripts.
+  execute_process(
+	 OUTPUT_VARIABLE HTML_PIPE_FILES
+	 WORKING_DIRECTORY @CMAKE_CURRENT_SOURCE_DIR@
+	 COMMAND ${CMAKE_COMMAND} -E env ${FIND} docutils/html -name "*.in"
+	 COMMAND ${CMAKE_COMMAND} -E env ${SORT} -n
+	 OUTPUT_STRIP_TRAILING_WHITESPACE)
+  # Rewrite keywords in html files to hyperlinks only if they're in the list of manual pages.
+  string(REPLACE "\n" ";" LINK_TARGET_LIST ${MAN_FILES})
+  foreach(LINK_TARGET IN LISTS LINK_TARGET_LIST)
+	 string(REGEX REPLACE "^man/man.." "" LINK_TARGET ${LINK_TARGET})
+	 string(REGEX REPLACE "\\..*$" "" LINK_TARGET ${LINK_TARGET})
+	 if (LINK_TARGETS)
+		string(PREPEND LINK_TARGETS "\\|")
+	 endif ()
+	 string(PREPEND LINK_TARGETS ${LINK_TARGET})
+  endforeach ()
+  # get the stylesheet if possible
+  set(BOOTSTRAP_STYLESHEET_HREF "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css")
+  file(
+	 DOWNLOAD ${BOOTSTRAP_STYLESHEET_HREF} @CMAKE_CURRENT_BINARY_DIR@/html/bootstrap.min.css
+	 STATUS DOWNLOAD_STATUS)
+  string(COMPARE EQUAL "${DOWNLOAD_STATUS}" "0;\"No error\"" BOOTSTRAP_STYLESHEET_DOWNLOADED)
+  if (BOOTSTRAP_STYLESHEET_DOWNLOADED)
+	 # host the stylesheet locally with the html manual
+	 set (BOOTSTRAP_STYLESHEET_LINK "<link href=\"bootstrap.min.css\" rel=\"stylesheet\">")
+  else()
+	 # fall back on a cdn for the stylesheet
+	 execute_process(COMMAND ${CMAKE_COMMAND} -E rm @CMAKE_CURRENT_BINARY_DIR@/html/bootstrap.min.css)
+	 set (BOOTSTRAP_STYLESHEET_LINK "<link href=\"${BOOTSTRAP_STYLESHEET_HREF}\" rel=\"stylesheet\" integrity=")
+	 string (APPEND BOOTSTRAP_STYLESHEET_LINK "\"sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3\"")
+	 string (APPEND BOOTSTRAP_STYLESHEET_LINK " crossorigin=\"anonymous\">")
+  endif()
+  # Perform cmake variable substitutions in html processing scripts.
+  string(REPLACE "\n" ";" HTML_PIPE_FILE_LIST ${HTML_PIPE_FILES})
+  foreach(HTML_PIPE_FILE IN LISTS HTML_PIPE_FILE_LIST)
+	 string(REGEX REPLACE ".in$" "" HTML_PIPE_FILE ${HTML_PIPE_FILE})
+	 configure_file(
+		@CMAKE_CURRENT_SOURCE_DIR@/${HTML_PIPE_FILE}.in @CMAKE_CURRENT_BINARY_DIR@/${HTML_PIPE_FILE}
+		@ONLY)
+  endforeach ()
+  string(REGEX REPLACE ".in\n" "\n" HTML_PIPE_FILES ${HTML_PIPE_FILES})
+  string(REGEX REPLACE ".in$" "" HTML_PIPE_FILES ${HTML_PIPE_FILES})
+  string(REPLACE "\n" ";" HTML_PIPE_FILE_LIST ${HTML_PIPE_FILES})
+endif ()
+
+# Perform cmake variable substitutions in the script that extracts declarations automatically from header files.
+configure_file(
+  @CMAKE_CURRENT_SOURCE_DIR@/docutils/decls.in @CMAKE_CURRENT_BINARY_DIR@/docutils/decls
+  @ONLY)
+
+# Perform cmake variable substitutions in the script that extracts error code strings.
+configure_file(
+  @CMAKE_CURRENT_SOURCE_DIR@/docutils/errs.in @CMAKE_CURRENT_BINARY_DIR@/docutils/errs
+  @ONLY)
+
+# Make a list of error code strings synchronized with the source.
+execute_process(
+  OUTPUT_VARIABLE ERROR_LIST
+  INPUT_FILE ${CMAKE_CURRENT_SOURCE_DIR}/src/errs.c
+  COMMAND ${CMAKE_COMMAND} -E env ${CMAKE_CURRENT_BINARY_DIR}/docutils/errs
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Use a similar SEE ALSO section derived from the declarations for every manual page.
+execute_process(
+  OUTPUT_VARIABLE SEE_ALSO
+  COMMAND ${CMAKE_COMMAND} -E env ${FIND} @CMAKE_CURRENT_SOURCE_DIR@/include/@CMAKE_PROJECT_NAME@ -name "*.h"
+  COMMAND ${CMAKE_COMMAND} -E env ${XARGS} @CMAKE_CURRENT_BINARY_DIR@/docutils/decls
+  COMMAND ${CMAKE_COMMAND} -E env ${SORT}
+  COMMAND ${CMAKE_COMMAND} -E env ${SED} \$s/,//
+  OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+string(REPLACE "\n" ";" MAN_FILE_LIST ${MAN_FILES})
+foreach(MAN_FILE IN LISTS MAN_FILE_LIST)
+  string(REGEX REPLACE ".in$" "" MAN_FILE ${MAN_FILE})
+  # Perform cmake variable substitutions in an nroff file.
+  configure_file(@CMAKE_CURRENT_SOURCE_DIR@/${MAN_FILE}.in @CMAKE_CURRENT_BINARY_DIR@/configured_${MAN_FILE})
+  # Don't list a manual page in its own SEE ALSO section.
+  string(REGEX REPLACE ".*/\(([a-z]|_)*\)\\.\([0-9]\),?$" "/^\\\\.BR\\\\ \\1\\\\ (\\3),$/d" SELF ${MAN_FILE})
+  execute_process(
+	 COMMAND ${CMAKE_COMMAND} -E env ${SED} -i ${SELF} @CMAKE_CURRENT_BINARY_DIR@/configured_${MAN_FILE})
+  # Perform additional formatting on an nroff file by running it through the pipes.
+  foreach(NROFF_PIPE_FILE IN LISTS NROFF_PIPE_FILE_LIST)
+	 execute_process(
+		WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+		INPUT_FILE @CMAKE_CURRENT_BINARY_DIR@/configured_${MAN_FILE}
+		OUTPUT_FILE tempfile
+		COMMAND ${CMAKE_COMMAND} -E env ${NROFF_PIPE_FILE})
+	 execute_process(
+		WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+		COMMAND ${CMAKE_COMMAND} -E copy tempfile @CMAKE_CURRENT_BINARY_DIR@/configured_${MAN_FILE})
+  endforeach ()
+  if (@HTML_DOCS_ON@)
+	 # Generate an html file from the finished nroff file.
+	 string(REGEX REPLACE "\\..*$" ".html" HTML_FILE ${MAN_FILE})
+	 string(REGEX REPLACE "^man/man.." "html/" HTML_FILE ${HTML_FILE})
+	 execute_process(
+		WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+		COMMAND ${CMAKE_COMMAND} -E copy tempfile ${HTML_FILE})
+	 # Convert nroff to html by running it through the pipes.
+	 foreach(HTML_PIPE_FILE IN LISTS HTML_PIPE_FILE_LIST)
+		execute_process(
+		  WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+		  INPUT_FILE ${HTML_FILE}
+		  OUTPUT_FILE tempfile
+		  COMMAND ${CMAKE_COMMAND} -E env ${HTML_PIPE_FILE})
+		execute_process(
+		  WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+		  COMMAND ${CMAKE_COMMAND} -E copy tempfile ${HTML_FILE})
+	 endforeach ()
+  endif ()
+endforeach ()

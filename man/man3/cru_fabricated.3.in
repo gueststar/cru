@@ -1,0 +1,137 @@
+.TH CRU_FABRICATED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_fabricated \- graph copying function for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_fabricated
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_fabricator
+.I f
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function creates a new graph with the same number of vertices
+and edges as the given graph
+.I g
+connected in the same way, but possibly labeled differently based on a
+specification
+.I f
+\~following the usual
+.BR cru_fabricator
+calling conventions.
+.\"killsw
+In this case, no graph is fabricated.
+.\"lanes
+.P
+For purposes of memory management,
+no parameters are consumed.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+according to the
+.BR cru_fabricator
+structure
+.I f.
+Applications should treat the returned value as opaque but may pass it
+as a parameter to other library functions. In the event of any error,
+a NULL
+pointer is returned. A
+NULL
+pointer is also returned if the given parameter
+.I g
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_UNDVFB
+The field
+.I f->v_fab
+is
+NULL
+but at least one of
+.I f->fa_sig.destructor.v_free,
+.I f->fa_sig.orders.v_order.equal,
+or
+.I f->fa_sig.orders.v_order.hash
+is not
+NULL.
+.TP
+.BR CRU_UNDEFB
+The field
+.I f->e_fab
+is
+NULL
+but at least one of
+.I f->fa_sig.destructor.e_free,
+.I f->fa_sig.orders.e_order.equal,
+or
+.I f->fa_sig.orders.e_order.hash
+is not
+NULL.
+.SH NOTES
+A zero-filled fabricator
+.I f
+calls for the creation of a shallow copy of a graph
+.I g
+whose vertices or edge labels are dynamically allocated. The copy
+shares vertices and edge labels with the original but does not cause
+them to be reclaimed when the copy is reclaimed. This method of
+operation is valid but requires the application to reclaim the copy
+prior to reclaiming the original.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

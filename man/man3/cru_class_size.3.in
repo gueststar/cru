@@ -1,0 +1,64 @@
+.TH CRU_CLASS_SIZE 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_class_size \- get the cardinality of a class in a partitioned graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+uintptr_t
+.BR cru_class_size
+(
+.BR cru_class
+.I c
+,
+int *
+.I err
+)
+.SH DESCRIPTION
+This function is part of a simple and efficient API for manipulating
+sets of vertices. The parameter
+.I c
+models a class in a partition on the vertices in a graph. A partition
+is a set of classes such that each vertex belongs to exactly one
+class. The parameter
+.I c
+is expected to have been obtained from a prior invocation of
+.BR cru_class_of.
+.SH RETURN VALUE
+On successful completion, this function returns the number of vertices
+belonging to the class represented by
+.I c,
+which is always greater than zero.
+.SH ERRORS
+.\"errs
+.TP
+.BR CRU_BADCLS
+The parameter
+.I c
+refers to a corrupted or invalid
+.BR cru_class.
+.TP
+.BR CRU_NULCLS
+The parameter
+.I c
+is a
+NULL
+pointer, hence not a valid class.
+.SH NOTES
+This function is a very fast constant time operation. Invoking it
+repeatedly may be no less efficient than storing and retrieving its
+past results.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

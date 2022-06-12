@@ -1,0 +1,110 @@
+.TH CRU_POSTPONER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_postponer \- specification for selectively serializing edges
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_postponer_s
+.br
+{
+.br
+int
+.BR po_fix;
+.br
+.BR cru_tpred
+.BR postponable;
+.br
+struct
+.BR cru_cbop_s
+.BR postponement;
+.br
+} *
+.BR cru_postponer;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_postponed
+library function with necessary information initialized by the
+application to transplant some of the edges in a graph to the termini
+of their sibling edges with possible modifications.
+.P
+Each edge in a given graph is tested for
+being postponable according to user-defined criteria by the ternary
+predicate referenced through the
+.BR postponable
+field. Given the edge's origin as its left operand, the edge's label
+as its middle operand, and the edge's terminus as its right operand,
+the predicate is expected to return a non-zero value only for the
+postponable edges. From that point, the computation proceeds as
+follows.
+.TP
+*
+For each vertex from which some but not all outgoing edges are
+postponable, the set of all pairs of its outgoing edges is constructed
+containing one postponable edge and one not.
+.TP
+*
+For each pair of edges thus constructed, the binary predicate
+referenced through the
+.BR postponement.bpred
+field is used to test the pair of their labels, with the label from
+the postponable edge as its left operand.
+.TP
+*
+If the binary predicate returns zero, there is no effect on the
+graph. If it returns any non-zero value, then the postponable edge is
+deleted from the graph and the same operands in the same order are
+passed to the binary operator referenced through the
+.BR postponement.bop
+field. The binary operator is expected to return the label of a new
+edge to be included in the graph.
+.TP
+*
+For each edge label thus obtained, a new edge having that label is
+made to terminate at the former terminus of the deleted postponable
+edge in the pair, and to originate from the terminus of the other edge.
+.P
+For these purposes, edges that originate and terminate at the same
+vertex are ignored. Two further options are available.
+.TP
+*
+If the
+.BR po_fix
+field is non-zero, then the operations above are iterated until
+the graph is unchanged between consecutive iterations.
+.TP
+*
+If the
+.BR postponement.bpred
+field is omitted or
+NULL,
+then the postponable edge is deleted unconditionally and the binary
+operator is invoked unconditionally.
+.SH ERRORS
+If the
+.BR postponable
+field is omitted or
+NULL,
+then the
+.BR cru_postponed
+function reports an error of
+.BR CRU_UNDPOP
+for an undefined postponable predicate.
+.P
+It is an error for the binary operator to create edge labels of a type
+that can not be reclaimed by the same destructor as those already
+present in the graph. This error is not detected but will cause memory
+leaks or worse.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

@@ -1,0 +1,127 @@
+.TH CRU_TPRED 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_tpred \- ternary predicate type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef int (*
+.BR cru_tpred
+)(void *,
+.BR cru_edge,
+void *, int *)
+.SH DESCRIPTION
+User-defined ternary predicates taking three operands are called to
+make decisions when any of the
+.BR cru_split,
+.BR cru_stretched,
+or
+.BR cru_postponed
+functions executes. The middle operand is the label of an edge and the
+first and last operands are user-defined properties of the vertices at
+its local and remote ends respectively. The
+.BR cru_edge
+type is an alias for a
+.I void
+pointer, to which the application can cast any compatible type.
+.TP
+*
+The main job of the ternary predicate called during a stretch
+operation is to create additional vertices and edges between to two
+endpoints of the edge whose label is passed to it by calling
+.BR cru_stretch
+some number of times.
+.TP
+*
+During a split, a ternary predicate is called once for each incoming
+and each outgoing edge connected to a vertex being split to decide
+whether an edge corresponding to it should be created on each of the
+new vertices created.
+.TP
+*
+During a postponement operation, the ternary predicate is called
+to decide whether an edge is stationary or movable.
+.P
+The operands can be scalar values, pointers to heap allocated storage,
+or a combination depending on how the application represents graph
+edges and properties. The last parameter is a pointer to an initally
+zero error code. The predicate must treat the operands as read-only
+but may assign the error code.
+.SH RETURN VALUE
+If the ternary operator called during a stretch returns a non-zero
+value, it requests the deletion of the edge from the graph whose edge
+was passed to it.
+.P
+A ternary predicate called during a split operation returns a non-zero
+value to request creation of an edge.
+.P
+A ternary predicate called during a postponement operation returns a
+non-zero value to indicate that the given edge is a candidate for
+postponement.
+.SH ERRORS
+If a ternary predicate sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Ternary predicates are passed by pointers to them either in the
+.BR tpred
+field of a
+.BR cru_ctop
+(conditional ternary operator)
+structure, in the
+.BR expander
+field of a
+.BR cru_stretcher
+structure, or in the
+.BR postponable
+field of a
+.BR cru_postponer
+structure.
+Conditional ternary operators form the
+.BR cru_ctop_pair
+structures built into the
+.BR sp_ctops
+field of a
+.BR cru_splitter
+used in splitting operations. 
+.P
+The vertex properties passed to the ternary operator during a stretch
+are computed according to the
+.BR cru_prop
+in the
+.BR st_prop
+field of the
+.BR cru_stretcher
+structure, and during a split according to the
+.BR sp_prop
+in the
+.BR cru_splitter
+structure.
+.P
+A ternary predicate and a ternary operator both referenced via the same
+.BR cru_ctop
+structure are passed the same operands and therefore should have
+identical operand types.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

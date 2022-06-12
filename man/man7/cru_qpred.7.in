@@ -1,0 +1,99 @@
+.TH CRU_QPRED 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_qpred \- quaternary predicate type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef int (*
+.BR cru_qpred
+)(void *, void *, void *, void *, int *)
+.SH DESCRIPTION
+A user-defined quaternary predicate indicates the sites in a graph
+where a new edge should be created in the course of a
+composition operation performed by the
+.BR cru_composed
+API function. The predicate
+is called once for every combination of pairs of end-to-end edges in the
+graph passed to
+.BR cru_composed.
+Its decision can depend in
+general on
+.TP
+*
+a user-defined property of the local vertex
+.TP
+*
+a user-defined property of an adjacent vertex
+.TP
+*
+the label of an edge originating from the local vertex
+.TP
+*
+the label of an edge originating from the adjacent vertex.
+.P
+The four operands to the predicte correspond to these
+entities in this order, and can be scalar values, pointers to heap
+allocated storage, or a combination depending on the application's way
+of representing a graph and its properties. The last parameter is a
+pointer to an error code initially zero on entry. The operator must
+treat the operands as read only but may assign the error code.
+.SH RETURN VALUE
+Any non-zero return value requests the creation of a composing edge
+corresponding to the given combination of edges using an edge label
+constructed by an associated
+.BR cru_qop
+function given the same arguments.
+A return value of zero requests that no edge be created at that site.
+.SH ERRORS
+If a quaternary predicate sets the error code to any non-zero value, the
+.BR cru_composed
+function invoking it reclaims the graph passed to it, returns an empty
+graph, and propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Quartenary predicates are passed via pointers to them in the
+.BR qpred
+field in a
+.BR cru_cqop
+(conditional quarternary operator)
+structure, which is built into the
+.BR labeler
+field in a
+.BR cru_composer
+structure passed to
+.BR cru_composed.
+The vertex properties contributing to the operator's input
+are computed according to the local and adjacent props defined in the
+.BR co_props
+field of the
+.BR cru_composer.
+Each vertex can have two properties, one given by each prop, and the
+appropriate property is selected depending on its role as the local or
+the adjacent vertex in any given invocation.
+.P
+A quarternary predicate and a quarternary operator both referenced via
+the same
+.BR cru_cqop
+structure should have identical operand types.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

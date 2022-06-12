@@ -1,0 +1,68 @@
+.TH CRU_FREE_KILL_SWITCH 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_free_kill_switch \- free the memory used by a kill switch
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_free_kill_switch
+(
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function reclaims the memory allocated when a
+.BR cru_kill_switch
+is created by the
+.BR cru_new_kill_switch
+function. The parameter
+.I k
+refers to the kill switch to be reclaimed.
+.P
+For purposes of memory management, the kill switch
+.I k
+is consumed by this function and must not be accessed afterwards.
+.SH RETURN VALUE
+none
+.SH ERRORS
+To avoid a memory leak, this function must be called for each
+kill switch before it goes out of scope. Memory leaks are an error but
+are not detected or reported.
+.P
+Any attempted use of a kill swith previously passed to this function is
+an error with unpredictable consequences.
+.P
+.\"errs
+.TP
+.BR CRU_NULKIL
+The parameter
+.I k
+is a
+NULL
+pointer.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to a corrupted or invalid
+.BR cru_kill_switch.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

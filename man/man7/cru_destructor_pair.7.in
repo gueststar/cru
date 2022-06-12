@@ -1,0 +1,84 @@
+.TH CRU_DESTRUCTOR_PAIR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_destructor_pair \- graph reclamation specification
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_destructor_pair_s
+.br
+{
+.br
+.BR cru_destructor
+.BR v_free;
+.br
+.BR cru_destructor
+.BR e_free;
+.br
+} *
+.BR cru_destructor_pair;
+.SH DESCRIPTION
+This structure encapsulates the information needed for reclaiming or
+releasing the memory used by a graph. Large graphs might use
+considerable memory, so reclaiming them is important when they are no
+longer needed and the memory is needed for other purposes.
+.P
+Because the edge labels and the vertices in a graph may be of
+different types dependent on the application, two seperate
+user-defined destructor functions can be specified. The
+.BR v_free
+field is for the vertex destructor,
+and the
+.BR e_free
+field is for the edge label destructor.
+.P
+Applications have the option of initializing either or both of these
+fields as pointers to functions, or of making either or both fields
+NULL.
+Any functions referenced must follow the usual calling conventions for
+.BR cru_destructor
+functions.
+.P
+A
+NULL
+value assigned to either of these fields at the time a graph is built
+tells
+.BR cru
+that the corresponding vertices or edge labels in the graph are scalar
+values rather than pointers, hence never in need of reclamation. This
+condition may enable other inferences, such as the use of default
+equality relations and hash functions.
+.SH ERRORS
+It is an error to omit the destructors for dynamically allocated
+vertices or edges because doing so causes memory leaks and possibly
+other anomalies. There is no way for
+.BR cru
+to detect this error.
+.SH NOTES
+The
+.BR cru_destructor_pair
+structure is part of the
+.BR cru_sig
+structure, which is part of the
+.BR cru_builder,
+.BR cru_fabricator,
+and
+.BR cru_crosser
+top level structures. Inferences about relations and hash functions
+based on the lack of a corresponding destructor apply to the
+.BR cru_order
+in the same
+.BR cru_sig.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

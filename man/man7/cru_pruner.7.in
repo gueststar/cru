@@ -1,0 +1,105 @@
+.TH CRU_PRUNER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_pruner \- context dependent edge filter used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef int (*
+.BR cru_pruner
+)(int,
+.BR cru_edge,
+int *)
+.SH DESCRIPTION
+A user-defined function cast to this type effects optional selective
+deletion or "filtering" of graph edges in the course of a merging
+operation performed by the
+.BR cru_merged
+API function.
+For each equivalence class of vertices to be merged and for each
+outgoing edge label observed in the class,
+.BR cru
+calls the pruner function passing it a condition flag, the edge label,
+and a pointer to an initially zero error code. The
+.BR cru_edge
+type is an alias for a
+.I void
+pointer, to which any pointer-sized type can be cast by the
+application developer. The condition flag is non-zero if and only if
+every vertex in the class has at least one outgoing edge labeled by
+the given label.
+.P
+Pruner functions should treat the edge label as read-only, but may
+assign the error code.
+.SH RETURN VALUE
+If a pruner returns any non-zero value, the graph is unaffected.
+.P
+If a pruner returns zero, all outgoing edges labeled by the given
+label are deleted from all vertices in the equivalence class for
+which the pruner is called.
+.SH ERRORS
+If a pruner sets the error code to any non-zero value,
+the
+.BR cru_merge
+operation in progress when it is called reclaims the graph passed to it,
+returns an empty graph, and propagates the same error code to its
+caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+The intended use case for this feature pertains to an unusual Petri
+net reachability graph transformation. For filtering of edges by criteria
+independent of their relationship to other class members, the
+.BR cru_filtered
+function is a better alternative.
+.P
+Pruner functions are passed to
+.BR cru
+via the
+.BR pruner
+field of a
+.BR cru_merger
+structure passed to the
+.BR cru_merged
+library function. This field may be omitted or assigned
+NULL
+if the pruning step is not required.
+.P
+Because this operation depends on comparison of edge labels in a
+graph, a hash function and an equality relation on edge labels need to
+have been previously defined or inferred when the graph was built,
+even if such a graph normally could be built without them. These
+functions are specified by the
+.BR hash
+and
+.BR equal
+fields within the
+.BR bu_sig.orders.e_order
+field of the
+.BR cru_builder
+used to build the graph. However, if no destructor for edges is
+defined in the
+.BR bu_sig.destructors.e_free
+field, then
+.BR cru
+infers default hashes and relations.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

@@ -1,0 +1,80 @@
+.TH CRU_KILL 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_kill \- stop a graph transformation job early
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_kill
+(
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+Given a
+.BR cru_kill_switch
+.I k
+previously obtained from
+.BR cru_new_kill_switch
+and then passed to a
+.BR cru
+library function taking a kill switch,
+this function causes the library function
+to terminate early. In so doing, the library
+function reclaims all storage in use, returns
+a NULL value, and reports an error of
+.BR CRU_INTKIL
+by way of its
+.I *err
+parameter.
+.TP
+*
+If the library function has already finished,
+this function has no effect.
+.TP
+*
+If the same kill switch is passed to multiple
+library functions, the last one takes precedence.
+.SH RETURN VALUE
+none
+.SH NOTES
+This function is useful only when called in the context of a
+separate thread from the job to be stopped.
+.P
+To work around the limitation of kill switches being applicable to
+only one library function at a time, applications can allocate multiple
+kill switches through multiple calls to
+.BR cru_new_kill_switch.
+.SH ERRORS
+.\"errs
+.TP
+.BR CRU_NULKIL
+The paramter
+.I k
+is NULL.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+does not refer to a valid
+.BR cru_kill_switch.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

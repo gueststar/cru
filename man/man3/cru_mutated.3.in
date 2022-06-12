@@ -1,0 +1,177 @@
+.TH CRU_MUTATED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_mutated \- overwrite vertices or edges in place on a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_mutated
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_mutator
+.I m
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function computes new vertices and edges for a graph
+.I g
+according to user-defined criteria set by
+.I m
+following the usual
+.BR cru_mutator
+calling conventions, and then overwrites the existing vertices and
+edges with them. Alternatively, a NULL value of
+.I m
+is allowed and causes the graph to be returned unmodified.
+.\"killsw
+In this case, the whole graph is reclaimed.
+.\"lanes
+.P
+For purposes of memory management,
+the graph
+.I g
+is consumed and should not be accessed or reclaimed afterwards.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+by overwriting edges or vertices as specified by the given
+.BR cru_mutator
+structure
+.I m.
+Applications should treat the returned value as opaque but may pass it
+as a parameter to other library functions. In the event of any error,
+a NULL
+pointer is returned. A
+NULL
+pointer is also returned if the given parameter
+.I g
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_INCMUT
+Consistency checks on the
+.BR cru_mutator
+.I m
+failed.
+.TP
+.BR CRU_INCINV
+The field
+.I m->mu_plan.zone.offset
+is non-zero but the vertex
+.I m->mu_plan.zone.initial_vertex
+is not in the graph
+.I g.
+.TP
+.BR CRU_TPCMPR
+The
+.BR m_free
+and
+.BR r_free
+fields differ
+where the
+.BR vacuous_case
+field is
+NULL
+in any of the
+.I m->mu_kernel.v_op.incident,
+.I m->mu_kernel.v_op.outgoing,
+or
+.I m->mu_kernel.e_op
+structures.
+.TP
+.BR CRU_UNDMAP
+The
+.BR map
+field in any of
+.I m->mu_kernel.v_op.incident,
+.I m->mu_kernel.v_op.outgoing,
+or
+.I m->mu_kernel.e_op
+is
+NULL
+but at least one other field in it is not
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.BR reduction
+field is
+NULL
+in either of
+.I m->mu_kernel.v_op.incident
+or
+.I m->mu_kernel.v_op.outgoing
+whose other fields are not all
+NULL.
+.TP
+.BR CRU_UNDVAC
+The
+.I m->mu_kernel.v_op.incident.vacuous_case
+field is
+NULL and
+at least one other field of
+.I m->mu_kernel.v_op.incident
+is not
+NULL, or the
+.I m->mu_kernel.v_op.outgoing.vacuous_case
+field is
+NULL and
+at least one other field of
+.I m->mu_kernel.v_op.outgoing
+is not
+NULL.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

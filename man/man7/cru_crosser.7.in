@@ -1,0 +1,152 @@
+.TH CRU_CROSSER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_crosser \- specification for a product of two graphs
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_crosser_s
+.br
+{
+.br
+.BR cru_bop
+.BR v_prod;
+.br
+struct
+.BR cru_sig_s
+.BR cr_sig;
+.br
+struct
+.BR cru_cbop_s
+.BR e_prod;
+.br
+} *
+.BR cru_crosser;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_crossed
+library function with necessary information initialized by the
+application to create a new graph from a combination of two
+given graphs. The
+.BR v_prod
+operator takes a pair of vertices, one from each graph, and is
+expected to return a combined vertex corresponding to them to be
+included in the product graph. If both input graphs are non-empty,
+then the product graph always contains at least the vertex obtained
+from their initial vertices. The
+.BR e_prod
+conditional binary operator is applied as follows.
+.TP
+*
+For each pair of vertices from which a vertex is known to have been
+obtained by the
+.BR v_prod
+operator in the product graph, all pairs of their existing outgoing
+edges are constructed such that each pair of edges contains one edge
+from each vertex of the pair.
+.TP
+*
+For each pair of edges thus constructed, the predicate referenced through the
+.BR e_prod.bpred
+field of the conditional binary operator is called with their labels
+as its operands.
+.TP
+*
+If the predicate returns zero, no action is taken, but if it returns
+any non-zero value, then the same pair of edge labels is passed as
+operands to the binary operator referenced through the
+.BR e_prod.bop
+field.
+.TP
+*
+The value returned by the binary operator is taken as the label on
+an edge to be included in the product graph. This edge is made to
+originate from the vertex obtained by the
+.BR v_prod
+operator from the origins of the pair of edges.
+.TP
+*
+The termini of the pair of edges are passed to the
+.BR v_prod
+operator to construct the terminus to be included in the product graph
+of the edge created from the pair of edges.
+.TP
+*
+The outgoing edges from the termini are used to generate more pairs
+of edge labels as above for this process to continue until it yields
+no futher unique vertices or the graph's vertex limit as given by the
+.BR cr_sig.vertex_limit
+field is reached.
+.P
+The predicate field
+.BR e_prod.bpred
+in the conditional binary operator can be initialized as
+NULL,
+in which case the operator referenced through the
+.BR e_prod.bop
+field is invoked unconditionally.
+.P
+Because the product graph types differ in general from those
+of the input graphs, the
+.BR cr_sig
+field enables the application to associate the relevant orderings and
+destructors with it.
+.SH ERRORS
+These errors are reportable for the following reasons by the
+.BR cru_crossed
+function given an invalid
+.BR cru_crosser
+structure.
+.TP
+.BR CRU_UNDVPR
+No vertex product operator is defined.
+.TP
+.BR CRU_UNDEPR
+No edge product operator is defined.
+.SH NOTES
+An edge order in the input graphs is not necessary for forming a graph
+product, and need not be defined for the product, but is necessary for
+the operations of composition, merging, deduplication, postponement,
+and stretching existing graphs. For these operations, an edge ordering
+must be defined or inferrable at some point in advance, so it should
+be defined as part of the
+.BR cr_sig
+field if any of these operations is anticipated.
+.P
+Graph products are memory intensive because they need memory for both
+input graphs and the result simultaneously. Moreover, the space needed
+for the result is proportional in the worst case to the product of the
+amounts of space needed for each input. Algorithms making use of this
+operation might benefit from shared representations of vertices and
+edges at the cost of a user-defined reference counting scheme ensuring
+thread-safe copying and reclamation.
+.P
+If the product operators are non-injective, for example by mapping
+distinct pairs of input vertices to identical output vertices, then it
+is possible for the product graph to contain duplicate vertices or
+labels. This situation can be remedied by passing the result returned
+by
+.BR cru_crossed
+through the
+.BR cru_deduplicated
+library function, provided the
+.BR cr_sig
+field is correctly initialized. As a performance tradeoff, this step
+is not taken automatically because an application developer in the
+unusual case of non-injective operators can discern its necessity and
+plan accordingly.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

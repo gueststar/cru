@@ -1,0 +1,20 @@
+#!@SED@ -nf
+
+# Set the synopsis section in a fixed width font.
+
+# Turn off the effect at the beginning of every section.
+/^<h6.*>/{x; s/.*//; x}
+
+# Turn it on for the synopsis section.
+/SYNOPSIS/h
+
+# if it's on
+x
+/./{
+   x
+   # change the font in every paragraph
+   s/^\(<\/p>\)\?\(<p\)\(.*\)\(>\)$/\1\2\3\ class="font-monospace"\4/
+   x}
+x
+
+p

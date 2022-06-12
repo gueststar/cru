@@ -1,0 +1,48 @@
+#include <unistd.h>
+#include <stdint.h>
+
+// This file declares some settings derived from cmake options and
+// some global parameters that shouldn't need changing unless there
+// are unusual portability issues.
+
+#define @PROJECT_NAMESPACER@_VERSION_MAJOR @cru_VERSION_MAJOR@
+#define @PROJECT_NAMESPACER@_VERSION_MINOR @cru_VERSION_MINOR@
+#define @PROJECT_NAMESPACER@_VERSION_PATCH @cru_VERSION_PATCH@
+
+// This is the number of CPU cores on the host system and the default
+// number of threads used by API functions when the lanes parameter is
+// specified as CONCURRENTLY. It can be replaced with a hard coded
+// constant to limit default concurrency or if sysconf is unavailable.
+
+#define NPROC (unsigned) sysconf(_SC_NPROCESSORS_ONLN)
+
+// Memory allocation sizes in bytes are assumed during malloc testing
+// to be rounded up to a multiple of 2 to this power. It's always 3 on
+// 64 bit systems. It has no effect in production.
+
+#define QUANTUM 3
+
+// This pointer is not intended to be dereferenced but is always true
+// in conditional expressions.
+
+#define NON_NULL ((void *) (UINTPTR_MAX ^ (uintptr_t) NULL))
+
+// This definition is derived from a cmake option when Judy arrays are
+// available, which always are used if they are.
+
+#cmakedefine JUDY
+
+// This definition is derived from a cmake option enable CRU_DEADLK
+// errors to be raised when cru detects deadlock caused by user code.
+
+#cmakedefine DEADLOCK_DETECTION
+
+// This definition enables diagnostics for memory testing. It is
+// modified by mtest and untest scripts found under the test
+// directory and should always be undefined in production builds.
+
+#undef WRAP
+
+// This definition alters memory testing. See ../test/mtest.in.
+
+#undef SOFT_LIMIT

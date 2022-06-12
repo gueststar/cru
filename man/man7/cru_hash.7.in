@@ -1,0 +1,68 @@
+.TH CRU_HASH 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_hash \- hash functions used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef uintptr_t (*
+.BR cru_hash
+)(void *)
+.SH DESCRIPTION
+A user-defined hash function cast to this type takes a scalar value or
+the address of a user-defined data structure as an argument and
+returns a pointer-sized result value.  The argument could represent a
+vertex in a graph, an edge label, or a vertex property depending on
+the context. The hash function must treat it as read-only.
+Applications may define a distinct hash function for each type of
+operand. See the NOTES for details.
+.SH RETURN VALUE
+The result returned by a hash can be generated in any arbitrary way,
+but it must be identical across multiple calls on identical or
+equivalent arguments.
+.SH NOTES
+Hash functions are called frequently by
+.BR cru
+during various operations and are a potential hotspot.
+.P
+Other things being equal, hash functions that map similar arguments to
+very dissimilar result values are preferable for performance reasons.
+That is, hash functions should be chosen that map small or "low
+entropy" inputs to well mixed results not following any simple
+pattern. A badly chosen hash function can adversely affect load
+balancing.
+.P
+Hash functions are passed to
+.BR cru
+via pointers in the
+.BR hash
+field of a
+.BR cru_order
+structure.
+.P
+Where it is possible for
+.BR cru
+to infer that a hash function's operand type is a scalar value due
+to the absence of any destructor declared for it, applications can
+assign a
+NULL
+value to the
+.BR hash
+field to request the use of a default hash function.
+The default hash function may change in future releases of
+.BR cru
+due to occasional improvements in the state of the art. There is by
+design no explicit access to it via the supported API. Applications
+should treat it as unpredictable or risk being broken by an update.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

@@ -1,0 +1,93 @@
+.TH CRU_BUILDER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_builder \- graph building specification for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_builder_s
+.br
+{
+.br
+.BR cru_connector
+.BR connector;
+.br
+.BR cru_subconnector
+.BR subconnector;
+.br
+struct
+.BR cru_sig_s
+.BR bu_sig;
+.br
+} *
+.BR cru_builder;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_built
+library function with necessary information initialized by the
+application to build a graph. Exactly one
+.BR connector
+or
+.BR subconnector
+must be specified, following their usual calling conventions.
+If the application opts for dynamically allocated vertices
+or edges in the graph rather than scalar values,
+then the corresponding orderings and destructors must be
+specified in the
+.BR bu_sig
+field per convention. Otherwise, it may be omitted or zero-filled.
+.SH ERRORS
+These errors are reportable for the following reasons by the
+.BR cru_built
+function given an invalid
+.BR cru_builder
+structure.
+.TP
+.BR CRU_UNDCON
+Neither a
+.BR connector
+nor a
+.BR subconnector
+is defined.
+.TP
+.BR CRU_INCCON
+Both a
+.BR connector
+and a
+.BR subconnector
+are defined.
+.TP
+.BR CRU_UNDHSH
+No vertex hash function is defined or inferrable.
+.TP
+.BR CRU_UNDEQU
+No vertex equality relational predicate is defined or inferrable.
+.TP
+.BR CRU_INCVEL
+The vertex equality relational predicate is not
+reflexive.
+.P
+Non-reflexive equality is not always detected but is always an error.
+.SH NOTES
+An edge order is not necessary for building a graph, but is necessary
+for the operations of composition, merging, deduplication,
+postponement, and stretching existing graphs. For these operations, an
+edge ordering must be defined or inferrable at some point in advance,
+so it should be defined as part of the
+.BR bu_sig
+field if any of these operations is anticipated.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

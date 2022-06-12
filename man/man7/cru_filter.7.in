@@ -1,0 +1,189 @@
+.TH CRU_FILTER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_filter \- specification for selectively removing edges and vertices
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_filter_s
+.br
+{
+.br
+struct
+.BR cru_zone_s
+.BR fi_zone;
+.br
+struct
+.BR cru_kernel_s
+.BR fi_kernel;
+.br
+struct
+.BR cru_order_s
+.BR fi_order;
+.br
+} *
+.BR cru_filter;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_filtered
+library function with necessary information initialized by the
+application to remove edges or vertices from a graph selectively based
+on user-defined criteria. Activities can be restricted to a section
+of the graph by the
+.BR cru_zone
+structure in the
+.BR fi_zone
+field. Alternatively, the
+.BR fi_zone
+field may be omitted or zero-filled, in which case the whole graph is
+affected.
+.P
+The criteria for vertex removal are defined by the
+.BR cru_prop
+structure in the
+.BR fi_kernel.v_op
+field. For each vertex in the graph, a test property is evaluated
+according to this structure with the usual
+.BR cru_prop
+calling conventions:
+.TP
+*
+The results of a fold over each of the incoming and the
+outgoing sets of edges, if defined respectively in the
+.BR fi_kernel.v_op.incident
+or
+.BR fi_kernel.v_op.outgoing
+structures, are passed respectively as the left
+and right operands to the ternary operator referenced by the
+.BR fi_kernel.v_op.vertex.map
+field, with the vertex passed as the middle operand.
+.TP
+*
+If the ternary operator returns
+NULL,
+then the vertex under consideration is deleted from the graph. If it
+returns any other value, the vertex is kept.
+.TP
+*
+The
+.BR fi_kernel.v_op.vertex.reduction
+field and the
+.BR fi_kernel.v_op.vertex.vacuous_case
+field
+are not used and may be omitted or initialized to
+NULL.
+.P
+Alternatively, if the
+.BR fi_kernel.v_op.vertex.map
+field is omitted or NULL but at least one of the fold structures above
+is initialized, then the criterion for vertex retention devolves to
+the disjunction of their results.  That is, if either yields a result
+other than NULL, then the vertex is kept.
+.P
+The criteria for edge removal are defined by the
+.BR cru_fold
+structure in the
+.BR fi_kernel.e_op
+field.
+.TP
+*
+When each vertex in the graph is visited, if a decision to keep it is
+made as described above, then any of its outgoing edges connected to
+a vertex that is also being kept is tested.
+.TP
+*
+For each edge being tested, the ternary operator referenced through
+the
+.BR fi_kernel.e_op.map
+field is passed the vertex being visited as the left operand, edge
+label as its middle operand, and the adjacent vertex via that edge as
+the right operand.
+.P
+What happens next depends on whether an ordering is defined by the
+.BR cru_order
+structure in the
+.BR fi_order
+field or whether the field is zero-filled.
+.TP
+*
+If no ordering is defined, then each
+edge being tested is deleted whenever the
+.BR fi_kernel.e_op.map
+operator returns
+NULL.
+.TP
+*
+If an ordering is defined in the
+.BR fi_order
+field, then the edges local to the vertex being visited are partitioned
+into classes based on equivalence of their labels under the ordering,
+and each class is reduced with the
+.BR fi_kernel.e_op.reduction
+field following the usual
+.BR cru_fold
+calling conventions. If the result of the reduction is
+NULL,
+then all edges in the class are deleted. Otherwise, all are kept.
+.P
+It is acceptable to omit either or both fields of the kernel.
+.TP
+*
+If the
+.BR fi_kernel.v_op
+field is omitted or zero-filled, no vertices are deleted directly, but
+may be deleted as a side effect of becoming unreachable if their
+incoming edges are deleted.
+.TP
+*
+If the
+.BR fi_kernel.e_op
+field is omitted or zero-filled, no edges are deleted directly, but
+may be deleted as a side effect of being connected to a deletable
+vertex.
+.TP
+*
+If both fields are omitted or zero-filled, nothing is deleted.
+.SH ERRORS
+If an ordering is defined by the
+.BR fi_order
+field but no edge filter is defined by
+.BR fi_kernel.e_op
+field, then an error of
+.BR CRU_INCFIL
+is reported by the
+.BR cru_filtered
+function, for an inconsistent
+.BR cru_filter
+structure.
+.SH NOTES
+It is not impossible for vertices outside of a zone of the graph
+restricted by the
+.BR fi_zone
+to be affected by filtering within the zone.
+.TP
+*
+If the zone is defined as the reachable segment in the backward
+direction from an initial vertex, and edges originating inside the
+zone but terminating outside it are deleted, then their termini could
+become unreachable and therefore deleted despite being outside the
+zone.
+.TP
+*
+If the zone is defined as the reachable segment in the forward
+direction from an initial vertex, then edges originating outside the
+zone but terminating inside it could be deleted due to their termini
+being deleted, thereby reducing the number of outgoing edges seen by
+vertex outside the zone.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

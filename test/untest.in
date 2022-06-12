@@ -1,0 +1,37 @@
+#!@BASH@
+
+# Run this script to undo the source code and configuration changes
+# done by mtest or ktest and to rebuild cru for production. This
+# step isn't necessary unless those scripts were interrupted. They
+# ordinarily clean up after themselves and then rebuild when they're
+# finished.
+
+# Disable simulated kills for production builds.
+@SED@ -i "s/^#define\ ACTIVE_SITE.*/#define\ ACTIVE_SITE\ 0/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+
+# Use a long period to reduce kill checking overhead in production.
+@SED@ -i "s/^#define\ PERIOD.*/#define\ PERIOD\ 0x1f/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+
+# Accept only successful tests in production builds.
+@SED@ -i "s/^#define\ EXIT.*/#define\ EXIT\ exit\ (err\ ?\ EXIT_FAILURE\ :\ EXIT_SUCCESS)/"\
+ @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
+
+# Use a big cushion of reserved packets.
+@SED@ -i \
+ "s/^#define\ RESERVE_PACKET_LIMIT.*/#define\ RESERVE_PACKET_LIMIT\ 0x100/" \
+ @CMAKE_CURRENT_SOURCE_DIR@/src/pack.c
+
+# Disable development-only API functions.
+@SED@ -i "s/^#define\ WRAP/#undef\ WRAP/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
+
+# Use Judy arrays instead of the replacement functions.
+@SED@ -i "s/^#[[:blank:]]*find_library\ (JUDY\ Judy)/find_library\ (JUDY\ Judy)/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+
+# Build documentation.
+rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+@SED@ -i "/GEN_DOCS/s/OFF/ON/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+
+# Don't leave the test build lying around.
+make
+echo "rebuilt for production"
+exit 0

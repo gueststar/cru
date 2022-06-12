@@ -1,0 +1,23 @@
+#!@SED@ -nf
+
+# Put a \c at the end of any line that might benefit from it.
+
+# Examine two lines at a time.
+1{h;d}
+H
+x
+
+# if a line starts with ) and the preceding line doesn't start with .br or .I,  put \c at the end of the preceding line
+/^\.\(br\|I\)/!s/\n)/\\c\n)/
+
+# if a line ends with * and at least one preceding character, put \c at the end of it
+s/\(.\*\)\n/\1\\c\n/
+
+# if a line ends with ( and at least one preceding character, put \c at the end of it
+s/\(.(\)\n/\1\\c\n/
+
+# before the end of a file, print the previous line
+$!P
+
+# at the end of a file, print both lines
+$p

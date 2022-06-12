@@ -1,0 +1,90 @@
+.TH CRU_STRETCH 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_connect \- connect a new edge and a new vertex to a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_stretch
+(
+.br
+.BR cru_edge
+.I label_in
+,
+.br
+.BR cru_vertex
+.I new_vertex
+,
+.br
+.BR cru_edge
+.I label_out
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function installs edges labeled
+.I label_in
+and
+.I label_out
+made to terminate and to originate respectively at a
+vertex given by
+.I new_vertex
+into a graph being stretched by the
+.BR cru_stretched
+library function. The
+.BR cru_edge
+and
+.BR cru_vertex
+types are aliases for
+.I void
+pointers that can be cast from any compatible types specific to the
+application. If they are pointers to dynamically allocated storage,
+then the caller must allocate and initialize the storage before
+calling
+.BR cru_connect.
+The caller must detect and prevent dangling pointers from being
+passed.
+.P
+This function is meant to be called only by a user-defined
+.BR cru_tpred
+callback function referenced by the
+.BR expander
+field of a
+.BR cru_stretcher
+structure passed to
+.BR cru_stretched.
+The edges and the vertex are installed in the graph parallel to the
+edge passed to the callback function, with the edge labeled by
+.I label_in
+originating from the edge's origin and the edge labeled by
+.I label_out
+terminating at the edge's terminus.
+.SH RETURN VALUE
+none
+.SH ERRORS
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR CRU_INTOOC
+The function was called outside the context of callback function referenced
+through a
+.BR cru_stretcher.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

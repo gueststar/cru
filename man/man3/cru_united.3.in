@@ -1,0 +1,173 @@
+.TH CRU_UNITED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_united \- merge two equivalence classes in a partition
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+int
+.BR cru_united
+(
+.br
+.BR cru_partition
+.I p
+,
+.br
+.BR cru_class
+.I x
+,
+.br
+.BR cru_class
+.I y
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function is part of a simple and efficient API for manipulating
+sets of vertices in a graph. Given a partition
+.I p
+previously obtained by the
+.BR cru_partition_of
+function, and two classes
+.I x
+and
+.I y
+in
+.I p
+previously obtained by the
+.BR cru_class_of
+function, this function modifies the partition in place such that
+the classes
+.I x
+and
+.I y
+are merged and consumed. That is,
+any members of either class
+.I x
+or
+.I y
+prior to this invocation become members
+of the same class subsequently according to the
+.BR cru_class_of
+function. If
+.I x
+and
+.I y
+are identical beforehand and the operation completes successfully, it
+has no effect.
+.SH RETURN VALUE
+On successful completion, this function returns a non-zero value.
+Otherwise, it returns zero.
+.SH ERRORS
+Effects are undefined if either of
+.I x
+or
+.I y
+is not associated with the partition
+.I p.
+For reasons of performance and space efficiency, this error is not
+detected. It is also an undetected error for an application to make
+any further reference to either
+.I x
+or
+.I y
+after it is passed to
+.BR cru_united,
+as in this example of bad practice.
+.nf
+   x = cru_class_of (p, v, err);
+   cru_united (p, x, y, err);
+   if (x == cru_class_of (p, v, err))   // unpredictable
+      printf ("lucky\\n");
+   else                                 // class may have changed
+      printf ("unlucky\\n");
+.fi
+.\"errs
+.TP
+.BR CRU_NULCLS
+Either of
+.I x
+or
+.I y
+is
+NULL
+rather than a valid
+.BR cru_class
+pointer.
+.TP
+.BR CRU_BADCLS
+Either of
+.I x
+or
+.I y
+refers to an invalid or corrupted
+.BR cru_class
+structure.
+.TP
+.BR CRU_NULPRT
+The parameter
+.I p
+is
+NULL
+rather than a valid
+.BR cru_partition
+pointer.
+.TP
+.BR CRU_BADPRT
+The parameter
+.I p
+refers to an invalid or corrupted
+.BR cru_partition
+structure.
+.SH EXAMPLE
+Assume a
+.BR cru_graph
+.I g
+has mutually unrelated vertices
+.I u,
+.I v,
+and 
+.I w
+according to a 
+.BR cru_classifier
+.I c,
+and that
+.I p
+is declared as a
+.BR cru_partition.
+.nf
+   p = cru_partition_of (g, c, UNKILLABLE, CONCURRENTLY, err);
+   if (cru_class_of (p, u, err) != cru_class_of (p, v, err))
+      if (cru_class_of (p, v, err) != cru_class_of (p, w, err))
+         if (cru_class_of (p, w, err) != cru_class_of (p, u, err))
+            printf ("vertices are mutually unrelated as assumed\\n");
+   cru_united(p, cru_class_of(p, u, err), cru_class_of(p, v, err), err);
+   cru_united(p, cru_class_of(p, v, err), cru_class_of(p, w, err), err);
+   if (cru_class_of (p, u, err) == cru_class_of (p, v, err))
+      if (cru_class_of (p, v, err) == cru_class_of (p, w, err))
+         if (cru_class_of (p, w, err) == cru_class_of (p, u, err))
+            printf ("cru_united worked as expected\\n");
+.fi
+Note that
+.I u
+and
+.I w
+become members of the same class by transitivity.
+.SH NOTES
+This operation takes amortized inverse Ackerman or near constant time.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

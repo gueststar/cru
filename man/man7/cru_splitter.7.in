@@ -1,0 +1,224 @@
+.TH CRU_SPLITTER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_splitter \- specification for vertex mitosis in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_splitter_s
+.br
+{
+.br
+.BR cru_bop
+.BR ana;
+.br
+.BR cru_bop
+.BR cata;
+.br
+.BR cru_bpred
+.BR fissile;
+.br
+struct
+.BR cru_prop_s
+.BR sp_prop;
+.br
+struct
+.BR cru_ctop_quad_s
+.BR sp_ctops;
+.br
+} *
+.BR cru_splitter;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_split
+library function with necessary information initialized by the
+application to expand a graph by replacing selected vertices with
+pairs of vertices in parallel. These fields are interpreted as
+follows.
+.TP
+*
+For each vertex in a given graph, a property is computed according to the
+.BR sp_prop
+field following usual
+.BR cru_prop
+calling conventions.
+.TP
+*
+Each vertex in the graph is tested by the
+.BR fissile
+field's predicate given the vertex as its left operand and the
+vertex's property as its right.
+.TP
+*
+Any vertex for which the
+.BR fissile
+predicate returns a non-zero value is passed as the left operand to the binary operators
+referenced in the
+.BR ana
+and
+.BR cata
+fields along with the vertex property as the right operand. These
+functions are each expected to return a separate new vertex. The
+resulting vertices jointly replace the given vertex in the graph.
+.TP
+*
+Properties are also computed for these two new vertices
+according to the
+.BR sp_prop
+field. For purposes of these computations, the incident and outgoing
+edges to the new vertices are identical to those of the vertex being
+replaced.
+.P
+Some additional interpretations can be inferred if not all fields are
+specified.
+.TP
+*
+If the
+.BR fissile
+field is omitted or initialized to
+NULL,
+then every vertex is replaced unconditionally.
+.TP
+*
+If the
+.BR sp_prop
+field is omitted or zero-filled, then the property associated with
+any vertex is identical to the vertex.
+.TP
+*
+For either of the
+.BR ana
+or
+.BR cata
+fields initialized to
+NULL
+where the vertices are scalar values, a function returning a copy of
+the vertex is inferred.
+.P
+When the decision is made to replace a vertex, its incoming and
+outgoing edges must be removed and possibly replaced by edges
+connected to the two vertices replacing it. This aspect of the
+operation is specified by the conditional ternary operator
+quadruple structure in the
+.BR sp_ctops
+field. If the
+.BR sp_ctops
+field is omitted or zero-filled, then this behavior applies by
+default.
+.TP
+*
+Two copies are made of each edge formerly incident on the replaced
+vertex. The copies have the same label and the same origin as the
+former edge, but one is made to terminate at the vertex created by the
+.BR ana
+function, and the other is made to terminate at the vertex
+created by the
+.BR cata
+function.
+.TP
+*
+Similarly, two copies are made of each edge formerly outgoing from the
+replaced vertex. The copies have the same label and the same terminus
+as the former edge, but one is made to originate from the vertex
+created by the
+.BR ana
+function, and the other is made to originate from the vertex created
+by the
+.BR cata
+function.
+.P
+The default behavior above is inferred only for graphs whose edge
+labels are created as scalar values. If the edge labels are pointers
+to dynamically allocated data, then the
+.BR sp_ctops
+field must be initialized by the application. In either case, if the
+.BR sp_ctops
+field is initialized, then it is interpreted as follows.
+.TP
+*
+For each edge formerly incident on the replaced vertex, both the ana
+and the cata labeler ternary predicates
+.BR sp_ctops.inward.ana.tpred
+and
+.BR sp_ctops.inward.cata.tpred
+on the inward side of the
+quadruple are passed the same three operands: the edge label as their
+middle operand and the properties of the edge's origin and terminus as
+their left and right operands, respectively.
+.TP
+*
+For each labeler whose ternary predicate returns a non-zero value,
+the same operands are passed to that labeler's ternary operator,
+either
+.BR sp_ctops.inward.ana.top
+or
+.BR sp_ctops.inward.cata.top,
+which is expected to return the label of a new edge to be included in
+the graph. Results from the ana labeler's operator label the edges
+connecting the origin of the former edge to the vertex created by the
+.BR ana
+function, and results from the cata labler's operator label the edges
+connecting the origin of the former edge to the vertex created by the
+.BR cata
+function.
+.P
+Analogous interpretations apply to the ana and cata labler conditional
+ternary predicates on the outward side of the quadruple.
+.TP
+*
+For each edge formerly outgoing from the replaced vertex, both the ana
+and the cata labeler ternary predicates
+.BR sp_ctops.outward.ana.tpred
+and
+.BR sp_ctops.outward.cata.tpred
+on the outward side of the
+quadruple are passed the same three operands: the edge label as their
+middle operand and the properties of the edge's origin and terminus as
+their left and right operands, respectively.
+.TP
+*
+For each labeler whose ternary predicate returns a non-zero value, the
+same operands are passed to that labeler's ternary operator,
+either
+.BR sp_ctops.inward.ana.top
+or
+.BR sp_ctops.inward.cata.top,
+which is expected to return the label of a new edge to be included in
+the graph. Results from the ana labeler's operator label the edges
+connecting the the vertex created by the
+.BR ana
+function to the terminus of the former edge, and results from the cata
+labler's operator label the edges connecting the vertex created by the
+.BR cata
+function to the terminus of the former edge.
+.SH ERRORS
+In addition to any errors pertaining to incorrectly or inadequately
+initialized conditional ternary operators, the
+.BR cru_split
+function reports errors of
+.BR CRU_UNDANA
+or
+.BR CRU_UNDCAT
+respectively if the
+.BR ana
+or
+.BR cata
+fields are omitted or
+NULL
+and not inferrable. Because this operation increases the number of
+vertices in a graph, it may also report
+.BR CRU_INTOVF
+if a vertex limit previously associated with the graph is exceeded.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

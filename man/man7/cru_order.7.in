@@ -1,0 +1,120 @@
+.TH CRU_ORDER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_order \- comparison structure for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_order_s
+.br
+{
+.br
+.BR cru_hash
+.BR hash;
+.br
+.BR cru_bpred
+.BR equal;
+.br
+} *
+.BR cru_order;
+.SH DESCRIPTION
+Applications communicate a concept of comparison between edges,
+vertices, or properties in a graph to
+.BR cru
+library functions through this structure initialized accordingly to
+be used any time a library function needs to compare two user-defined
+entities. The predicate applies to two similarly typed operands, and
+the hash function takes an operand of the same type.
+.TP
+*
+The predicate is expected to return a non-zero value if and only if
+its operands are equal or equivalent according to a user-defined
+relationship, not necessarily pointer equality.
+.TP
+*
+The hash function is required to be consistent with the predicate in
+that any two equivalent operands have the same hash. Hash collisions
+are allowed and theoretically unavoidable but hash functions that
+rarefy them benefit performance.
+.SH ERRORS
+The predicate is taken to model a relation that is algebraically
+reflexive, transitive, and symmetric, or in other words, an
+equivalence relation. Failure on the part of the application to
+satisfy these algebraic properties is an error and will lead to
+anomalous results. There is no way for
+.BR cru
+to detect this error.
+.P
+If a hash function is omitted and no default can be inferred as noted below,
+then an error of
+.BR CRU_UNDHSH
+is reported by whatever API function is passed this
+structure. Similarly, if a required predicate is omitted, an error of
+.BR CRU_UNDEQU
+is reported.
+.SH NOTES
+The
+.BR cru_order
+structure may be built into a
+.BR cru_classifier
+structure, a
+.BR cru_filter
+structure,
+or either of two fields in a
+.BR cru_order_pair
+structure used for building a graph. The context determines the type
+of operands.
+.TP
+*
+In a
+.BR cru_classifier,
+the order pertains to a pair of user-defined properties computed about
+vertices in a graph in the course of classification according to the
+.BR cl_prop
+field of the same classifier.
+.TP
+*
+In a
+.BR cru_filter,
+the order pertains to a pair of edge labels in the graph being filtered.
+.TP
+*
+In a
+.BR cru_order_pair,
+the order pertains to either a pair of vertices or a pair of edge
+labels in the graph to be built depending on whether the
+.BR cru_order
+structure is in the
+.BR v_order
+or the
+.BR e_order
+field, respectively.
+.P
+Optimizing the hash function is more important than optimizing the
+predicate because the predicate is evaluated only in the ideally
+rare case of a hash collision.
+.P
+Normally where it is possible for
+.BR cru
+to infer by their lack of a destructor that the operands are scalar
+values, applications can omit either or both of the predicate and the
+hash function by making them
+NULL.
+Then
+.BR cru
+infers a pointer equality relation and a built in hash function.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

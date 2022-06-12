@@ -1,0 +1,102 @@
+.TH CRU_BPRED 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_bpred \- binary predicate type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef int (*
+.BR cru_bpred
+)(void *, void *, int *)
+.SH DESCRIPTION
+A user-defined binary predicate takes a pair of operands and a pointer
+to an initially zero error code as arguments. The operands can be
+scalar values, pointers to heap allocated storage, or a combination.
+The operator must treat the operands as read only but may assign the
+error code.
+.P
+Binary predicates model mathematical relations and are used as
+decision procedures in various contexts. See the NOTES for details.
+.SH RETURN VALUE
+Viewed as a relation, a binary predicate returns zero if
+its operands are unrelated and a non-zero value if they are related.
+.SH ERRORS
+If a binary predicate sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Applications pass binary predicates to
+.BR cru
+as pointers through
+.TP
+*
+the
+.BR bpred
+field in a
+.BR cru_cbop
+(conditional binary operator) structure
+.TP
+*
+the
+.BR fissile
+field in a
+.BR cru_splitter
+top level structure
+.TP
+*
+and the
+.BR equal
+field in a
+.BR cru_order,
+which can belong to a
+.BR cru_order_pair,
+a
+.BR cru_classifier,
+or a
+.BR cru_filter.
+.P
+A conditional binary operator can be the
+.BR postponement
+field in a
+.BR cru_postponer
+or the
+.BR e_prod
+field in a
+.BR cru_crosser.
+.TP
+*
+In a
+.BR cru_postponer
+the predicate selects postponable edges for postponement by returning
+a non-zero value given and postponable edge label as its left operand
+the sibling as its right, but zero otherwise.
+.TP
+*
+In a
+.BR cru_crosser
+the predicate takes the labels of two edges each from a vertex in one
+of the graphs to be crossed, and returns non-zero only if a combined
+edge corresponding to them should be created in the resulting graph.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

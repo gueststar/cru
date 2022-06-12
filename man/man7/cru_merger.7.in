@@ -1,0 +1,200 @@
+.TH CRU_MERGER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_merger \- specification for simplifying a graph by equivalence
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_merger_s
+.br
+{
+.br
+struct
+.BR cru_classifier_s
+.BR me_classifier;
+.br
+struct
+.BR cru_order_pair
+.BR me_orders;
+.br
+struct
+.BR cru_kernel_s
+.BR me_kernel;
+.br
+.BR cru_pruner
+.BR pruner;
+.br
+} *
+.BR cru_merger;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_merged
+library function with necessary information initialized by the
+application to reduce classes of related vertices in a graph
+to single vertices.
+.TP
+*
+The
+.BR me_classifier
+field defines an equivalence relation on the vertices in a graph
+by the usual
+.BR cru_classifier
+calling conventions.
+.TP
+*
+The vertex operation in the
+.BR me_kernel.v_op
+field specifies the method of reducing the set of vertices
+in a class to a single vertex according to the usual
+.BR cru_prop
+calling conventions.
+.TP
+*
+The edge operation in the
+.BR me_kernel.e_op
+field specifies the way a set of edges is reduced to a single
+edge according to the usual
+.BR cru_fold
+calling conventions.
+.TP
+*
+The
+.BR pruner
+field provides for the selective deletion of edges following the usual
+.BR cru_pruner
+calling conventions.
+.TP
+*
+Because the resulting graph after being merged may have different
+types of vertices or edges than the given graph, applications
+specify the new vertex and edge orderings to be associated with it
+in the
+.BR me_orders
+field.
+.P
+The sets of edges the kernel reduces are determined by the classes of
+mutually related vertices, and the result of reducing of a set of
+edges is allowed to depend on the results of reducing the classes
+containing the edges' origins and termini.
+.TP
+*
+Any two edges are assigned to the same set of edges whenever their
+respective origins and termini are assigned to the same sets of
+vertices according to the
+.BR cru_classifier.
+.TP
+*
+For each edge in a set to be reduced, the
+.BR me_kernel.e_op.map
+operation is passed the edge's label as the middle operand and the
+vertices obtained by reducing the classes containing the edge's origin
+and terminus as the respective left and right operands.
+.TP
+*
+Because the origins of all edges in any set to be reduced belong to
+the same class and the termini belong to the same class, the same left
+operand and the same right operand are passed to the map for each edge
+in the set.
+.P
+Some inferences are made by default when parts of this structure are
+NULL,
+omitted, or zero-filled.
+.TP
+*
+If the
+.BR me_classifier
+field is omitted or zero-filled, then one is inferred that puts every
+vertex in a class by itself.
+.TP
+*
+If the
+.BR pruner
+field is
+NULL,
+then no edges are deleted.
+.TP
+*
+If the
+kernel's vertex operation in
+.BR me_kernel.v_op
+is omitted or zero-filled, then the
+vertex ordering in the
+.BR me_orders.v_order
+field is inferred from that of the given graph.
+.TP
+*
+If the kernel's vertex operation specifies a vertex reduction through the
+.BR me_kernel.v_op.vertex.reduction
+field but with a
+NULL
+destructor field in
+.BR me_kernel.v_op.vertex.r_free,
+then a default scalar vertex ordering is inferred in
+the
+.BR me_orders.v_order
+field.
+.TP
+*
+If the kernel's edge operation in
+.BR me_kernel.e_op
+is omitted or zero-filled, then the
+edge ordering in the
+.BR me_orders.e_order
+field is inferred from that of the given graph, and the edges are
+deduplicated rather than being reduced. In this case, there may be
+multiple similarly directed edges between the same two vertices left
+in the resulting graph, but only with mutually distinct labels.
+.TP
+*
+If the kernel's edge operation in
+.BR me_kernel.e_op
+specifies a reduction through the
+.BR me_kernel.e_op.reduction
+field but with a
+NULL
+destructor field in
+.BR me_kernel.e_op.r_free,
+then a default scalar edge label ordering is
+inferred in the
+.BR me_orders.e_order
+field.
+.SH ERRORS
+It is an error to omit destructors from the kernel if the results are
+dynamically allocated and destructors can not be inferred from the
+given graph. This error is not detectable but will cause memory
+leaks.
+.P
+The
+.BR me_classifier
+field and the
+.BR me_kernel.v_op
+field must be both initialized or both zero-filled, because
+either is useless without the other. If only one is initialized,
+then the
+.BR cru_merged
+function reports an error of
+.BR CRU_INCMRG,
+for a conflicting merge specification.
+.SH NOTES
+An edge order associated with a given graph is necessary for merging
+it, but need not be defined for the resulting graph in the
+.BR me_orders
+field. However, the edge ordering is necessary for further merging of
+the result, as well as for composition, deduplication, postponement,
+and stretching it. If any of these operations is anticipated after
+merging, applications should define an edge ordering.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

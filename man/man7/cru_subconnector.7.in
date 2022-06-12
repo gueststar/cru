@@ -1,0 +1,107 @@
+.TH CRU_SUBCONNECTOR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_subconnector \- general graph production rule for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void (*
+.BR cru_subconnector
+)
+(
+.br
+int,
+.br 
+.BR cru_edge
+,
+.br
+.BR cru_vertex
+,
+.br
+int *
+)
+.SH DESCRIPTION
+A user-defined function cast to this type takes four parameters in this order:
+.TP
+*
+a condition flag indicating when non-zero
+that the next parameter is undefined and should be ignored
+.TP
+*
+the label on an incident edge to a given vertex in a graph under
+construction unless undefined
+.TP
+*
+a vertex in a graph under construction possibly having an incident
+edge labeled by the previous parameter
+.TP
+*
+a pointer to an integer error code initially zero on entry.
+.P
+The
+.BR cru_edge
+and
+.BR cru_vertex
+types are aliases to
+.I void
+pointers, which may refer to any type chosen by the application
+developer. The function must treat the edge label and the vertex as
+read-only.
+.P
+Similarly to a
+.BR cru_connector
+function, the subconnector builds a graph incrementally by passing a
+newly created edge label and adjacent vertex to
+.BR cru_connect
+for each outgoing edge from the given vertex. Redundant identical
+vertices created by subconnector functions are automatically pruned
+and if a destructor is given, also reclaimed.
+.P
+Unlike a connector function, a subconnector is called once for each
+combination of incident edge label and vertex, hence more than once on
+any vertex reached through multiple distinctly labeled edges. The
+subconnector function is allowed to create outgoing edge labels and
+adjacent vertices that depend arbitrarily on the incident edge label
+as well as the vertex.
+.P
+When there are multiple calls involving the same vertex, the resulting
+set of outgoing edges installed from that vertex is the union of all
+outgoing edges created across the calls (that is, with duplicate edges
+pruned).
+.SH ERRORS
+If a subconnector function sets the error code to any non-zero value,
+the instance
+.BR cru_built
+that calls it terminates without building a graph and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Subonnector functions are
+referenced by the
+.BR subconnector
+field in a
+.BR cru_builder
+structure passed to the
+.BR cru_built
+API function. This field has no default value.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

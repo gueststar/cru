@@ -1,0 +1,102 @@
+.TH CRU_COMPOSER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_composer \- specification for composing consecutive edges in a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_composer_s
+.br
+{
+.br
+int
+.BR co_fix;
+.br
+int
+.BR destructive;
+.br
+struct
+.BR cru_cqop_s
+.BR labeler;
+.br
+struct
+.BR cru_prop_pair_s
+.BR co_props;
+.br
+} *
+.BR cru_composer;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_composed
+library function with necessary information initialized by the
+application to create new edges in a graph determined by
+end-to-end pairs of existing edges. The fields have these interpretations.
+.TP
+*
+The structure in the
+.BR co_props
+field is used to compute two arbitrarily user-defined properties
+associated with each vertex in a given graph, one designated as its
+local and the other as its adjacent property, according to usual
+conventions for
+.BR cru_prop_pair
+structures.
+.TP
+*
+For every outgoing edge from every vertex to an adjacent vertex, and
+for every outgoing edge from the adjacent vertex, the quarternary
+predicate in the
+.BR labeler.qpred
+field is passed the local property of the vertex as its first operand,
+the adjacent property of the adjacent vertex as its second operand,
+the label on the incident edge to the adjacent vertex as its next
+operand, and the label on the outgoing edge from the adjacent vertex
+its last operand.
+.TP
+*
+If the predicate referenced by the
+.BR labeler.qpred
+field returns a non-zero value, then the same operands in the same
+order are passed to the quarternary operator referenced by the
+.BR labeler.qop
+field, which is expected to return the label of a new edge to be
+included in the graph. The new edge is made to connect the vertex
+whose local property is given as the first parameter directly to the
+terminus of the edge whose label is given as the last parameter.
+.TP
+*
+If the
+.BR destructive
+field is non-zero, then the incident edge to the adjacent vertex is deleted
+from the graph. The outgoing edge from it is retained regardless.
+.TP
+*
+If the
+.BR co_fix
+field is non-zero, then this procedure is iterated in multiple passes
+over the graph until the predicate calls for the creation of no
+further edges.
+.P
+The
+.BR labeler.qpred
+field may be omitted or initialized as
+NULL,
+in which case the
+.BR label.qop
+function is invoked unconditionally. If the composition pertains to a graph whose
+edge labels are scalar values, then the
+.BR label.qop
+field also may be omitted or initialized as
+NULL.
+In that case, the created edge is labeled identically to the incident edge.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

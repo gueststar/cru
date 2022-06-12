@@ -1,0 +1,74 @@
+.TH CRU_FREE_LATER 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_free_later \- non-blocking graph reclamation function
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_free_later
+(
+.BR cru_graph
+.I g
+,
+int *
+.I err
+)
+.SH DESCRIPTION
+This function reclaims all memory allocated for storage of a graph and
+does so in a single background thread so that it can return
+immediately without blocking the caller. The parameter
+.I g
+refers to the graph to be reclaimed, and is expected to have been
+returned by some library function that returns a
+.BR cru_graph.
+.P
+For purposes of memory management, the graph
+.I g
+is consumed by this function and must not be accessed afterwards.
+.SH RETURN VALUE
+none
+.SH ERRORS
+To avoid a memory leak, this function must be called for each
+graph before it goes out of scope. Memory leaks are an error but
+are not detected or reported.
+.P
+Any attempted use of the graph
+.I g
+subsequent to passing it to this function is
+an error with unpredictable consequences.
+.P
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to start a thread, so
+the graph was freed sequentially in the foreground.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to a corrupted or invalid
+.BR cru_graph.
+.SH NOTES
+This way of freeing a graph is appropriate if the application performs
+further operations after using the graph that are insufficiently
+memory intensive to warrant freeing it in advance, and are
+sufficiently time consuming in themselves to ensure adequate time for
+the reclamation to complete single-threaded in the background without
+blocking the job's termination. The alternative of
+.BR cru_free_now
+is more appropriate otherwise.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

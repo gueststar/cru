@@ -1,0 +1,127 @@
+.TH CRU_FABRICATOR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_fabricator \- isomorphic graph specification for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_fabricator_s
+.br
+{
+.br
+.BR cru_uop
+.BR v_fab;
+.br
+.BR cru_uop
+.BR e_fab;
+.br
+struct
+.BR cru_sig_s
+.BR fa_sig;
+.br
+} *
+.BR cru_fabricator;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_fabricated
+library function with necessary information initialized by the
+application to create a new graph that is isomorphic to a
+given graph.
+.TP
+*
+The operator referenced by the
+.BR v_fab
+field takes a given vertex as an operand and is expected to
+return the corresponding vertex in the graph to be created.
+.TP
+*
+Similarly, the operator referenced by the
+.BR e_fab
+field is passed a given edge label as an operand and is expected to
+return the label of a corresponding created edge.
+.TP
+*
+Because the
+created graph types may differ in general from the given ones,
+the
+.BR fa_sig
+field enables the application to associate the relevant orderings and
+destructors with it.
+.P
+If all three of the fields
+.BR fa_sig.orders.v_order,
+.BR fa_sig.destructors.v_free,
+and
+.BR v_fab
+field are
+NULL
+or zero-filled, then an identity function is inferred as the vertex
+fabricator
+.BR v_fab,
+but this option is valid only when the given graph has
+scalar vertices. The analogous convention applies to the
+.BR e_fab
+field.
+.SH ERRORS
+These errors are reportable for the following reasons by the
+.BR cru_fabricated
+function given an invalid
+.BR cru_fabricator
+structure.
+.TP
+.BR CRU_UNDVFB
+No vertex fabricator functon is defined or inferrable.
+.TP
+.BR CRU_UNDEFB
+No edge fabricator functon is defined or inferrable.
+.SH NOTES
+An edge order is not necessary for fabricating a graph, but is
+necessary for the operations of composition, merging, deduplication,
+postponement, and stretching existing graphs. For these operations, an
+edge ordering must be defined or inferrable at some point in advance,
+so it should be defined in the
+.BR fa_sig.orders.e_order
+field if any of these operations is anticipated.
+.P
+Creating an isomorphism to a graph requires sufficient memory for both
+graphs. If the original graph is no longer needed, mutating it in
+place is more space efficient. Algorithms that require maintaining
+multiple large graphs concurrently might benefit from reference
+counted shared vertices and edges, subject to adequate provision on
+the part of the application for mutually exclusive access by their
+destructors.
+.P
+If either of the operators is non-injective, for example by mapping
+distinct input vertices to identical output vertices, then it
+is possible for the fabricated graph to contain duplicate vertices or
+labels. This situation can be remedied by passing the result returned
+by
+.BR cru_fabricated
+through the
+.BR cru_deduplicated
+library function, provided the
+.BR fa_sig
+field is correctly initialized. As a performance tradeoff, this step
+is not taken automatically because an application developer in the
+unusual case of non-injective operators can discern its necessity and
+plan accordingly. Moreover, if a graph having duplicate vertices were
+to be fabricated deliberately with the intention of deduplicating it,
+then the
+.BR cru_merged
+library function would provide a faster and more space efficient
+alternative.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

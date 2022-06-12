@@ -1,0 +1,13 @@
+#!@SED@ -Enf
+
+# Create a listing of error codes and their associated strings in
+# nroff format by reading a c source file from standard input.
+
+# look for a case statement with error codes
+/^[[:blank:]]*case[[:blank:]](@MANUAL_TITLE@_[A-Z]{6,6}:.+\")/{
+   # make a list item of each error code
+   s/^[[:blank:]]*case[[:blank:]]*/.TP\n.BR\ /
+   # put the string under the list item
+   s/;$//
+   s/:.*[[:blank:]]\"/\n\"/
+   p}

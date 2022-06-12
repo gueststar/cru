@@ -1,0 +1,102 @@
+.TH CRU_SIG 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_sig \- graph destructors and order relations for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_sig_s
+.br
+{
+.br
+uintptr_t
+.BR vertex_limit;
+.br
+struct
+.BR cru_order_pair_s
+.BR orders;
+.br
+struct
+.BR cru_destructor_pair_s
+.BR destructors;
+.br
+} *
+.BR cru_sig;
+.SH DESCRIPTION
+This structure encapsulates much of the information needed by
+.BR cru
+library functions for comparison and reclamation of vertices and edges
+in a graph. Applications initialize it when creating a graph, and it
+subsequently remains implicitly associated with the graph. The
+.BR orders
+field specifies hash functions and equality relations for vertices and
+edges, and the
+.BR destructors
+field specifies the functions that reclaim them if they are
+dynamically allocated.
+.P
+The
+.BR vertex_limit
+specification enables applications to impose a limit on the number of
+vertices created in a graph, with the operation aborted if it grows
+excessive. Setting the
+.BR vertex_limit
+to zero requests that no limit be imposed. For performance reasons,
+the limit is enforced only approximately.
+.TP
+*
+Overflow is detected when any worker thread creates a number of
+vertices attaining the limit value divided by the number of
+workers. False positive detections therefore are possible due to
+imperfect load balancing.
+.TP
+*
+The limit does nothing to prevent a user-defined runaway
+.BR cru_connector
+or
+.BR cru_subconnector
+function from creating excessive vertices on a single call.
+.P
+Default values can be inferred for the
+.BR orders
+depending on whether a corresponding destructor is defined. A
+NULL
+vertex destructor field in of the
+.BR destructors
+implies that the vertices are not dynamically allocated and permits
+the inference of a default vertex ordering if not specified. A similar
+convention applies edge destructors and edge ordering.
+.SH ERRORS
+If the number of vertices in a graph reaches or exceeds the specified
+.BR vertex_limit
+during any operation that builds or increases the number of vertices
+in a graph, an error of
+.BR CRU_INTOVF
+is reported.
+.SH NOTES
+The
+.BR cru_sig
+structure is a field in the
+.BR cru_builder,
+.BR cru_crosser,
+and
+.BR cru_fabricator
+structures.
+.P
+An edge order is not necessary for building a graph, but necessary is
+for the operations of composition, merging, deduplication,
+postponement, and stretching existing graphs. For these operations, an
+edge ordering must be defined or inferrable in advance.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

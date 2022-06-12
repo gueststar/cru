@@ -1,0 +1,98 @@
+.TH CRU_STRETCHER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_stretcher \- specification for intermediate vertex creation
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_stretcher_s
+.br
+{
+.br
+int
+.BR st_fix;
+.br
+.BR cru_tpred
+.BR expander;
+.br
+struct
+.BR cru_prop_s
+.BR st_prop;
+.br
+} *
+.BR cru_stretcher;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_stretched
+library function with necessary information initialized by the
+application to expand a graph by interposing new vertices selectively
+along the edges between existing vertices.
+.TP
+*
+For each vertex in the graph, a property is computed
+according to the
+.BR st_prop
+field by the usual
+.BR cru_prop
+calling conventions.
+.TP
+*
+For each edge in the graph, the
+.BR expander
+ternary predicate is passed the edge's label as its middle operand and
+the properties of the edge's origin and terminus as its left and right
+operands, respectively.
+.TP
+*
+For each call to the
+.BR cru_stretch
+library function the predicate makes before returning, a new vertex
+inserted between the origin and the terminus, connected to them by two
+new edges with labels given by the parameters passed to
+.BR cru_stretch.
+.TP
+*
+If the predicate returns zero, the edge whose label it is passed
+is deleted.
+.TP
+*
+If the
+.BR st_fix
+field is non-zero, then this process is iterated across the graph
+until the ternary predicate declines to create any new vertices or
+until the graph's designated vertex limit is reached.
+.P
+The vertex reduction operator in the
+.BR st_prop
+field is not needed and may be omitted or initialized to
+NULL.
+.SH ERRORS
+These errors might be reported by the
+.BR cru_stretched
+function for the reasons indicated.
+.TP
+.BR CRU_UNDEXP
+No function is defined in the
+.BR expander
+field.
+.TP
+.BR CRU_INTOVF
+A vertex limit previously associated with the graph during its creation
+is reached or exceeded due to the creation of more vertices.
+.SH NOTES
+The vertex limit in a graph is set according to the
+.BR cru_sig
+structure used to build or modify it.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

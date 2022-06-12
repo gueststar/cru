@@ -1,0 +1,94 @@
+.TH CRU_CONNECT 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_connect \- connect a new edge and a new vertex to a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_connect
+(
+.br
+.BR cru_edge
+.I label
+,
+.br
+.BR cru_vertex
+.I terminus
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function creates an edge labeled by the given argument
+.I label
+and terminating at a vertex given by
+.I terminus
+in a graph that is being built. The
+.BR cru_edge
+and
+.BR cru_vertex
+types are aliases for
+.I void
+pointers that can be cast from any compatible types specific to the
+application. If they are pointers to dynamically allocated storage,
+then the caller must allocate and initialize the storage before
+calling
+.BR cru_connect.
+The caller must detect and prevent dangling pointers from being
+passed.
+.P
+This function is meant to be called only by a user-defined
+.BR cru_connector
+or
+.BR cru_subconnector
+callback function referenced respectively by the
+.BR connector
+or
+.BR subconnector
+field of a
+.BR cru_builder
+structure.
+.TP
+*
+The originating vertex of
+the edge to be created is not passed to
+.BR cru_connect
+because it is determined implicitly by the
+.BR cru_vertex
+argument to the callback function.
+.TP
+*
+The
+.BR cru_vertex
+passed to
+.BR cru_connect
+is passed as the originating vertex in a subsequent invocation of the
+callback function.
+.SH RETURN VALUE
+none
+.SH ERRORS
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR CRU_INTOOC
+The function was called outside the context of callback function referenced
+through a
+.BR cru_builder.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

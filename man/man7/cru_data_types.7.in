@@ -1,0 +1,427 @@
+.TH CRU_DATA_TYPES 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_data_types \- data types defined and used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.SH DESCRIPTION
+To simplify the API, many parameters to
+.BR cru
+functions are encapsulated by nested C structures adhering where
+possible to consistent and memorable naming conventions. While the
+functions remain extensively configurable, they can also infer fixed
+default values for infrequently used fields initialized by the
+application to zero or
+NULL
+in these structures. Applications can conveniently omit these fields
+in some anticipated common use cases by leveraging C99 style
+designated initializers. Here are some of the naming conventions.
+.TP
+*
+All public API type aliases and
+.I struct
+names are prefixed by "cru_" to avoid clashes with other symbols
+compiled along with the application.
+.TP
+*
+Any
+.I struct
+name of the form
+.BR foo_s
+defined in the header files has a corresponding type alias
+.BR foo
+for pointers to that type of structure.
+.TP
+*
+When an API function is described in this manual as being
+parameterized by a structure, the formal parameter is always a pointer
+to the structure.
+.TP
+*
+Any type alias of the form
+.BR foo_pair
+denotes a pointer to a structure of type
+.I struct
+.BR foo_pair_s
+having exactly two identically typed
+fields. If
+.BR foo
+is a type alias for a pointer to a function, then the fields are of
+that type. Otherwise, the fields are of type
+.I struct
+.BR foo_s.
+.TP
+*
+Any type alias of the form
+.BR foo_quad
+is a pointer to a structure of type
+.I struct
+.BR foo_quad_s
+having exactly two fields, both of type
+.I struct
+.BR foo_pair_s.
+.TP
+*
+Type aliases of the form
+.BR cru_cxop
+where
+.BR x
+is
+.BR b,
+.BR t,
+or
+.BR q,
+generalize binary, ternary, or quarternary operators respectively to
+conditional versions applicable only if some predicate holds. The
+structure referenced in each case has field identifiers
+.BR xop
+and
+.BR xpred
+referring respectively to an operator of type
+.BR cru_xop
+and a predicate of type
+.BR cru_xpred
+both taking arguments of the same types.
+.TP
+*
+The name of any function returning a graph and the name of the
+structure parameterizing it are derived from the same root word. In
+grammatical terms, the function name is a past participle describing
+the function's effect on the graph and the structure name is the noun
+that designates a creator of that effect.
+.P
+The two type aliases
+.BR cru_edge
+and
+.BR cru_vertex
+are provided in the header files for
+.I void
+pointers. They are intended to be used optionally for improved
+readability in application code as type casts where appropriate. They
+refer respectively to edge labels and vertices in a graph.
+.P
+Four more type aliases specify only a pointer in the header
+files with no explicit specification of the corresponding
+.I struct.
+These types are meant to be treated as opaque by applications,
+obtained only as the returned values of API functions and useful only
+as parameters to other API functions. The opaque types and their short
+descriptions are
+.TP
+.BR cru_graph
+encapsulation of all components in a graph, its destructors, and its
+relations
+.TP
+.BR cru_kill_switch
+trigger for early return from an API function
+.TP
+.BR cru_partition
+representation of a set of subsets of the vertices in a graph
+.TP
+.BR cru_class
+representation of an individual subset in a partition.
+.P
+The remaining types can be broadly classified as base types, derived
+types, and top level types.
+.TP
+*
+Fields in the base type structures are limited to
+scalar values, pointers to functions, and
+.BR cru_vertex
+pointers.
+.TP
+*
+Fields in the derived type structures may be base type structures,
+conditional operators, or other derived type structures.
+.TP
+*
+Top level structures contain any of the
+above and they directly parameterize the API functions.
+.P
+The base types are
+.TP
+.BR cru_order
+the combination of an equality relation and a hash function for a
+vertex, edge, or property, as part of a
+.BR cru_order_pair,
+a
+.BR cru_classifier,
+or a
+.BR cru_filter
+.TP
+.BR cru_destructor_pair
+one destructor for the vertices in a graph and one for the
+edge labels as part of a
+.BR cru_sig
+.TP
+.BR cru_fold
+a specification for a two-stage computation taking some set of operands
+to an individual result as part of a
+.BR cru_prop,
+a
+.BR cru_inducer,
+or a
+.BR cru_kernel
+.TP
+.BR cru_zone
+a constraint on the starting point and the direction of a graph traversal
+as part of a
+.BR cru_plan,
+a
+.BR cru_mapreducer,
+a
+.BR cru_inducer,
+or a
+.BR cru_filter.
+.P
+The derived types are
+.TP
+.BR cru_plan
+a constraint on not only the zone but the order of a graph traversal as part of
+a
+.BR cru_mutator
+.TP
+.BR cru_prop
+a specification for deriving a property of a vertex depending on its environment as part of a
+.BR cru_prop_pair,
+a
+.BR cru_kernel,
+a
+.BR cru_mapreducer,
+a
+.BR cru_stretcher,
+a
+.BR cru_splitter,
+or a
+.BR cru_classifier
+.TP
+.BR cru_kernel
+a combination of a property over the vertices and a fold over the edges in a graph as part of a
+.BR cru_mutator,
+a
+.BR cru_merger,
+or a
+.BR cru_filter
+.TP
+.BR cru_prop_pair
+one property for the initial and one for the intermediate vertex in a composition operation as part of a
+.BR cru_composer
+.TP
+.BR cru_order_pair
+one order for the vertices and one for the edges in a graph as part of a
+.BR cru_sig
+or a
+.BR cru_mutator
+.TP
+.BR cru_ctop_pair
+two potential ways to derive an edge label from a given one and its environment as part of a
+.BR cru_ctop_quad
+.TP
+.BR cru_ctop_quad
+a pair of conditional ternary operator pairs, one for incoming and one
+for outgoing edges, as part of a
+.BR cru_splitter
+.TP
+.BR cru_sig
+a combined specification of both the orders and the destructors of a graph, as part of a
+.BR cru_builder,
+a
+.BR cru_crosser,
+or a
+.BR cru_fabricator.
+.P
+The remaining types, which are the top level types as noted above,
+adhere to additional naming conventions for field identifiers. For
+any top level type
+.BR cru_foo
+listed below,
+.TP
+*
+any field of type
+.I struct
+.BR cru_bar_pair_s
+or
+.I struct
+.BR cru_bar_quad_s
+has a field identifier of the form
+.BR fo_bars
+.TP
+*
+and any field of any other type
+.I struct
+.BR cru_baz_s
+corresponding to a type alias listed above has a field identifier of
+.BR fo_baz.
+.P
+That is, the field identifier consists of a two letter prefix
+determined by the top level type alias followed by a suffix determined
+by the derived type alias, with a plural form for pairs and
+quadruples. Fields of types not listed above have descriptive
+identifiers following no standard convention.
+.P
+Each top level data type corresponds to a similarly named API function
+having a parameter of that type. They can categorized as pertaining to
+graph building, analysis, classification, contraction, and surgery.
+For building, these three data types specify ways of building a graph
+from scratch, creating a modified copy of an existing graph, and
+building a new graph from a pair of graphs.
+.TP
+*
+.BR cru_builder
+.TP
+*
+.BR cru_fabricator
+.TP
+*
+.BR cru_crosser
+.P
+For analysis, these two data types specify a simple and a more
+sophisticated way of computing statistics or metrics about a graph.
+.TP
+*
+.BR cru_mapreducer
+.TP
+*
+.BR cru_inducer
+.P
+For classification, this data type describes a way of partitioning
+a graph into subsets of related vertices.
+.TP
+*
+.BR cru_classifier
+.P
+For expansion, these three data type specify ways of inserting
+additional edges or vertices into a graph.
+.TP
+*
+.BR cru_stretcher
+.TP
+*
+.BR cru_splitter
+.TP
+*
+.BR cru_composer
+.P
+For contraction, these two data types specify a way of reducing groups
+of related vertices into single vertices, and a way of selectively
+removing vertices or edges.
+.TP
+*
+.BR cru_merger
+.TP
+*
+.BR cru_filter
+.P
+For surgery, these two data types describe ways of overwriting
+vertices or edges in place, or transplanting an edge to a nearby
+location.
+.TP
+*
+.BR cru_mutator
+.TP
+*
+.BR cru_postponer
+.SH EXAMPLES
+Following the grammatical convention noted above:
+.TP
+*
+The function that
+returns a newly built graph,
+.BR cru_built,
+is parameterized by a
+.BR cru_builder.
+.TP
+*
+A pointer of type
+.BR cru_builder
+points to a structure of type
+.I struct
+.BR cru_builder_s.
+.P
+Pairs can be pairs of structures or pairs of pointers to functions.
+.TP
+*
+A pointer of type
+.BR cru_order_pair
+points to a structure having two fields each of type
+.I struct
+.BR cru_order_s.
+.TP
+*
+A pointer of type
+.BR cru_destructor_pair
+points to a structure having two fields of type
+.BR cru_destructor,
+which are pointers to functions.
+.P
+Conditional operators are named as shown.
+.TP
+*
+A pointer of type
+.BR cru_cbop
+points to a structure of type
+.I struct
+.BR cru_cbop_s
+having a field named
+.BR bop
+of type
+.BR cru_bop
+and
+a field named
+.BR bpred
+of type
+.BR cru_bpred.
+.TP
+*
+The others are
+.BR cru_ctop
+and
+.BR cru_cqop.
+.P
+Identifiers for fields of derived types in top level structures are
+predictable from their types.
+.TP
+*
+The field of type
+.I struct
+.BR cru_fold_s
+in a
+.BR cru_inducer
+structure has a field identifier of
+.BR in_fold.
+.TP
+*
+The field of type
+.I struct
+.BR cru_prop_pair_s
+in a
+.BR cru_composer
+structure has a field identifier of
+.BR co_props.
+Note the plural.
+.SH NOTES
+Suffixing
+.I struct
+names with "_s" was not strictly necessary as an API design choice
+because type names and
+.I struct
+names inhabit separate name spaces according to C standards, and
+therefore may coincide without ambiguity. The additional redundancy is
+intended to help compilers flag certain common errors.
+.P
+Distinct field identifiers across multiple structures are similarly
+beneficial though not required by C standards. Their naming convention
+is meant to afford a desirable redundancy while avoiding a
+proliferation of gratuitous differences.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/function_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

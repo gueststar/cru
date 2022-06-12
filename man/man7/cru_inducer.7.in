@@ -1,0 +1,138 @@
+.TH CRU_INDUCER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_inducer \- inductive graph metric computation specification
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_inducer_s
+.br
+{
+.br
+struct
+.BR cru_zone_s
+.BR in_zone;
+.br
+struct
+.BR cru_fold_s
+.BR in_fold;
+.br
+} *
+.BR cru_inducer;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_induced
+library function with necessary information initialized by the
+application to compute an arbitrary user-defined metric about a
+graph. The computation can pertain to a section of the graph
+restricted by the
+.BR cru_zone
+structure in the
+.BR in_zone
+field. Alternatively, the
+.BR in_zone
+field may be omitted or zero-filled, in which case the whole graph is
+used and a forward zone orientation is inferred.
+.P
+Unlike a mapreduction, this operation constrains the order
+for visiting the vertices, and unlike a mutation, the traversal priority
+is fixed as remote first.
+.TP
+*
+Each vertex is visited and a result computed for it starting at those
+most distant from the initial vertex and finishing at the initial
+vertex.
+.TP
+*
+The result computed at each vertex depends on the vertex itself and
+on the results obtained at its adjacent prerequisite vertices.
+.TP
+*
+The prerequisites are accessed via the outgoing edges if the
+.BR in_zone
+field specifies a forward orientation, and the incoming edges otherwise.
+.TP
+*
+The result overall is that of the initial vertex.
+.P
+To compute the result associated with any vertex being visited, these
+steps are taken.
+.TP
+*
+For
+each edge connecting the vertex to a prerequisite, the ternary
+operator referenced through the
+.BR in_fold.map
+field is passed the vertex as its left operand, the edge label as its
+middle operand, and the result computed at the prerequisite as its
+right operand.
+.TP
+*
+The set of the results returned by the ternary operator and a
+vacuous case result returned by the function referenced through the
+.BR in_fold.vacuous_case
+field, are then reduced by the binary operator
+referenced through the
+.BR in_fold.reduction
+field following usual
+.BR cru_fold
+calling conventions.
+.P
+Note that the
+.BR in_fold.map
+ternary operator is passed the same vertex as its left operand for
+each of its prerequisites' results on the right, and that this calling
+convention is independent of the edge's direction.
+.P
+The
+.BR in_fold.vacuous_case
+and
+.BR in_fold.map
+field must be defined to point to an appropriate operators,
+but if all three of the fields
+.BR in_fold.m_free,
+.BR in_fold.r_free
+and
+.BR in_fold.reduction
+are NULL, then a binary operator is inferred for the reduction
+that returns the lesser of its two operands interpreted as
+unsigned integers.
+.BR 
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR CRU_UNDMAP
+The
+.BR in_fold.map
+field is
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.BR in_fold.reduction
+field is
+NULL and not inferrable.
+.TP
+.BR CRU_UNDVAC
+The
+.BR in_fold.vacuous_case
+field is
+NULL.
+.SH NOTES
+A nullary operator is always required via the
+.BR in_fold.vacuous_case
+field because deadlock avoidance presupposes a vertex in the graph
+having no prerequisites.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

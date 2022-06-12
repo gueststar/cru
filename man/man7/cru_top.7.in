@@ -1,0 +1,95 @@
+.TH CRU_TOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_top \- ternary operator function type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void* (*
+.BR cru_top
+)(void *, void *, void *, int *)
+.SH DESCRIPTION
+A user-defined ternary operator takes three operands and a pointer
+to an initially zero error code as arguments. The operands can be
+scalar values, pointers to heap allocated storage, or a combination.
+The operator must treat the operands as read only but may assign the
+error code.
+.P
+Applications use ternary operators to tell
+.BR cru
+API functions how to compute some value determined by a vertex or
+an edge and its immediate environment.
+.TP
+*
+In some contexts, the middle operand is an edge label and the first
+and last operands are the vertices or user-defined properties of the
+vertices at either end of the edge.
+.TP
+*
+In other contexts, the middle operand is a vertex and the first and
+last operands are user-defined values computed by reductions over the
+set of its incoming edges and the set of its outgoing edges
+respectively.
+.SH RETURN VALUE
+The return value may be either a scalar value or a pointer to the heap
+at the option of the application developer. In the case of a pointer,
+the result ordinarily refers to newly allocated storage. However,
+applications may opt to return a pointer to shared storage provided
+the operator and the corresponding
+.BR cru_destructor
+function implement thread-safe reference
+counting.
+.SH ERRORS
+If a ternary operator sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Ternary operators are passed to
+.BR cru
+API functions not directly but by pointers to them in the fields of
+base structures built into derived structures then built into the top
+level structures that are passed via the API. One such field
+is the
+.BR map
+in a
+.BR cru_fold
+structure and the other is
+.BR top
+field of a
+.BR cru_ctop
+(conditional ternary operator)
+structure.
+Regarding the operand interpretations mentioned above,
+the middle operand is a vertex only when the operator
+is the
+.BR map
+field of a
+.BR cru_fold
+used as the
+.BR vertex
+field of a
+.BR cru_prop.
+In any other context, it is an edge label.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

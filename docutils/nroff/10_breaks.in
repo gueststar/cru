@@ -1,0 +1,55 @@
+#!@SED@ -Enf
+
+# Preprocess an nroff file by breaking the manpages listed in the SEE
+# ALSO section into short enough groups to fit on a line.
+
+# if the SEE ALSO section hasn't started, recycle
+/^\.SH[[:blank:]]SEE[[:blank:]]ALSO$/!{p; d}
+
+# if the SEE ALSO section has started, print the section header
+p
+n
+
+# if the SEE ALSO section has ended
+:b
+/^\.SH[[:blank:]]+/{
+   x
+   # format the accumulated lines
+   s/\n/\n.BR\ /g
+   s/^\n//
+   # print the accumulated lines if any
+   /./p
+   # print the next section header
+   x
+   p
+   # recycle
+   d}
+
+# if the SEE ALSO section hasn't ended
+# delete the line if it isn't a keyword
+/^\.BR/!{n; bb}
+
+# temproarily remove the tag from a keyword
+s/^\.BR[[:blank:]]*//
+
+# append it to the accumulated lines
+H
+x
+
+# if insufficient lines are accumulated, keep accumulating them
+/.{@BREAK_THRESHOLD@,}/!bc
+
+# if sufficient lines have accumulated
+# restore the tags
+s/\n/\n.BR\ /g
+# insert one break for the whole group
+s/.$/&\n\.br/
+s/^\n//
+# print the accumulated lines
+p
+# clear the accumulated lines
+s/.*//
+:c
+x
+n
+bb

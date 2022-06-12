@@ -1,0 +1,77 @@
+.TH CRU_FREE_PARTITION 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_free_partition \- free the memory used by a graph partition
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_free_partition
+(
+.BR cru_partition
+.I p
+,
+int
+.I now
+,
+int *
+.I err
+)
+.SH DESCRIPTION
+This function is part of a simple and efficient API for manipulating
+sets of vertices. The parameter
+.I p
+models a partition on the vertices in a graph, which is a set of
+classes such that each vertex belongs to exactly one class. The
+partition is expected to have been obtained from a prior invocation of
+.BR cru_partition_of.
+This function reclaims the memory allocated at that time.
+.P
+If a non-zero value is passed in the parameter
+.I now,
+then the caller is blocked until the reclamation completes. Otherwise
+the reclamation proceeds concurrently and the function returns
+immediately. In either case, the operation is single threaded.
+.P
+For purposes of memory management, the partition
+.I p
+is consumed by this function and must not be accessed afterwards.
+.SH RETURN VALUE
+none
+.SH ERRORS
+To avoid a memory leak, this function must be called for each
+partition before it goes out of scope. Memory leaks are an error but
+are not detected or reported.
+.P
+Any attempted use of a partition previously passed to this function is
+an error with unpredictable consequences.
+.P
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to start a background thread, so the
+partition is freed sequentially instead.
+.TP
+.BR CRU_BADPRT
+The parameter
+.I p
+refers to a corrupted or invalid
+.BR cru_partition.
+.SH NOTES
+Freeing a partition sequentially is worthwhile when followed by an
+operation that otherwise would run the risk of causing a heap
+overflow.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

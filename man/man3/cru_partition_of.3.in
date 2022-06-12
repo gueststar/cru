@@ -1,0 +1,185 @@
+.TH CRU_PARTITION_OF 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_partition_of \- partition the vertices in a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_partition
+.BR cru_partition_of
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_classifier
+.I c
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function is part of a simple and efficient API for manipulating
+sets of vertices in a graph. The parameter
+.I g
+is graph to be partitioned according to the specification given by
+.I c,
+both previously built or initialized by the caller.
+.\"killsw
+In this case, no partition is constructed.
+.\"lanes
+.SH RETURN VALUE
+On successful completion, the function returns a
+.BR cru_partition
+representing a partition on the vertices in the graph
+.I g,
+which is set of classes of vertices such that each vertex
+belongs to exactly one class. The partition is represented as a
+pointer that may be used as a parameter to other
+.BR cru
+library functions. Otherwise, a
+NULL
+pointer is returned.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to acquire a lock.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_NULCSF
+A
+NULL
+value was passed for the parameter
+.I c
+instead of a pointer to a
+.BR cru_classifier.
+.TP
+.BR CRU_TPCMPR
+The field
+.I c->cl_prop.incident.m_free
+differs from
+.I c->cl_prop.incident.r_free
+when
+.I c->cl_prop.incident.vacuous_case
+is
+NULL,
+or the analogous condition holds for
+.I c->cl_prop.outgoing.
+.TP
+.BR CRU_UNDEQU
+The field
+.I c->cl_order.equal
+is
+NULL
+when
+.I c->cl_prop.vertex.m_free
+is not
+NULL.
+.TP
+.BR CRU_UNDHSH
+The field
+.I c->cl_order.hash
+is
+NULL
+when
+.I c->cl_prop.vertex.m_free
+is not
+NULL.
+.TP
+.BR CRU_UNDMAP
+The field
+.I c->cl_prop.vertex.map
+is
+NULL,
+or either of
+.I c->cl_prop.incident.map
+or
+.I c->cl_prop.outgoing.map
+is
+NULL
+when not all other fields of
+.I c->cl_prop.incident
+or
+.I c->cl_prop.outgoing
+respectively are
+NULL.
+.TP
+.BR CRU_UNDRED
+Either of
+.I c->cl_prop.incident.reduction
+or
+.I c->cl_prop.outgoing.reduction
+is
+NULL
+when not all other fields of
+.I c->cl_prop.incident
+or
+.I c->cl_prop.outgoing
+respectively are
+NULL
+.TP
+.BR CRU_UNDVAC
+Either of
+.I c->cl_prop.incident.vacuous_case
+or
+.I c->cl_prop.outgoing.vacuous_case
+is
+NULL
+when not all other fields of
+.I c->cl_prop.incident
+or
+.I c->cl_prop.outgoing
+respectively are
+NULL,
+and there is a vertex in the graph with respectively no incoming or no
+outgoing edges.
+.SH NOTES
+Only the vertex map is needed in the classifier
+.I c,
+so the vacuous case and reductions can initialized as
+NULL.
+However, if they are defined, then they and their destructors
+must be consistently typed. Neither of the incident or outgoing
+folds is needed unless the class property of a vertex depends
+on its adjacent vertices or edges.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

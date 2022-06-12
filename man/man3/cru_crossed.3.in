@@ -1,0 +1,146 @@
+.TH CRU_CROSSED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_crossed \- construct a product of two graphs
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_crossed
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_graph
+.I h
+,
+.br
+.BR cru_crosser
+.I c
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function creates a new graph from a combination of two given graphs
+.I g
+and
+.I h
+according to a user-defined specification
+.I c
+following the usual
+.BR cru_crosser
+calling conventions.
+.\"killsw
+In this case, no product graph is created but the given graphs are
+unaffected.
+.\"lanes
+.P
+For purposes of memory management,
+no parameters are consumed by
+.BR cru_crossed.
+The graphs and kill switch require explict reclamation subsequently.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+and
+.I h
+representing their product.  Applications should treat the returned
+value as opaque but may pass it as a parameter to other library
+functions. In the event of any error, a NULL pointer is returned. A
+NULL pointer is also returned if either graph
+.I g
+or
+.I h
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+Either parameter
+.I g
+or
+.I h
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_INTOVF
+A number of vertices was created that approached or exceeded the limit set by
+.I c->cr_sig.vertex_limit.
+.TP
+.BR CRU_UNDEPR
+The field
+.I c->e_prod.bop
+is
+NULL.
+.TP
+.BR CRU_UNDEQU
+The field
+.I c->cr_sig.orders.v_order.equal
+is
+NULL
+but
+.I c->cr_sig.destructors.v_free
+is not
+NULL.
+.TP
+.BR CRU_UNDHSH
+The field
+.I c->cr_sig.orders.v_order.hash
+is
+NULL
+but
+.I c->cr_sig.destructors.v_free
+is not
+NULL.
+.TP
+.BR CRU_UNDVPR
+The field
+.I c->v_prod
+is
+NULL.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.P
+.I @INCDIR@/function_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

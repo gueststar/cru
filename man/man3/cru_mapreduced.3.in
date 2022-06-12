@@ -1,0 +1,169 @@
+.TH CRU_MAPREDUCED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_mapreduced \- compute a graph metric concurrently
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void *
+.BR cru_mapreduced
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_mapreducer
+.I m
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function computes a metric about a graph
+.I g
+without modifying it
+according to user-defined criteria set by
+.I m
+following the usual
+.BR cru_mapreducer
+calling conventions. All vertices are visited concurrently or in an
+unspecified order, and a partial result is computed independently for
+each. All partial results contribute to a global result computed in a
+subsequent concurrent reduction phase.  Alternatively, a NULL value of
+.I m
+is allowed and causes a NULL value to be returned.
+.\"killsw
+In this case, a NULL value is returned.
+.\"lanes
+.P
+For purposes of memory management, no parameters are consumed.
+.SH RETURN VALUE
+On successful completion, the returned value the result computed
+for the graph
+.I g
+according to the
+.BR cru_mapreducer
+specification
+.I m.
+In the event of any error, a NULL pointer is returned.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_INCINV
+The field
+.I i->ma_zone.offset
+is non-zero but the vertex
+.I i->ma_zone.initial_vertex
+is not in the graph
+.I g.
+.TP
+.BR CRU_TPCMPR
+The
+.BR m_free
+and
+.BR r_free
+fields differ
+in the
+.I m->ma_prop.vertex
+structure, or they differ where the
+.BR vacuous_case
+field is
+NULL
+in either of the
+.I m->ma_prop.incident
+or
+.I m->ma_prop.outgoing
+structures.
+.TP
+.BR CRU_UNDMAP
+The
+.I m->ma_prop.vertex.map
+field is NULL, or the
+.BR map
+field in either of
+.I m->ma_prop.incident
+or
+.I m->ma_prop.outgoing
+is
+NULL
+but at least one other field in it is not
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.I m->ma_prop.vertex.reduction
+field is
+NULL
+or the
+.BR reduction
+field is
+NULL
+in either of
+.I m->ma_prop.incident
+or
+.I m->ma_prop.outgoing
+whose other fields are not all
+NULL.
+.TP
+.BR CRU_UNDVAC
+The
+.I m->ma_prop.incident.vacuous_case
+field is
+NULL,
+at least one other field of
+.I m->ma_prop.incident
+is not
+NULL, and there is a vertex in the graph
+.I g
+with no incoming edges,
+or the
+.I m->ma_prop.outgoing.vacuous_case
+field is
+NULL, at least one other field of
+.I m->ma_prop.outgoing
+is not NULL, and there is a vertex in the graph with no outgoing
+edges.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

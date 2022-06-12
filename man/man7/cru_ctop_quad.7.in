@@ -1,0 +1,51 @@
+.TH CRU_CTOP_PAIR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_ctop_quad \- quadruple of conditional ternary operators
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_ctop_quad_s
+.br
+{
+.br
+struct
+.BR cru_ctop_pair_s
+.BR inward;
+.br
+struct
+.BR cru_ctop_pair_s
+.BR outward;
+.br
+} *
+.BR cru_ctop_quad;
+.SH DESCRIPTION
+Applications initialize this structure to inform the creation or modification
+of edge labels in the course of a splitting operation performed by the
+.BR cru_split
+library function. The
+.BR inward
+field specifies the labels on the incoming edges to vertices created
+by splitting, and the
+.BR outward
+field specifies the labels on their outgoing edges, both according to
+the usual calling conventions for
+.BR cru_ctop_pair
+structures.
+.SH NOTES
+The
+.BR cru_ctop_quad
+structure is part of the
+.BR cru_splitter
+top level structure.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

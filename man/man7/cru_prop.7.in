@@ -1,0 +1,146 @@
+.TH CRU_PROP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_prop \- specification of a computable vertex property
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_prop_s
+.br
+{
+.br
+struct
+.BR cru_fold_s
+.BR vertex;
+.br
+struct
+.BR cru_fold_s
+.BR incident;
+.br
+struct
+.BR cru_fold_s
+.BR outgoing;
+.br
+} *
+.BR cru_prop;
+.SH DESCRIPTION
+Some
+.BR cru
+library functions depend on arbitrary user-defined properties of the
+vertices in a graph, which applications can specify in a structure of
+this type so that the library function can compute one for each
+vertex. The result computed for each vertex can depend in general on
+the vertex, the labels on its incident and outgoing edges, and its
+adjacent vertices in both directions.
+.P
+The property is computed according to these calling
+conventions.
+.TP
+*
+First
+.BR cru
+calls the functions referenced by the
+.BR map
+fields in
+the
+.BR incident
+and
+.BR outgoing
+folds. For each incident edge,
+it passes the local vertex as
+the left parameter, the edge label as the middle parameter, and the
+adjacent vertex as the right parameter to the
+.BR map
+function in the
+.BR incident
+fold.
+For each outgoing edge, it passes
+the local vertex as
+the left parameter, the edge label as the middle parameter, and the
+adjacent vertex as the right parameter to the
+.BR map
+function in the
+.BR outgoing
+fold. Note that the local vertex is always the left parameter
+regardless of the edge's direction.
+.TP
+*
+Following the usual calling conventions for
+.BR cru_fold
+structures, the incident map results are reduced by the
+.BR reduction
+function in the
+.BR incident
+fold, and similarly the outgoing map results are reduced by the
+.BR reduction
+function in the
+.BR outgoing
+fold.
+.TP
+*
+Then
+.BR cru
+calls the
+.BR map
+function in the
+.BR vertex
+fold, passing the result from the incident reduction as the left
+parameter, the vertex as the middle parameter, and the result from the
+outgoing reduction as the right parameter.
+The result returned by the
+.BR map
+function referenced by the
+.BR vertex
+fold is taken to be the property of interest.
+.P
+Either or both of the
+.BR incident
+and
+.BR outgoing
+fields is allowed to be omitted or filled with zeros. If so, the corresponding
+result value passed to the map function in the
+.BR vertex
+field is
+NULL.
+.P
+When this structure is part of a
+.BR cru_mapreducer,
+the reduction in the
+.BR vertex
+field is used to compute a cumulative result for the whole graph per
+usual
+.BR cru_fold
+calling conventions subject to a slight restriction: only the simpler
+form of evaluation is enabled, where both operands to the reduction,
+its output, and the map function's output are of the same type. This
+restriction applies with or without a vacuous case function being
+defined, but if defined, it determines the result for empty graphs.
+.SH NOTES
+The
+.BR cru_prop
+structure is used as a field in the
+.BR cru_prop_pair,
+.BR cru_kernel,
+.BR cru_mapreducer,
+.BR cru_stretcher,
+.BR cru_splitter,
+and
+.BR cru_classifier
+structures.
+.P
+The restricted form of fold evaluation noted above for mapreduction
+operations is a performance tradeoff enabling multiple worker threads
+to participate in a common reduction. Deterministic results in this
+case depend on algebraically associative and commutative reduction
+operators.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

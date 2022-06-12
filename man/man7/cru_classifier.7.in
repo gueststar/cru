@@ -1,0 +1,96 @@
+.TH CRU_CLASSIFIER 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_classifier \- equivalence class specification for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_classifier_s
+.br
+{
+.br
+struct
+.BR cru_prop_s
+.BR cl_prop;
+.br
+struct
+.BR cru_order_s
+.BR cl_order;
+.br
+} *
+.BR cru_classifier;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_partition_of
+library function with necessary information initialized by the
+application to compute a partition on the vertices in a graph,
+and is also a field in the
+.BR cru_merger
+structure used to parameterize the
+.BR cru_merged
+library function.
+.P
+For every vertex in a given graph, a property
+specified by the
+.BR cl_prop
+field is computed by the usual
+.BR cru_prop
+calling conventions. Any two vertices whose properties are equal
+according to the
+.BR cl_order
+field with usual
+.BR cru_order
+calling conventions are deemed to be members of the same equivalence
+class.
+.P
+Some default values can be inferred automatically.
+.TP
+*
+When the
+.BR cru_classifier
+is used as a top level structure to parameterize the
+.BR cru_partition_of
+function,
+the vertex reduction in the
+.BR cl_prop.vertex.reduction
+field is not used and may be omitted or initialized as
+NULL.
+.TP
+*
+If the whole
+.BR cl_prop
+field is omitted or zero-filled, then the property associated with each vertex
+is identical to the vertex.
+.TP
+*
+If the vertex fold in the
+.BR cl_prop.vertex
+has an omitted or
+NULL
+map destructor
+.BR cl_prop.vertex.m_free
+and the
+.BR cl_order
+field is omitted or zero-filled, then a default scalar ordering is
+inferred for purposes of comparison.
+.P
+As these defaults imply, a zero-filled classifier describes the
+partition of every vertex in a class by itself.
+.SH ERRORS
+The predicate in the
+.BR cl_order
+field must be algebraically reflexive, transitive, and symmetric.
+Not meeting this requirement is an error.
+There is no way of automatically detecting or enforcing the
+error, but anomalous results are likely to follow.
+.SH FILES
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

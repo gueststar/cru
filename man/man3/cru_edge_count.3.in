@@ -1,0 +1,76 @@
+.TH CRU_EDGE_COUNT 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_edge_count \- compute the number of edges in a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+uintptr_t
+.BR cru_edge_count
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function calculates the number of edges in a graph
+.I g
+by visiting each vertex and adding the number of its outgoing edges
+to the total.
+.\"lanes
+.P
+For memory management purposes, no parameters are consumed or
+modified.
+.SH RETURN VALUE
+On successful completion, the function returns
+the number of edges in the graph
+.I g.
+It might return zero in the event of an error or if the graph has no
+edges, which is not in itself an error, or it might return the
+correct value even in the event of an error by resorting to an
+alternative algorithm. It is reasonable to assume any non-zero value
+returned is correct.
+.SH ERRORS
+.\"errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to acquire a lock.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.SH NOTES
+This calculation could also be done using the
+.BR cru_mapreduced
+function, but is faster this way.
+.P
+Misleading results are possible if
+the graph is in need of deduplication by the
+.BR cru_deduplicated
+function.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

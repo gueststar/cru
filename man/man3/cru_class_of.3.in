@@ -1,0 +1,77 @@
+.TH CRU_CLASS_OF 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_class_of \- get a vertex's class in a partitioned graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_class
+.BR cru_class_of
+(
+.BR cru_partition
+.I p
+,
+.BR cru_vertex
+.I x
+,
+int *
+.I err
+)
+.SH DESCRIPTION
+This function is part of a simple and efficient API for manipulating
+sets of vertices. The parameter
+.I p
+models a partition on the vertices in a graph, which is a set of
+classes such that each vertex belongs to exactly one class. The
+partition is expected to have been obtained from a prior invocation of
+.BR cru_partition_of.
+The other parameter
+.I x
+is expected to be a vertex in the graph previously used to obtain the
+partition.
+.SH RETURN VALUE
+On successful completion, this function returns
+a representation of the class containing the vertex
+.I x
+as a
+.BR cru_class.
+The return value is a pointer to an opaque type, but applications can
+rely on the condition that any two vertices belong to the same
+whenever the results obtained for them by this function are equal, and
+only then. Although the return value is a pointer, the application
+must not attempt to free it.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to acquire a lock.
+.TP
+.BR CRU_BADPRT
+The parameter
+.I p
+refers to a corrupted or invalid
+.BR cru_partition.
+.TP
+.BR CRU_PARVNF
+The parameter
+.I x
+refers to something other than a vertex in the graph
+partitioned by
+.I p.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

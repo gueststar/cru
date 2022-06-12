@@ -1,0 +1,110 @@
+.TH CRU_ZONE 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_zone \- specification of a connected region of a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_zone_s
+.br
+{
+.br
+int
+.BR offset;
+.br
+.BR cru_vertex
+.BR initial_vertex;
+.br
+int
+.BR backwards;
+.br
+} *
+.BR cru_zone;
+.SH DESCRIPTION
+This structure specifies the connected region of some existing graph
+reachable by traversing any path starting from some initial
+vertex. When initialized by an application and passed to certain
+.BR cru
+API functions, it instructs them to operate only on that region
+instead of the whole graph.
+.TP
+*
+If the
+.BR offset
+field is non-zero, then the given
+.BR initial_vertex
+determines the boundary of the zone.
+.TP
+*
+If the
+.BR offset
+field is zero, then the zone consists of the whole graph and the
+.BR initial_vertex
+field is ignored.
+.P
+Zones can be oriented backwards or forward. If the
+.BR backwards
+field is non-zero, then the zone is oriented backwards.  Otherwise, it
+is oriented forwards.  A backwards oriented zone consists of all
+vertices from which the initial vertex is reachable, whereas a forward
+oriented zone consists of all vertices reachable from the initial
+vertex.
+.P
+If the zone consists of the whole graph because no initial vertex is specified,
+then the orientation is considered forward.
+.SH ERRORS
+If the
+.BR offset
+is non-zero but the
+.BR initial_vertex
+is not in the graph passed to the API function along with this zone,
+then the function reports the error
+.BR CRU_PARVNF
+for a vertex not found.
+.P
+If the zone covers less than the full graph and is to be used in the
+course of a mutation that changes the vertices or edges to a type
+requiring a different destructor than the original, then the API
+function reports an error of
+.BR CRU_TPCMUT,
+meaning the operation is disallowed because it would make the graph
+impossible to reclaim.
+.SH NOTES
+Restriction to a zone is supported only for mapreduction, induction,
+filtering and mutation operations. The
+.BR cru_zone
+structure accordingly is part of the
+.BR cru_mapreducer,
+.BR cru_inducer,
+and
+.BR cru_filter
+top level structures,
+and the
+.BR cru_mutator
+top level structure by way of its
+.BR cru_plan.
+.P
+In the typical case of operating on a whole graph, the application
+initializes the zone to all zeros, or simply omits mention of it if
+the structure is declared using C99 designated initializers.
+.P
+Designating an initial vertex via this structure requires the graph to
+be searched for it, an asymptotically linear time operation in the
+number of vertices, before anything else can be done. The search may
+require the evaluation of equality relations and hash functions
+associated with the graph. However, time operating on the graph
+subsequently may be saved if the region is significantly smaller than
+the whole graph.
+.SH FILES
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

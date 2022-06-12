@@ -1,0 +1,54 @@
+#!@BASH@
+#
+# Run this from a successful build directory to check error recovery
+# code paths in the event of (simulated) killed jobs. For adequate
+# coverage, the number of vertices per worker must exceed the kill
+# sampling period, but there must be enough workers to be dangerous.
+# Minimal settings are 3 workers, 4 samples per period, and 6
+# dimensions, which imply a run time of about an hour if valgrind drd
+# tests are enabled. See DIMENSION and LANES in test/readme.h, PERIOD
+# in src/killers.h, and CMakeLists.txt. If you need to interrupt this
+# script, run untest to rebuild for production.
+
+# Find the call sites from which kills are to be simulated.
+SITE_COUNT=$(@GREP@ KILL_SITE @CMAKE_CURRENT_SOURCE_DIR@/src/*.c | @SED@ -n $=)
+
+# Treat tests reporting a user interrupt as successful.
+@SED@ -i \
+ "s/^#define\ EXIT.*/#define\ EXIT\ exit\ ((err\ ?\ (err\ !=\ CRU_INTKIL)\ :\ 0)\ ?\ EXIT_FAILURE\ :\ EXIT_SUCCESS)/" \
+ @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
+
+# Use a short period to ensure adequate kill test coverage.
+@SED@ -i "s/^#define\ PERIOD.*/#define\ PERIOD\ 0x3/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+
+# Don't build documentation.
+rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+@SED@ -i "/GEN_DOCS/s/ON/OFF/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+
+# Run the tests.
+echo "Running all tests for each kill site. Only failed tests are reported."
+for (( site = 1; site <= $SITE_COUNT; site++))
+do
+	 @SED@ -i -E "s/^#define\ ACTIVE_SITE.*/#define\ ACTIVE_SITE\ $site/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+	 echo -e "Killing at active site\t$site\tof\t$SITE_COUNT"
+	 make > /dev/null
+	 ctest 2> /dev/null | @GREP@ -F "***"
+done
+
+# Disable simulated kills for production builds.
+@SED@ -i "s/^#define\ ACTIVE_SITE.*/#define\ ACTIVE_SITE\ 0/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+
+# Use a long period to reduce kill checking overhead in production.
+@SED@ -i "s/^#define\ PERIOD.*/#define\ PERIOD\ 0x1f/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
+
+# Accept only successful tests in production builds.
+@SED@ -i \
+ "s/^#define\ EXIT.*/#define\ EXIT\ exit\ (err\ ?\ EXIT_FAILURE\ :\ EXIT_SUCCESS)/" \
+ @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
+
+# Build documentation.
+rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+@SED@ -i "/GEN_DOCS/s/OFF/ON/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
+
+# Don't leave the test build lying around.
+make > /dev/null

@@ -1,0 +1,59 @@
+.TH CRU_STRERROR 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_strerror \- translate an error code to a readable message
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+char *
+.BR cru_strerror
+(
+int
+.I err
+)
+.SH DESCRIPTION
+Given an integer error code
+set by some other
+.BR cru
+library function, this function translates it to a terse readable
+message similarly to the POSIX standard
+.BR strerror
+function. POSIX error codes, error codes originating from the
+.BR nthm
+library, and codes specific to
+.BR cru
+are detected and the results are formatted accordingly. The latter
+include test failure codes, internal error codes, and those listed
+below. Any other error codes are reported as undiagnosed.
+.SH RETURN VALUE
+The returned value is a statically allocated zero-terminated ASCII
+string that may be printed but should not be modified or freed. The
+following specific error codes are translated as shown.
+@ERROR_LIST@
+.SH NOTES
+This function is not thread-safe and not meant for production code unless
+its use is restricted to a single thread context.
+.P
+Error codes of the form
+.BR CRU_DEVXXX
+are for development use involving custom builds and are not otherwise
+documented.
+.P
+Return values of the form
+.nf
+nthm-X.Y.Z: internal error code nnn
+cru-X.Y.Z: internal error code nnn
+.fi
+where "X.Y.Z" is a version number and "nnn" is a decimal internal
+error code number are indicative of possible bugs in these libraries
+worthy of a bug report including a reproducible test case.
+.SH FILES
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

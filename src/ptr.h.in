@@ -1,0 +1,77 @@
+/*
+  cru -- co-recursion utilities
+
+  copyright (c) 2022 Dennis Furey
+
+  Cru is free software: you can redistribute it and/or modify it under
+  the terms of version 3 of the GNU General Public License as
+  published by the Free Software Foundation.
+
+  Cru is distributed in the hope that it will be useful, but WITHOUT
+  ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
+  License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with cru. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#ifndef CRU_PTR_H
+#define CRU_PTR_H 1
+
+#include <cru.h>
+#include "config.h"
+
+// Type definitions for pointer types derived from other header files
+// following a consistent naming convention are filled in below
+// automatically by cmake as explained in CMakeLists.txt. See
+// src/ptr.h under the build directory for the full list or
+// generate it by this command if not building with cmake.
+//
+// grep -hE "^struct[[:blank:]]+[(a-z)|_]+" *.h | grep -vE " cru" |\
+// sed -e "s/\(struct \)\( *\)\(.*\)_s/typedef \1\3_s\ \*\3;/"
+
+@POINTERS@
+
+// This constant represents the number of source files containing any
+// _cru_malloc call sites; see src/ptr.h under the build directory for
+// the value or generate it by this command if not building with
+// cmake.
+//
+// grep -l ") _cru_malloc" *.c | sed -n $=
+
+#define MALLOX @MALLOX@
+
+// Other declarations have to be hard coded below because they involve
+// conditional compilation.
+
+#ifdef JUDY
+#define JUDYERROR_NOTEST 1
+#include <Judy.h>
+
+// abstract data types preferably implemented as Judy arrays
+
+typedef Pvoid_t node_set;            // a set of nodes in a graph used only for membership testing
+typedef Pvoid_t vertex_map;          // a finite map from user-defined vertices to arbitrary handles used for classification
+typedef Pvoid_t packet_table;        // an open hash table of packets used for membership testing and partly for storage
+typedef Pvoid_t multiset_table;      // a multiset of edge labels for testing membership and multiplicity
+
+#endif
+#ifndef JUDY
+
+// semantically equivalent but very inefficient replacements used only as a fallback
+
+// an open hash table with just one bin
+typedef packet_list packet_table;
+
+// an open hash table with just one bin
+typedef multiset_table_bin multiset_table;
+
+// a set represented as a list
+typedef node_set_nj node_set;
+
+// a lookup table represented as a list
+typedef vertex_map_nj vertex_map;
+
+#endif
+#endif

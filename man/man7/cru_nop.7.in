@@ -1,0 +1,70 @@
+.TH CRU_NOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_nop \- nullary operator function type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void* (*
+.BR cru_nop
+)(int *)
+.SH DESCRIPTION
+A user-defined nullary operator takes only a pointer to an initially
+zero error code as an argument and returns a constant value.
+.SH RETURN VALUE
+The operator may return either a scalar value or a pointer to the
+heap.
+.TP
+*
+In the case of a scalar value, the result is required to be
+identical on every invocation.
+.TP
+*
+In the case of a pointer, the result ordinarily should be a pointer
+to a newly allocated copy of an identical result on every invocation.
+.TP
+* 
+Alternatively, applications may opt to return a pointer to a shared
+copy of the result. In that case both the operator and the
+corresponding
+.BR cru_destructor
+function are responsible for implementing thread-safe reference
+counting.
+.SH ERRORS
+If a nullary operator sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Applications pass nullary operators to
+.BR cru
+through the
+.BR vacuous_case
+field in a
+.BR cru_fold
+structure as an optional way of defining the effect of folding over an empty
+set. The result is application-specific. For example, the sum of an
+empty set of numbers would be zero, whereas the product of an empty set
+of numbers is conventionally taken to be unity.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

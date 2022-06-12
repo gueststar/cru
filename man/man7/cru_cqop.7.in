@@ -1,0 +1,85 @@
+.TH CRU_CQOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_cqop \- conditional quarternary operator for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_cqop_s
+.br
+{
+.br
+.BR cru_qpred
+.BR qpred;
+.br
+.BR cru_qop
+.BR qop;
+.br
+} *
+.BR cru_cqop;
+.SH DESCRIPTION
+A conditional ternary operator represents a quarternary operator whose
+result is required only if some predicate is true of its operands.
+When conditional operators are passed to
+.BR cru
+library functions, they are used only as follows:
+.TP
+*
+First the predicate is applied to the operands.
+.TP
+*
+If the predicate returns any non-zero value, then a result is
+obtained from the operator applied to those same operands.
+.TP
+*
+If the predicate returns zero, the operator is not invoked and
+therefore not required to produce any valid result.
+.P
+A
+NULL
+.BR qpred
+field causes the operator to be invoked unconditionally. When
+operating on a graph created with scalar edge labels,
+.BR cru
+infers a quartenary operator that unconditionally returns its third
+argument if none is specified. That is, if applied to the quadruple of
+operands
+.I (w,x,y,z)
+in that order, the inferred quartenary operator returns
+.I y.
+.SH ERRORS
+Except as noted above, there is no default value for the
+.BR qop
+field, which must be initialized to something other than
+NULL.
+Otherwise, an error of
+.BR CRU_UNDCQO
+is reported for an undefined conditional quartenary operator.
+.SH NOTES
+Conditional quarternary operands are the
+.BR labeler
+field in a
+.BR cru_composer
+structure used during composition operations. The first two operands
+are properties of a local and an adjacent vertex, respectively,
+computed according to the
+.BR co_props
+field of the same composer. The other two operands are the label of an
+edge from the local vertex and one from the adjacent vertex. The
+predicate decides whether to create a new edge, and the operator
+determines its label. The default operator creates an edge with the
+same label as the outgoing edge from the local vertex, but only if the
+edge labels are of scalar types and not dynamically allocated.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

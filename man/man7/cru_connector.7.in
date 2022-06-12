@@ -1,0 +1,81 @@
+.TH CRU_CONNECTOR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_connector \- simple graph production rule used by the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void (*
+.BR cru_connector
+)
+(
+.br
+.BR cru_vertex
+,
+.br
+int *
+)
+.SH DESCRIPTION
+A user-defined function cast to this type takes a vertex belonging to
+a graph under construction and a pointer to an initially zero integer
+error code as arguments. The
+.BR cru_vertex
+type is an alias for a
+.I void
+pointer, which may refer to any type chosen by the application
+developer. The function must treat the vertex as read-only but may
+assign the error code.
+.P
+The function is expected to call
+.BR cru_connect
+exactly once for each outgoing edge from the given vertex, creating
+and passing an edge label and an adjacent vertex to
+.BR cru_connect
+on each call.
+In so doing, the function incrementally builds the graph by requesting
+inclusion of the newly created adjacent vertex and edge.
+.P
+Adjacent vertices created in this way are passed in subsequent calls
+to the same connector function unless they have been created
+previously. If multiple worker threads attempt to create the same
+adjacent vertex (due to it being reachable through multiple paths)
+only one call to the connector function is ever made for it and
+redundant copies of the vertex are automatically reclaimed if a
+destructor is provided for them.
+.SH ERRORS
+If a connector function sets the error code to any non-zero value,
+the instance of
+.BR cru_built
+that calls it terminates without building a graph and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Connector functions are
+referenced by the
+.BR connector
+field in a
+.BR cru_builder
+structure passed to the
+.BR cru_built
+library function. This field has no default value.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

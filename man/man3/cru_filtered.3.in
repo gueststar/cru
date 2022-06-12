@@ -1,0 +1,195 @@
+.TH CRU_FILTERED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_filtered \- selectively remove vertices or edges from a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+.BR cru_graph
+.BR cru_filtered
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+.BR cru_filter
+.I f
+,
+.br
+.BR cru_kill_switch
+.I k
+,
+.br
+unsigned
+.I lanes
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+This function selectively deletes edges or vertices from a graph
+.I g
+according to user-defined criteria set by
+.I f
+\~following the usual
+.BR cru_filter
+calling conventions. Alternatively, a NULL value of
+.I f
+\~is allowed and causes the graph to be returned unmodified.
+.\"killsw
+In this case, the whole graph is reclaimed.
+.\"lanes
+.P
+For purposes of memory management,
+the graph
+.I g
+is consumed and should not be accessed or reclaimed afterwards.
+.SH RETURN VALUE
+On successful completion, the returned value is a pointer to a graph
+derived from
+.I g
+by the removal of edges or vertices according to the given
+.BR cru_filter
+structure
+.I f.
+Applications should treat the returned value as opaque but may pass it
+as a parameter to other library functions. In the event of any error,
+a NULL
+pointer is returned. A
+NULL
+pointer is also returned if the given parameter
+.I g
+is
+NULL,
+which in this case represents an empty graph and is not in itself an
+error.
+.SH ERRORS
+.\"cb_errs
+.TP
+.BR ENOMEM
+There is insufficient memory to allocate all necessary resources.
+.TP
+.BR EAGAIN
+Resources or permissions are insufficient to create a thread.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.TP
+.BR CRU_BADKIL
+The parameter
+.I k
+refers to an invalid or corrupted kill switch structure.
+.TP
+.BR CRU_INTKIL
+The operation was stopped by user intervention using the kill switch
+.I k.
+.TP
+.BR CRU_INCFIL
+All fields in
+.I f->fi_kernel.e_op
+are
+NULL
+but at least one of
+.I f->fi_order.equal
+or
+.I f->fi_order.hash
+is not
+NULL.
+.TP
+.BR CRU_INCINV
+The field
+.I f->fi_zone.offset
+is non-zero but the vertex
+.I f->fi_zone.initial_vertex
+is not in the graph
+.I g.
+.TP
+.BR CRU_TPCMPR
+The
+.BR m_free
+and
+.BR r_free
+fields differ
+where the
+.BR vacuous_case
+field is
+NULL
+in any of the
+.I f->fi_kernel.v_op.incident,
+.I f->fi_kernel.v_op.outgoing,
+or
+.I f->fi_kernel.e_op
+structures.
+.TP
+.BR CRU_UNDMAP
+The
+.BR map
+field in any of
+.I f->fi_kernel.v_op.incident,
+.I f->fi_kernel.v_op.outgoing,
+or
+.I f->fi_kernel.e_op
+is
+NULL
+but at least one other field in it is not
+NULL.
+.TP
+.BR CRU_UNDRED
+The
+.BR reduction
+field is
+NULL
+in either of
+.I f->fi_kernel.v_op.incident
+or
+.I f->fi_kernel.v_op.outgoing
+whose other fields are not all
+NULL,
+or the
+.BR reduction
+field is
+NULL
+in
+.I f->fi_kernel.e_op
+when not all fields of
+.I f->fi_order
+are
+NULL.
+.TP
+.BR CRU_UNDVAC
+The
+.I f->fi_kernel.v_op.incident.vacuous_case
+field is
+NULL,
+at least one other field of
+.I f->fi_kernel.v_op.incident
+is not
+NULL,
+and there is a vertex in the graph with no incident
+edges, or the
+.I f->fi_kernel.v_op.outgoing.vacuous_case
+field is
+NULL,
+at least one other field of
+.I f->fi_kernel.v_op.outgoing
+is not
+NULL,
+and there is a vertex in the graph with no outgoing edges.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

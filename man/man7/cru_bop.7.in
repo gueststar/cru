@@ -1,0 +1,111 @@
+.TH CRU_BOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_bop \- binary operator function type used in the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef void* (*
+.BR cru_bop
+)(void *, void *, int *)
+.SH DESCRIPTION
+A user-defined binary operator takes a pair of operands and a pointer
+to an initially zero error code as arguments. The operands can be
+scalar values, pointers to heap allocated storage, or a combination.
+The operator must treat the operands as read only but may assign the
+error code.
+.P
+Binary operators serve various purposes, such as constructing a new
+vertex from a pair of vertices, a new edge label from a pair of edge
+labels, or constructing more general results when used as the
+.BR reduction
+operator in a
+.BR cru_fold
+structure. See the NOTES section below for details.
+.SH RETURN VALUE
+The return value may be either a scalar value or a pointer to the heap
+depending on the application's representation for it. In the case of a
+pointer, the result ordinarily refers to newly allocated
+storage. However, applications may opt to return a pointer to shared
+storage provided the operator and the corresponding
+.BR cru_destructor
+function implement thread-safe reference
+counting.
+.SH ERRORS
+If a binary operator sets the error code to any non-zero value, the
+.BR cru
+API function invoking it terminates early without completing, and
+propagates the same error code to its caller.
+.P
+Applications can report POSIX error codes or define special purpose
+codes, but should not redefine any that clash with those
+reserved by
+.BR cru
+as declared in the
+.I error_codes.h
+header file.
+.SH NOTES
+Applications pass binary operators to
+.BR cru
+as pointers through
+.TP
+*
+the
+.BR bop
+field in a
+.BR cru_cbop
+(conditional binary operator) structure, where it returns an
+edge label as a result given a pair of edge labels
+.TP
+*
+the
+.BR ana
+and
+.BR cata
+fields of a
+.BR cru_splitter
+structure,
+where it returns a vertex given a
+vertex and a vertex property
+.TP
+*
+the
+.BR cru_vprod
+field in a
+.BR cru_crosser
+structure, where it returns a vertex given a pair of vertices
+.TP
+*
+and the
+.BR reduction
+field in a
+.BR cru_fold
+where its result can represent any property or metric about a graph.
+.P
+Conditional binary operators are used as the
+.BR postponement
+field in a
+.BR cru_postponer
+and the
+.BR e_prod
+field in a
+.BR cru_crosser,
+which are passed respectively to the
+.BR cru_postponed
+and
+.BR cru_crossed
+API functions.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

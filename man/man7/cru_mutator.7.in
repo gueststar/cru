@@ -1,0 +1,259 @@
+.TH CRU_MUTATOR 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_mutator \- specification for overwriting a graph in place
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_mutator_s
+.br
+{
+.br
+struct
+.BR cru_plan_s
+.BR mu_plan;
+.br
+struct
+.BR cru_kernel_s
+.BR mu_kernel;
+.br
+struct
+.BR cru_order_pair_s
+.BR mu_orders;
+.br
+} *
+.BR cru_mutator;
+.SH DESCRIPTION
+This structure parameterizes the
+.BR cru_mutated
+library function with necessary information initialized by the
+application to overwrite the edges or vertices of a graph in place by
+user-defined rules. The effect and the direction in which the
+operation propagates can be localized by the
+.BR cru_plan
+structure in the
+.BR mu_plan
+field per convention.
+Alternatively, the
+.BR mu_plan
+field may be omitted or zero-filled, in which case the whole graph is
+modified with an unconstrained traversal priority.
+.P
+The values overwritten onto the vertices and edges are computed
+respectively according to the
+.BR mu_kernel.v_op
+and
+.BR mu_kernel.e_op
+fields following usual
+.BR cru_kernel
+calling conventions. That is, vertices are overwritten with the
+value returned by the function referenced through
+.BR mu_kernel.v_op.vertex.map,
+and edge labels are overwritten with the value returned by the
+function referenced through
+.BR mu_kernel.e_op.map,
+neither of which directly modifies its operands. The corresponding
+reduction fields are not used and may be omitted or
+NULL.
+.P
+Further considerations stem from the graph nevertheless being modified
+in place when these values are overwritten. Following the usual calling
+conventions for a
+.BR cru_kernel,
+when each vertex in the graph
+is visited, each ternary
+operator referenced through any of the fields
+.BR mu_kernel.e_op.map,
+.BR mu_kernel.v_op.incident.map,
+or 
+.BR mu_kernel.v_op.outgoing.map
+is passed the vertex being visited as its left operand, the label of
+an edge connected to the vertex as its middle operand, and the
+adjacent vertex at the other end of the edge as the right operand.
+However, sometimes the operands are those initially appearing in the
+graph before being mutated, and sometimes they are the modified
+versions.
+.TP
+*
+For the operator referenced through the
+.BR mu_kernel.e_op.map
+field, the middle operand is always an initial unmodified edge label,
+and the right operand is always an initial unmodified vertex from the
+graph as given.  However, if a vertex mutation is defined, then the
+left operand is always the modified form of the vertex.
+.TP
+*
+For the operator referenced through the
+.BR mu_kernel.v_op.outgoing.map
+field, the left operand is always an unmodified vertex.  If the
+traversal priority is remote first and the zone orientation is
+forward, or if the traversal order is local first and the zone
+orientation is backwards, then the right operand is a modified
+vertex. If in either of these cases an edge label mutation is also
+defined, then the middle operand is a modified edge label, but is
+otherwise an unmodified edge label. In all other cases, the middle and
+right operands are in their initial unmodified forms.
+.TP
+*
+Analogous conditions apply to the
+.BR mu_kernel.v_op.incident.map
+field. Its left operand is always an unmodified vertex.  If the
+traversal priority is remote first and the zone orientation is
+backwards, or if the traversal priority is local first and the zone
+orientation is forward, then the right operand is a modified vertex.
+If in either of these cases an edge label mutation is also defined,
+then the middle operand is a modified edge label, but is otherwise an
+unmodified edge label. In all other cases, the middle and right
+operands are in their initial unmodified forms.
+.P
+The zone orientation, as given by the
+.BR cru_zone
+in the
+.BR mu_plan.zone
+field,
+and traversal priority as given by the
+.BR mu_plan.local_first
+and
+.BR mu_plan.remote_first
+fields, may impose some constraints on the allowed mutations.
+.TP
+*
+If the traversal priority is unconstrained, then at most one vertex
+mutation
+.BR mu_kernel.v_op
+or edge mutation
+.BR mu_kernel.e_op
+may be specified.
+.TP
+*
+If not all fields of
+.BR mu_kernel.v_op.outgoing
+are NULL, then
+.BR mu_kernel.v_op.outgoing.vacuous_case
+must refer to an appropriate nullary operator.
+.TP
+*
+If not all fields of
+.BR mu_kernel.v_op.incident
+are NULL, then
+.BR mu_kernel.v_op.incident.vacuous_case
+must refer to an appropriate nullary operator.
+.P
+Because the resulting graph after being modified may have different
+types of vertices or edges than the given graph, applications specify
+the new vertex and edge orderings to be associated with it in the
+.BR mu_orders
+field. Some inferences about the orders are made by default when parts
+of the
+.BR mu_kernel
+structure are 
+NULL,
+omitted, or zero-filled.
+.TP
+*
+If the
+kernel's vertex operation in
+.BR mu_kernel.v_op
+is omitted or zero-filled and the
+.BR mu_orders.v_order
+field is unspecified or partially specified, then the vertex ordering
+in the
+.BR mu_orders.v_order
+field is inferred as needed from that of the given graph.
+.TP
+*
+If the kernel's vertex operation specifies a vertex map through the
+.BR mu_kernel.v_op.vertex.map
+field but with a
+NULL
+destructor field in
+.BR mu_kernel.v_op.vertex.m_free,
+then a default scalar vertex ordering is inferred in
+the
+.BR mu_orders.v_order
+field.
+.TP
+*
+If the kernel's edge operation in
+.BR mu_kernel.e_op
+is omitted, zero-filled, or partially specified, then the edge ordering
+in the
+.BR mu_orders.e_order
+field is inferred as needed from that of the given graph.
+.TP
+*
+If the kernel's edge operation in
+.BR mu_kernel.e_op
+specifies a mutation through the
+.BR mu_kernel.e_op.map
+field but with a
+NULL
+destructor field in
+.BR mu_kernel.e_op.m_free,
+then a default scalar edge label ordering is
+inferred in the
+.BR mu_orders.e_order
+field.
+.SH ERRORS
+If a necessary vacuous case function is omitted, then the
+.BR cru_mutated
+function reports an error of
+.BR CRU_UNDVAC.
+If any of the other conditions stated above is not met, then the
+.BR cru_mutated
+function reports an error of
+.BR CRU_INCMUT,
+for an inconsistent mutation request.
+.P
+It is an error to omit destructors from the kernel if the results are
+dynamically allocated and destructors can not be inferred from the
+given graph. This error is not detectable but will cause memory
+leaks.
+.SH NOTES
+Vacuous case functions are required because mutations that depend on
+the results at adjacent vertices presuppose a graph with at least one
+vertex lacking prerequisites to avoid deadlock. For this vertex, a
+vacuous case is necessary.
+.P
+The limitations on the allowed mutations imposed by the traversal
+priority are a performance tradeoff. A single pass through the graph
+updating both vertices and edges and ensuring deterministic results is
+possible only by disallowing dependences on concurrently updated
+adjacent vertices or edges.
+.P
+These conditions imply that vertices can be modified in a way that
+depends on adjacent vertices and edges only when the order is
+constrained, but cyclic graphs admit only unconstrained traversal
+orders. Applications may work around this limitation by performing
+the required operations in sequence through multiple calls to
+.BR cru_mutated,
+thereby implicity barrier synchronizing the operations as of each call.
+For example, modifying both the vertices and the edges in a cyclic
+graph would be possible by invoking
+.BR cru_mutated
+first with a vertex mutation but no edge mutation, and next with an edge
+mutation but no vertex mutation defined in the
+.BR mu_kernel
+field.
+.P
+An edge order is necessary for the operations of composition, merging,
+deduplication, postponement, and stretching existing graphs. For these
+operations, an edge ordering must be defined or inferrable at some
+point in advance, so it should be defined or inferrable in the
+.BR mu_orders.e_order
+field if any of these operations is anticipated.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

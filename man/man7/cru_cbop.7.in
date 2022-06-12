@@ -1,0 +1,75 @@
+.TH CRU_CBOP 7 @DATE_VERSION_TITLE@
+.SH NAME
+cru_cbop \- conditional binary operator for the cru library
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+typedef struct
+.BR cru_cbop_s
+.br
+{
+.br
+.BR cru_bpred
+.BR bpred;
+.br
+.BR cru_bop
+.BR bop;
+.br
+} *
+.BR cru_cbop;
+.SH DESCRIPTION
+A conditional binary operator represents a binary operator whose
+result is required only if some predicate is true of its operands.
+When conditional operators are passed to
+.BR cru
+library functions, they are used only as follows:
+.TP
+*
+First the predicate is applied to the operands.
+.TP
+*
+If the predicate returns any non-zero value, then a result is
+obtained from the operator applied to those same operands.
+.TP
+*
+If the predicate returns zero, the operator is not invoked and
+therefore not required to produce any valid result.
+.P
+A
+NULL
+.BR bpred
+field causes the operator to be invoked unconditionally.
+.SH ERRORS
+The
+.BR bop
+field has no default value and must be initialized to something
+other than
+NULL.
+Otherwise, an error of
+.BR CRU_UNDCBO
+is reported for an undefined conditional binary operator.
+.SH NOTES
+Conditional binary operators appear in the
+.BR postponement
+field of a
+.BR cru_postponer
+and in the
+.BR e_prod
+field of a
+.BR cru_crosser.
+In both cases the operands are a pair of edge labels and the result
+returned by the operator is the label of a newly created or modified
+edge.
+.SH FILES
+.I @INCDIR@/function_types.h
+.P
+.I @INCDIR@/data_types.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE
