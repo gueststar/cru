@@ -551,7 +551,7 @@ involvement. To my knowledge it hasn't been used in production.
 
 To anyone thinking about contributing any code, thank you and please
 refer to the [coding
-standards](https://github.com/gueststar/nthm/blob/main/CONTRIBUTING.md)
+standards](https://github.com/gueststar/nthm/blob/master/CONTRIBUTING.md)
 in the [nthm](https://github.com/gueststar/nthm) repo. You're invited
 to advance `cru` in whatever direction suits your interests. If I,
 some rando on Github, may say so, don't be deterred by pointer
