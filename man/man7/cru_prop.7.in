@@ -115,6 +115,13 @@ form of evaluation is enabled, where both operands to the reduction,
 its output, and the map function's output are of the same type. This
 restriction applies with or without a vacuous case function being
 defined, but if defined, it determines the result for empty graphs.
+.SH ERRORS
+If the application represents properties as pointers, it must avoid
+having them point to any part of the graph that is dynamically
+allocated. The graph may be subject to reclamation concurrently with
+access to the properties, so failure to abide by this convention can
+cause segmentation faults. An easy workaround is to allocate an
+unshared copy of the relevant data for the property.
 .SH NOTES
 The
 .BR cru_prop

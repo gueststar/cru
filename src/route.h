@@ -39,7 +39,10 @@
 // the connectivity of the graph as implemented in sync.c. The number
 // is currently chosen to make the total size of a router a round
 // number of cache lines.
-#define DEAD_POOL 60
+#define DEAD_POOL 59
+
+// number of times a state has to be revisited for deadlock to be inferred
+#define DEADLOCK_TOLERANCE 0x4
 
 // identifies the struct type in the router union
 typedef enum {NON, FIL, BUI, MUT, COM, CLU, MAP, IND, EXT, SPL, POS, CRO, FAB, DED} router_tag;
@@ -85,6 +88,7 @@ struct router_s
   task work;                             // the function that runs in each worker thread
 #ifdef DEADLOCK_DETECTION
   uintptr_t state_hash[DEAD_POOL];       // deadlock is inferred when any of these repeats while progress is stalled
+  unsigned dead_certainty;               // the number of times a state has been revisited
 #endif
 };
 

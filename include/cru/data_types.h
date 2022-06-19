@@ -117,6 +117,7 @@ typedef struct cru_plan_s
 {
   int local_first;                           // non-zero constrains the traversal to visit nodes in top down order
   int remote_first;                          // non-zero constrains the traversal to visit nodes in bottom up order
+  int ignore_deadlock;                       // disable deadlock detection when non-zero
   struct cru_zone_s zone;
 } *cru_plan;
 

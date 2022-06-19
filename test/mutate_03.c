@@ -749,6 +749,7 @@ main (argc, argv)
 
   struct cru_mutator_s m = {
 	 .mu_plan = {
+		.ignore_deadlock = 1,
 		.local_first = 1},
 	 .mu_kernel = {
 		.v_op = {

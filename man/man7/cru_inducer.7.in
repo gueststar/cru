@@ -71,7 +71,7 @@ right operand.
 The set of the results returned by the ternary operator and a
 vacuous case result returned by the function referenced through the
 .BR in_fold.vacuous_case
-field, are then reduced by the binary operator
+field are then reduced by the binary operator
 referenced through the
 .BR in_fold.reduction
 field following usual

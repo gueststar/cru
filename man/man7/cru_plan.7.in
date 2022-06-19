@@ -15,6 +15,9 @@ int
 int
 .BR remote_first;
 .br
+int
+.BR ignore_deadlock;
+.br
 struct
 .BR cru_zone_s
 .BR zone;
@@ -83,6 +86,16 @@ if the priority is
 .BR remote_first
 and the zone orientation is backwards, then the prerequisites of each vertex are
 all origins of its incoming edges.
+.P
+Deadlock occurs when an application mistakenly attempts an ordered
+traversal on a cyclic graph. By default,
+.BR cru
+attempts to detect deadlock at the cost of a small performance penalty
+and a possibility of false positive detections. Users who are
+confident that a graph being traversed local first or remote first
+contains no cycles should disable deadlock detection by setting the
+.BR ignore_deadlock
+field to a non-zero value.
 .SH ERRORS
 Error codes are reported when this structure is passed to the
 .BR cru_mutated

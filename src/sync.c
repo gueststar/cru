@@ -179,6 +179,8 @@ _cru_dwindled (r, err)
 
 #ifdef DEADLOCK_DETECTION
 
+
+
 static int
 deadlocked (b, h, r, err)
 	  unsigned b;              // minimum backoff setting of any active worker
@@ -198,13 +200,16 @@ deadlocked (b, h, r, err)
   if ((pthread_mutex_lock (&(r->lock)) ? IER(1610) : 0) ? (r->valid = MUGGLE(66)) : 0)
 	 return 0;
   if (b != BACKOFF_LIMIT)                                         // progress detected
-	 memset (&(r->state_hash), 0, sizeof (r->state_hash));         // flush the state hash cache
+	 {
+		memset (&(r->state_hash), 0, sizeof (r->state_hash));       // flush the state hash cache
+		r->dead_certainty = 0;
+	 }
   else
 	 for (i = 0; i < DEAD_POOL; i++)
 		{
 		  if (r->state_hash[i] ? 0 : ((r->state_hash[i] = h)))      // first detection of this hash since stalled progress
 			 break;
-		  if ((r->state_hash[i] == h) ? ((dead = 1)) : 0)           // second detection, probable deadlock
+		  if ((r->state_hash[i] == h) ? ((dead = (++(r->dead_certainty) > DEADLOCK_TOLERANCE))) : 0)
 			 break;
 		}
   if (i == DEAD_POOL)                // use a sliding window in case oscillation starts after an initial transient

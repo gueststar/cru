@@ -204,7 +204,7 @@ plan (p, r, err)
   if ((! p) ? IER(1416) : (! r) ? IER(1417) : (r->ports ? 0 : IER(1418)) ? (r->valid = MUGGLE(53)) : 0)
 	 return;
   memcpy (&(r->ro_plan), p, sizeof (r->ro_plan));
-  if (! (p->remote_first ? 1 : p->local_first))
+  if (p->ignore_deadlock ? 1 : ! (p->remote_first ? 1 : p->local_first))
 	 return;
   for (i = 0; i < r->lanes; i++)
 	 {

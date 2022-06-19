@@ -187,7 +187,6 @@ cru_strerror (err)
 #define UNDIAGNOSED_FMT "cru-%d.%d.%d: undiagnosed error"
 
   static char error_buffer[80 + sizeof(IER_FMT)];
-  uintptr_t al;
 
   if (err >= 0)
 	 {
