@@ -49,6 +49,13 @@ fields of a
 .BR cru_fabricator,
 which are passed to the
 .BR cru_fabricated
+library function,
+and the
+.BR boundary_value
+field of a
+.BR cru_inducer,
+which is passed to the
+.BR cru_induced
 library function.
 .SH FILES
 .I @INCDIR@/function_types.h

@@ -197,6 +197,7 @@ typedef struct cru_mapreducer_s
 
 typedef struct cru_inducer_s
 {
+  cru_uop boundary_value;                    // optionally determine a result for vertices having no prerequisites
   struct cru_zone_s in_zone;                 // specifies the direction and starting point
   struct cru_fold_s in_fold;                 // encapsulates the work to be done at each vertex
 } *cru_inducer;

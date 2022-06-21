@@ -58,12 +58,17 @@ visit (n, b, lock, visited, i, result, err)
 	  // prerequisites. Store this value in the node's accumulator
 	  // field.
 {
+  edge_list e;
+  void *ua;
   void *a;
   int ux;
 
   if ((! n) ? IER(993) : (! b) ? IER(994) : (! i) ? IER(995) : (! result) ? IER(996) : *result ? IER(997) : *err)
 	 return;
-  a = _cru_reduced_edges_by_accumulator (&(i->in_fold), n->vertex, i->in_zone.backwards ? n->edges_in : n->edges_out, err);
+  if (((e = (i->in_zone.backwards ? n->edges_in : n->edges_out))) ? NULL : i->boundary_value)
+	 a = APPLIED(i->boundary_value, n->vertex);
+  else
+	 a = _cru_reduced_edges_by_accumulator (&(i->in_fold), n->vertex, e, err);
   if (*err)
 	 goto a;
   if (n != b)

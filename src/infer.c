@@ -146,7 +146,7 @@ _cru_inferred_inducer (i, err)
 
   if (! (i_copy = _cru_inducer_copy (i, err)))
 	 return NULL;
-  if (! (i_copy->in_fold.vacuous_case))
+  if (i_copy->boundary_value ? 0 : ! (i_copy->in_fold.vacuous_case))
 	 RAISE(CRU_UNDVAC);
   else if (! (i_copy->in_fold.map))
 	 RAISE(CRU_UNDMAP);
