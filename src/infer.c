@@ -437,10 +437,7 @@ _cru_inferred_mutator (m, s, err)
 	  // not both. If the traversal order is unconstrained, then at
 	  // most one of a vertex mutation or an edge mutation is allowed,
 	  // and the vertex mutation is not allowed any incident or
-	  // outgoing edge folds. If the traversal order is local first,
-	  // then both mutations are allowed but the vertex mutation is
-	  // allowed incident or outgoing edge folds only in a backwards
-	  // zone.
+	  // outgoing edge folds.
 	  //
 	  // These rules are necessary because mutating edges and vertices
 	  // on the same pass in an unconstrained order would otherwise
@@ -462,7 +459,11 @@ _cru_inferred_mutator (m, s, err)
 	 goto e;
   if (m_copy->mu_plan.local_first)
 	 goto e;
-  if (! _cru_empty_fold (&(m_copy->mu_kernel.e_op)))                    // unconstrained order
+  if (! _cru_empty_fold (&(m_copy->mu_kernel.e_op)))
+	 goto c;
+  if (! _cru_empty_fold (&(m_copy->mu_kernel.v_op.incident)))
+	 goto c;
+  if (! _cru_empty_fold (&(m_copy->mu_kernel.v_op.outgoing)))
 	 goto c;
  e: if (! (_cru_filled_map (&(m_copy->mu_kernel.v_op.vertex), err) ? _cru_filled_prop (&(m_copy->mu_kernel.v_op), err) : 0))
 	 goto b;

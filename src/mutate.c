@@ -19,6 +19,7 @@
 #include <string.h>
 #include "cthread.h"
 #include "defo.h"
+#include "duplex.h"
 #include "edges.h"
 #include "emu.h"
 #include "errs.h"
@@ -587,6 +588,8 @@ queuing_task (s, err)
 	 goto b;
   s->survivors = NULL;
   _cru_append_nodes (&q, u, err);
+  for (n = q->front; n; n = n->next_node)
+	 n->marked = NULL;
   return q;
  b: s->deletions = _cru_nodes_of (q, err);
  a: return NULL;
@@ -834,14 +837,20 @@ _cru_mutated (g, k, r, s, err)
 {
   node_list n;
 
-  if (*err ? 1 : (! g) ? IER(1219) : (! r) ? IER(1220) : (r->valid != ROUTER_MAGIC) ? IER(1221) : 0)
-	 goto a;
-  if ((r->tag != MUT) ? IER(1222) : ! (n = _cru_initial_node (g, k, r, err)))
-	 goto a;
-  if ((n == g->base_node) ? 0 : ! _cru_compatible (g, &(r->mutator.mu_kernel), err))
-	 if (*err ? 1 : ! _cru_launched (k, g->base_node, _cru_shared (_cru_reset (r, (task) coverage_analyzing_task, err)), err))
-		goto a;
-  propagate (g, k, r, n, s, err);
+ if (*err ? 1 : (! g) ? IER(1219) : (! r) ? IER(1220) : (r->valid != ROUTER_MAGIC) ? IER(1221) : 0)
+	goto a;
+ if ((r->tag != MUT) ? IER(1222) : ! (n = _cru_initial_node (g, k, r, err)))
+	goto a;
+ if ((n == g->base_node) ? 0 : ! _cru_compatible (g, &(r->mutator.mu_kernel), err))
+	if (*err ? 1 : ! _cru_launched (k, g->base_node, _cru_shared (_cru_reset (r, (task) coverage_analyzing_task, err)), err))
+	  goto a;
+ if (_cru_empty_fold (&(r->mutator.mu_kernel.v_op.incident)) ? _cru_empty_fold (&(r->mutator.mu_kernel.e_op)) : 0)
+	goto b;
+ if (! _cru_half_duplex (g, err))
+	goto b;
+ if (_cru_launched (k, n, _cru_router ((task) _cru_full_duplexing_task, r->lanes, err), err) ? *err : 0)
+	goto a;
+ b: propagate (g, k, r, n, s, err);
  a: if (*err == CRU_INTKIL)
 	 _cru_free_later (g, err);
   else if (*err)
