@@ -250,11 +250,10 @@ until after its prerequisites in the requested direction have been
 visited, and the API lets the user-supplied function computing the
 result at any vertex depend on the results computed at its adjacent
 prerequisites if desired. As these conditions imply, induction is
-applicable only to acyclic graphs, but `cru` automatically detects and
-aborts deadlocked operations due to unexpected cycles. An induction
-operation might be used for example to compute the fair market price
-of a financial derivative or the strategic value of a board game
-position by some definition.
+applicable only to acyclic graphs. An induction operation might be
+used for example to compute the fair market price of a financial
+derivative or the strategic value of a board game position by some
+definition.
 
 ### Classification
 

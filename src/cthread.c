@@ -53,7 +53,7 @@ thread_type (a, err)
 
 	  // Initialize the attributes for all created threads.
 {
-  return ! ((! a) ? IER(773) : pthread_attr_init (a) ? IER(774) : 0);
+  return ! ((! a) ? IER(772) : pthread_attr_init (a) ? IER(773) : 0);
 }
 
 
@@ -75,7 +75,7 @@ _cru_open_cthread (err)
   if (! _cru_error_checking_mutex_type (&mutex_attribute, err))
 	 return 0;
   for (i = 0; i < LOCK_POOL_SIZE; i++)
-	 if (pthread_rwlock_init (&(lock_pool[i]), NULL) ? IER(775) : 0)
+	 if (pthread_rwlock_init (&(lock_pool[i]), NULL) ? IER(774) : 0)
 		goto a;
   if (thread_type (&thread_attribute, err))
 	 return 1;
@@ -108,12 +108,12 @@ release_pthread_resources (err)
   unsigned i;
 
   if (pthread_mutexattr_destroy (&mutex_attribute))
-	 IER(776);
+	 IER(775);
   if (pthread_attr_destroy (&thread_attribute))
-	 IER(777);
+	 IER(776);
   for (i = 0; i < LOCK_POOL_SIZE; i++)
 	 if (pthread_rwlock_destroy (&(lock_pool[i])))
-		IER(778);
+		IER(777);
 }
 
 
@@ -158,11 +158,11 @@ _cru_create (id, start_routine, arg, err)
 {
   int e;
 
-  if ((! id) ? IER(779) : (! start_routine) ? IER(780) : NOMEM)
+  if ((! id) ? IER(778) : (! start_routine) ? IER(779) : NOMEM)
 	 return *err;
   if (! (e = pthread_create (id, &thread_attribute, (void *(*) (void *)) start_routine, (void *) arg)))
 	 return 0;
-  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : (e == EPERM) ? e : THE_IER(781));
+  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : (e == EPERM) ? e : THE_IER(780));
   return e;
 }
 
@@ -188,7 +188,7 @@ _cru_mutex_init (m, err)
 	 return *err;
   if (! (e = pthread_mutex_init (m, &mutex_attribute)))
 	 return 0;
-  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : (e == EPERM) ? e : THE_IER(782));
+  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : (e == EPERM) ? e : THE_IER(781));
   return e;
 }
 
@@ -216,7 +216,7 @@ _cru_cond_init (c, err)
 	 return *err;
   if (! (e = pthread_cond_init (c, NULL)))
 	 return 0;
-  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : THE_IER(783));
+  RAISE((e == ENOMEM) ? e : (e == EAGAIN) ? e : THE_IER(782));
   return e;
 }
 
@@ -247,10 +247,10 @@ _cru_read (v, err)
   void *x;
   unsigned i;
 
-  if ((! v) ? IER(784) : pthread_rwlock_rdlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(785) : 0)
+  if ((! v) ? IER(783) : pthread_rwlock_rdlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(784) : 0)
 	 return NULL;
   x = *v;
-  return ((pthread_rwlock_unlock (&(lock_pool[i])) ? IER(786) : 0) ? NULL : x);
+  return ((pthread_rwlock_unlock (&(lock_pool[i])) ? IER(785) : 0) ? NULL : x);
 }
 
 
@@ -268,11 +268,11 @@ _cru_write (v, x, err)
 {
   unsigned i;
 
-  if ((! v) ? IER(787) : pthread_rwlock_wrlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(788) : 0)
+  if ((! v) ? IER(786) : pthread_rwlock_wrlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(787) : 0)
 	 return;
   *v = x;
   if (pthread_rwlock_unlock (&(lock_pool[i])))
-	 IER(789);
+	 IER(788);
 }
 
 
@@ -286,10 +286,10 @@ _cru_lock_for_writing (v, err)
 
 	  // Begin a critical section of write operations that will end with a write to v.
 {
-  if ((! v) ? IER(790) : 0)
+  if ((! v) ? IER(789) : 0)
 	 return;
   if (pthread_rwlock_wrlock (&(lock_pool[((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])))
-	 IER(791);
+	 IER(790);
 }
 
 
@@ -305,11 +305,11 @@ _cru_unlock_for_reading (v, x, err)
 
 	  // End a critical section of write operations with a write to v.
 {
-  if ((! v) ? IER(792) : 0)
+  if ((! v) ? IER(791) : 0)
 	 return;
   *v = x;
   if (pthread_rwlock_unlock (&(lock_pool[((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])))
-	 IER(793);
+	 IER(792);
 }
 
 
@@ -328,10 +328,10 @@ _cru_set (lock, f, err)
 
 	  // Safely set a flag.
 {
-  if ((! f) ? IER(794) : *f ? IER(795) : pthread_rwlock_wrlock (lock) ? IER(796) : 0)
+  if ((! f) ? IER(793) : *f ? IER(794) : pthread_rwlock_wrlock (lock) ? IER(795) : 0)
 	 return;
   *f = 1;
   if (pthread_rwlock_unlock (lock))
-	 IER(797);
+	 IER(796);
 }
 

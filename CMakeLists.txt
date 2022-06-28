@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.4.0
+  cru VERSION 0.5.0
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -252,6 +252,8 @@ endif()
 # schools of thought deem it bad cmake practice to avoid enumerating
 # them explicitly.
 
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
+
 execute_process(
   OUTPUT_VARIABLE C_FILES
   COMMAND ${FIND} ${CMAKE_CURRENT_SOURCE_DIR}/src -name "*.c"
@@ -355,25 +357,6 @@ if (JUDY)
 else ()
   message (WARNING "Judy array library not in use; expect severe performance degradation")
 endif()
-
-# --------------- options ---------------------------------------------------------------------------------
-
-# Cru can detect deadlock automatically and raise an error instead of
-# hanging when user code ineptly requests depth first traversal on
-# cyclic graphs. There is a slight performance penalty and a
-# vanishingly small risk of a false positive detection. Disabling this
-# option risks unlimited charges if computing resources are billed by
-# the hour.
-
-option (DEADLOCK_DETECTION "enable deadlock detection on depth first traversal" ON)
-
-if (DEADLOCK_DETECTION)
-  message (STATUS "deadlock detection enabled")
-else ()
-  message (STATUS "deadlock detection disabled")
-endif ()
-
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
 # --------------- automated tests -------------------------------------------------------------------------
 

@@ -28,22 +28,6 @@
 // default task parameter to router allocating functions
 #define NO_TASK NULL
 
-// Deadlock is regarded as a symptom of buggy user code attempting to
-// use a remote-first traversal order on a cyclic graph. DEAD_POOL is
-// the number of previously attained state hashes worth storing for
-// deadlock detection by comparison with the current one. The time
-// taken for deadlock detection is probabilistic. Any positive value
-// for DEAD_POOL is valid, but increasing this number decreases the
-// expected detection time and increases the probability of a false
-// positive. The time increases with the number of worker threads and
-// the connectivity of the graph as implemented in sync.c. The number
-// is currently chosen to make the total size of a router a round
-// number of cache lines.
-#define DEAD_POOL 59
-
-// number of times a state has to be revisited for deadlock to be inferred
-#define DEADLOCK_TOLERANCE 0x4
-
 // identifies the struct type in the router union
 typedef enum {NON, FIL, BUI, MUT, COM, CLU, MAP, IND, EXT, SPL, POS, CRO, FAB, DED} router_tag;
 
@@ -86,10 +70,6 @@ struct router_s
   unsigned lanes;                        // the number of ports in the array, with one for each possible worker
   port *ports;                           // an array of ports for all workers associated with this router
   task work;                             // the function that runs in each worker thread
-#ifdef DEADLOCK_DETECTION
-  uintptr_t state_hash[DEAD_POOL];       // deadlock is inferred when any of these repeats while progress is stalled
-  unsigned dead_certainty;               // the number of times a state has been revisited
-#endif
 };
 
 #ifdef __cplusplus

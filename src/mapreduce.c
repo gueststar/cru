@@ -56,9 +56,9 @@ visit (n, p, result, err)
   void *right;
   cru_destructor d;
 
-  if (*err ? 1 : (! p) ? IER(1077) : (! result) ? IER(1078) : p->vertex.reduction ? 0 : IER(1079))
+  if (*err ? 1 : (! p) ? IER(1076) : (! result) ? IER(1077) : p->vertex.reduction ? 0 : IER(1078))
 	 return;
-  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1080) : 0)
+  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1079) : 0)
 	 return;
   if (! *result)
 	 {
@@ -112,11 +112,11 @@ _cru_mapreducing_task (source, err)
   killed = 0;
   seen = NULL;
   result = NULL;
-  if ((! source) ? IER(1081) : (source->gruntled != PORT_MAGIC) ? IER(1082) : 0)
+  if ((! source) ? IER(1080) : (source->gruntled != PORT_MAGIC) ? IER(1081) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1083) : (r->valid != ROUTER_MAGIC) ? IER(1084) : 0)
+  if ((! (r = source->local)) ? IER(1082) : (r->valid != ROUTER_MAGIC) ? IER(1083) : 0)
 	 return NULL;
-  if ((!(destinations = source->peers)) ? IER(1085) : (r->tag != MAP) ? IER(1086) : 0)
+  if ((!(destinations = source->peers)) ? IER(1084) : (r->tag != MAP) ? IER(1085) : 0)
 	 {
 		_cru_abort (source, destinations, err);
 		goto a;
@@ -129,11 +129,11 @@ _cru_mapreducing_task (source, err)
 		  goto b;
 		if (r->mapreducer.ma_prop.vertex.r_free == r->mapreducer.ma_prop.vertex.m_free)
 		  _cru_free_maybe (result, r->mapreducer.ma_prop.vertex.r_free, err);
-		else if (IER(1087))
+		else if (IER(1086))
 		  _cru_free_maybe (result, NO_DESTRUCTOR, err);
 		result = NULL;
 		goto c;
-	 b: if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1088))
+	 b: if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1087))
 		  goto c;
 		_cru_scattered (r->mapreducer.ma_zone.backwards ? n->edges_in : n->edges_out, destinations, err);
 		visit (n, &(r->mapreducer.ma_prop), &result, err);

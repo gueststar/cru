@@ -59,7 +59,7 @@ _cru_collision (index, seen, err)
 #ifdef JUDY
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 
-  if (seen ? 0 : IER(1642))
+  if (seen ? 0 : IER(1630))
 	 return NULL;
   p = PJERR;
   if (MEMAVAIL)
@@ -171,7 +171,7 @@ unwind (e, b, p, index, t, err)
 {
   JUDY_ARRAY_SIZE freed_size;
 
-  if ((! e) ? IER(1643) : (! b) ? IER(1644) : ! *err)
+  if ((! e) ? IER(1631) : (! b) ? IER(1632) : ! *err)
 	 goto a;
   *e = _cru_cat_edges (_cru_unbundled (*b), *e);
   *b = NULL;
@@ -209,16 +209,16 @@ _cru_marshalled (e, by_class, d, err)
   JUDY_ARRAY_KEY index;
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 
-  if (e ? 0 : IER(1645))
+  if (e ? 0 : IER(1633))
 	 return NULL;
   for (t = NULL; *err ? NULL : *e;)
 	 {
-		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(1646))
+		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(1634))
 		  break;
 		p = PJERR;
 		if (MEMAVAIL)
 		  JLI(p, t, (JUDY_ARRAY_KEY) o);
-		if ((p == PJERR) ? RAISE(ENOMEM) : p ? 0 : IER(1647))
+		if ((p == PJERR) ? RAISE(ENOMEM) : p ? 0 : IER(1635))
 		  break;
 		_cru_push_edge (_cru_popped_edge (e, err), (edge_list *) p, err);
 	 }
@@ -260,14 +260,14 @@ _cru_rallied (h, r, e, err)
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 
   t = NULL;
-  if ((! e) ? IER(1648) : h ? 0 : IER(1649))
+  if ((! e) ? IER(1636) : h ? 0 : IER(1637))
 	 return NULL;
   while (*err ? NULL : *e)
 	 {
 		p = PJERR;
 		if (MEMAVAIL)
 		  JLI(p, t, (JUDY_ARRAY_KEY) h ((*e)->label));
-		if ((p == PJERR) ? RAISE(ENOMEM) : p ? 0 : IER(1650))
+		if ((p == PJERR) ? RAISE(ENOMEM) : p ? 0 : IER(1638))
 		  break;
 		_cru_push_edge (_cru_popped_edge (e, err), (edge_list *) p, err);
 	 }
@@ -309,7 +309,7 @@ _cru_record_edge (h, e, l, t, err)
 #ifdef JUDY
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 
-  if (t ? 0 : IER(1651))
+  if (t ? 0 : IER(1639))
 	 return;
   p = PJERR;
   if (MEMAVAIL)
@@ -368,7 +368,7 @@ _cru_already_recorded (h, e, l, t, err)
   multiset_table_bin p;
   int ux, ut;
 
-  if ((! t) ? 1 : e ? 0 : IER(1652))
+  if ((! t) ? 1 : e ? 0 : IER(1640))
 	 return 0;
   for (p = lookup (h, t, err); (! p) ? 0 : FAILED(e, l, p->edge_label); p = p->other_edges);
   return (*err ? 0 : ! ! p);
@@ -393,7 +393,7 @@ _cru_merge (t, q, e, err)
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 #endif
 
-  if ((! q) ? 1 : t ? 0 : IER(1653))
+  if ((! q) ? 1 : t ? 0 : IER(1641))
 	 return;
 #ifdef JUDY
   h = 0;
@@ -427,7 +427,7 @@ _cru_multiplicity (h, e, l, t, err)
   multiset_table_bin p;
   int ux, ut;
 
-  if (e ? 0 : IER(1654))
+  if (e ? 0 : IER(1642))
 	 return 0;
   for (p = lookup (h, t, err); (! p) ? 0: FAILED(e, l, p->edge_label); p = p->other_edges);
   return (p ? p->multiplicity : 0);
@@ -542,12 +542,12 @@ _cru_set_membership (node, seen, err)
 #ifdef JUDY
   int bit;
 
-  if (seen ? 0 : IER(1655))
+  if (seen ? 0 : IER(1643))
 	 return 0;
   bit = JERR;
   if (MEMAVAIL)
 	 J1S(bit, *seen, (JUDY_ARRAY_KEY) node);
-  return ! ((! bit) ? IER(1656) : (bit == JERR) ? RAISE(ENOMEM) : 0);
+  return ! ((! bit) ? IER(1644) : (bit == JERR) ? RAISE(ENOMEM) : 0);
 #else
   return _cru_set_membership_nj (node, (node_set_nj *) seen, err);
 #endif
@@ -592,7 +592,7 @@ _cru_test_and_set_membership (node, seen, err)
 #ifdef JUDY
   int bit;
 
-  if (seen ? 0 : IER(1657))
+  if (seen ? 0 : IER(1645))
 	 return 0;
   J1T(bit, *seen, (JUDY_ARRAY_KEY) node);
   if (bit)
@@ -600,7 +600,7 @@ _cru_test_and_set_membership (node, seen, err)
   bit = JERR;
   if (MEMAVAIL)
 	 J1S(bit, *seen, (JUDY_ARRAY_KEY) node);
-  if ((! bit) ? IER(1658) : (bit == JERR))
+  if ((! bit) ? IER(1646) : (bit == JERR))
 	 RAISE(ENOMEM);
   return 0;
 #else
@@ -711,12 +711,12 @@ _cru_associate (m, v, h, err)
 #ifdef JUDY
   POINTER_TO_JUDY_ARRAY_ENTRY p;
 
-  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(1659) : m ? 0 : IER(1660))
+  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(1647) : m ? 0 : IER(1648))
 	 goto a;
   p = PJERR;
   if (MEMAVAIL)
 	 JLI(p, *m, (JUDY_ARRAY_KEY) v);
-  if ((p == PJERR) ? RAISE(ENOMEM) : (! p) ? IER(1661) : *p ? RAISE(CRU_PARDPV) : 0)
+  if ((p == PJERR) ? RAISE(ENOMEM) : (! p) ? IER(1649) : *p ? RAISE(CRU_PARDPV) : 0)
 	 goto a;
   *p = (JUDY_ARRAY_ENTRY) h;
   return;

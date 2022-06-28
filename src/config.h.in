@@ -32,11 +32,6 @@
 
 #cmakedefine JUDY
 
-// This definition is derived from a cmake option enable CRU_DEADLK
-// errors to be raised when cru detects deadlock caused by user code.
-
-#cmakedefine DEADLOCK_DETECTION
-
 // This definition enables diagnostics for memory testing. It is
 // modified by mtest and untest scripts found under the test
 // directory and should always be undefined in production builds.
@@ -45,4 +40,4 @@
 
 // This definition alters memory testing. See ../test/mtest.in.
 
-#undef SOFT_LIMIT
+#define SOFT_LIMIT

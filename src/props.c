@@ -71,15 +71,15 @@ property_unsetting_task (source, err)
   int ux;
 
   seen = NULL;
-  if ((! source) ? IER(1348) : (source->gruntled != PORT_MAGIC) ? IER(1349) : 0)
+  if ((! source) ? IER(1347) : (source->gruntled != PORT_MAGIC) ? IER(1348) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(1350) : (r->valid != ROUTER_MAGIC) ? IER(1351) : 0)
+  if ((!(r = source->local)) ? IER(1349) : (r->valid != ROUTER_MAGIC) ? IER(1350) : 0)
 	 goto a;
-  if ((d = source->peers) ? ((! (p = PROBE_OF(r))) ? IER(1352) : *err) : IER(1353))
+  if ((d = source->peers) ? ((! (p = PROBE_OF(r))) ? IER(1351) : *err) : IER(1352))
 	 return _cru_abort_status (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
-		if ((! (n = (node_list) incoming->payload)) ? IER(1354) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
+		if ((! (n = (node_list) incoming->payload)) ? IER(1353) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
 		  goto b;
 		_cru_scatter_out (n, d, err);
 		if (n->vertex_property ? p->vertex.m_free : NULL)
@@ -158,7 +158,7 @@ _cru_unset_properties (g, r, err)
 {
   cru_prop p;
 
-  if ((! g) ? IER(1355) : (! r) ? IER(1356) : (r->valid != ROUTER_MAGIC) ? IER(1357) : ((p = PROBE_OF(r))) ? 0 : IER(1358))
+  if ((! g) ? IER(1354) : (! r) ? IER(1355) : (r->valid != ROUTER_MAGIC) ? IER(1356) : ((p = PROBE_OF(r))) ? 0 : IER(1357))
 	 return;
   if (((*err == CRU_INTKIL) ? 1 : ! *err) ? _cru_reset (r, (task) property_unsetting_task, err) : NULL)
 	 if (_cru_launched (UNKILLABLE, g->base_node, _cru_shared (r), err) ? (! *err) : 0)
@@ -196,7 +196,7 @@ _cru_propped (n, i, o, p, err)
   void *v;
   struct node_list_s s;
 
-  if (*err ? 1 : (! n) ? IER(1359) : (! p) ? IER(1360) : n->vertex_property ? IER(1361) : 0)
+  if (*err ? 1 : (! n) ? IER(1358) : (! p) ? IER(1359) : n->vertex_property ? IER(1360) : 0)
 	 goto a;
   memcpy (&s, n, sizeof (s));
   s.edges_in = i;
@@ -240,11 +240,11 @@ property_setting_task (source, err)
   killed = 0;
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(1362) : (source->gruntled != PORT_MAGIC) ? IER(1363) : 0)
+  if ((! source) ? IER(1361) : (source->gruntled != PORT_MAGIC) ? IER(1362) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(1364) : (r->valid != ROUTER_MAGIC) ? IER(1365) : 0)
+  if ((!(r = source->local)) ? IER(1363) : (r->valid != ROUTER_MAGIC) ? IER(1364) : 0)
 	 return NULL;
-  if ((!(d = source->peers)) ? IER(1366) : (! (p = PROBE_OF(r))) ? IER(1367) : 0)
+  if ((!(d = source->peers)) ? IER(1365) : (! (p = PROBE_OF(r))) ? IER(1366) : 0)
 	 return _cru_abort_status (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
@@ -252,7 +252,7 @@ property_setting_task (source, err)
 		killed = (killed ? 1 : KILLED);
 		if (*err ? 1 : killed)
 		  goto a;
-		if ((! (n = (node_list) incoming->payload)) ? IER(1368) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
+		if ((! (n = (node_list) incoming->payload)) ? IER(1367) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
 		  goto a;
 		_cru_scatter_out (n, d, err);
 		if (! *err)
@@ -288,7 +288,7 @@ _cru_set_properties (g, k, r, err)
   node_list n;
   router z;
 
-  if ((! g) ? IER(1369) : (! r) ? IER(1370) : (r->valid != ROUTER_MAGIC) ? IER(1371) : ((p = PROBE_OF(r))) ? 0 : IER(1372))
+  if ((! g) ? IER(1368) : (! r) ? IER(1369) : (r->valid != ROUTER_MAGIC) ? IER(1370) : ((p = PROBE_OF(r))) ? 0 : IER(1371))
 	 return 0;
   if (_cru_empty_fold (&(p->incident)) ? 0 : _cru_half_duplex (g, err))
 	 if (! _cru_launched (k, g->base_node, _cru_router ((task) _cru_full_duplexing_task, r->lanes, err), err))
@@ -341,9 +341,9 @@ property_clearing_task (source, err)
   cru_prop p;
   router r;
 
-  if ((! source) ? IER(1373) : (source->gruntled != PORT_MAGIC) ? IER(1374) : ! _cru_pingback (source, err))
+  if ((! source) ? IER(1372) : (source->gruntled != PORT_MAGIC) ? IER(1373) : ! _cru_pingback (source, err))
 	 goto a;
-  if ((! (r = source->local)) ? IER(1375) : (r->valid != ROUTER_MAGIC) ? IER(1376) : ((p = PROBE_OF(r))) ? 0 : IER(1377))
+  if ((! (r = source->local)) ? IER(1374) : (r->valid != ROUTER_MAGIC) ? IER(1375) : ((p = PROBE_OF(r))) ? 0 : IER(1376))
 	 goto a;
   unprop (source->survivors, p->vertex.m_free, DOPPLEGANGERS_TOO, err);
  a: status = *err;
@@ -369,9 +369,9 @@ _cru_clear_properties (r, err)
   cru_prop p;
   unsigned port_number;
 
-  if ((! r) ? IER(1378) : (r->valid != ROUTER_MAGIC) ? IER(1379) : (! (r->ports)) ? IER(1380) : 0)
+  if ((! r) ? IER(1377) : (r->valid != ROUTER_MAGIC) ? IER(1378) : (! (r->ports)) ? IER(1379) : 0)
 	 return;
-  if (((p = PROBE_OF(r))) ? 0 : IER(1381))
+  if (((p = PROBE_OF(r))) ? 0 : IER(1380))
 	 return;
   if ((! *err) ? 1 : (*err == CRU_INTKIL))
 	 if (_cru_launched (UNKILLABLE, NO_BASE, _cru_shared (_cru_reset (r, (task) property_clearing_task, err)), err))

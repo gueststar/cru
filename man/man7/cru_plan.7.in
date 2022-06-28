@@ -15,9 +15,6 @@ int
 int
 .BR remote_first;
 .br
-int
-.BR ignore_deadlock;
-.br
 struct
 .BR cru_zone_s
 .BR zone;
@@ -86,16 +83,6 @@ if the priority is
 .BR remote_first
 and the zone orientation is backwards, then the prerequisites of each vertex are
 all origins of its incoming edges.
-.P
-Deadlock occurs when an application mistakenly attempts an ordered
-traversal on a cyclic graph. By default,
-.BR cru
-attempts to detect deadlock at the cost of a small performance penalty
-and a possibility of false positive detections. Users who are
-confident that a graph being traversed local first or remote first
-contains no cycles should disable deadlock detection by setting the
-.BR ignore_deadlock
-field to a non-zero value.
 .SH ERRORS
 Error codes are reported when this structure is passed to the
 .BR cru_mutated
@@ -109,13 +96,6 @@ The zone offset is non-zero but its initial vertex is not in the graph.
 .TP
 .BR CRU_TPCMUT
 The mutation changes the destructors but the zone does not cover the whole graph.
-.TP
-.BR CRU_INTDLK
-A local or remote first traversal priority is attempted on a cyclic graph.
-.P
-The last is detected with high probability but not certainty. If a
-deadlock condition exists but is not detected, the application spins
-indefinitely.
 .SH NOTES
 Vertices in backwards oriented zones may have outgoing edges to
 vertices outside the zone, and vertices in forward oriented zones may
@@ -132,13 +112,6 @@ top level structure parameterizing the
 function. Omitting or filling the
 .BR mu_plan
 field with zeros is valid.
-.P
-Deadlock detection depends on a compile-time setting enabled by
-default but possibly disabled as a performance tradeoff in some
-site-specfic or downstream
-.BR cru
-package builds. It is incumbent on users to be aware of custom
-configurations, but the details are beyond the scope of this manual.
 .SH FILES
 .I @INCDIR@/function_types.h
 .P

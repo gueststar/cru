@@ -47,7 +47,7 @@ _cru_edge_map (z, a, p, n, err)
 {
   edge_map e;
 
-  if (n ? 0 : IER(872))
+  if (n ? 0 : IER(871))
 	 goto a;
   if ((e = (edge_map) _cru_malloc (sizeof (*e))) ? 0 : RAISE(ENOMEM))
 	 goto b;
@@ -110,7 +110,7 @@ _cru_pop_map (p, err)
 {
   edge_map o;
 
-  if (*err ? 1 : (! p) ? IER(873) : ((o = *p)) ? 0 : IER(874))
+  if (*err ? 1 : (! p) ? IER(872) : ((o = *p)) ? 0 : IER(873))
 	 return;
   *p = (*p)->next_map;
   o->next_map = NULL;

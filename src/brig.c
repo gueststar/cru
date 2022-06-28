@@ -38,7 +38,7 @@ _cru_push_bucket (bucket, b, d, err)
 {
   brigade n;
 
-  if ((! b) ? IER(556) : (n = (brigade) _cru_malloc (sizeof (*n))) ? 0 : RAISE(ENOMEM))
+  if ((! b) ? IER(555) : (n = (brigade) _cru_malloc (sizeof (*n))) ? 0 : RAISE(ENOMEM))
 	 {
 		_cru_free_edges_and_labels (d, bucket, err);
 		return;
@@ -66,7 +66,7 @@ _cru_popped_bucket (b, err)
 {
   brigade t;
 
-  if ((! b) ? IER(557) : ! *b)
+  if ((! b) ? IER(556) : ! *b)
 	 return NULL;
   t = *b;
   *b = (*b)->other_buckets;
@@ -118,18 +118,18 @@ _cru_bucketed (e, by_class, err)
   node_list n, o;
 
   t = NULL;
-  if (e ? 0 : IER(558))
+  if (e ? 0 : IER(557))
 	 return NULL;
   o = NULL;
   for (f = &t; *e;)
 	 {
-		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(559))
+		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(558))
 		  break;
 		if (! *f)
 		  _cru_push_bucket (NULL, f, NO_LABEL_DESTRUCTOR, err);
 		if (! *f)
 		  break;
-		if ((*f)->bucket ? ((n = (*f)->bucket->remote.node) ? (by_class ? (CLASS_OF(n) != o) : (n != o)) : IER(560)) : 0)
+		if ((*f)->bucket ? ((n = (*f)->bucket->remote.node) ? (by_class ? (CLASS_OF(n) != o) : (n != o)) : IER(559)) : 0)
 		  {
 			 f = &((*f)->other_buckets);
 			 continue;
@@ -167,13 +167,13 @@ _cru_bundled (r, e, err)
   int ux, ut;
 
   t = NULL;
-  if ((! e) ? IER(561) : ! *e)
+  if ((! e) ? IER(560) : ! *e)
 	 return NULL;
   if (! r)
 	 for (; *err ? NULL : *e; t->bucket = _cru_popped_edge (e, err))
 		{
 		  _cru_push_bucket (EMPTY_BUCKET, &t, NO_LABEL_DESTRUCTOR, err);
-		  if (*err ? 1 : t ? 0 : IER(562))
+		  if (*err ? 1 : t ? 0 : IER(561))
 			 break;
 		}
   else
@@ -181,7 +181,7 @@ _cru_bundled (r, e, err)
 		{
 		  if (! *f)
 			 _cru_push_bucket (EMPTY_BUCKET, f, NO_LABEL_DESTRUCTOR, err);
-		  if (*err ? 1 : *f ? 0 : IER(563))
+		  if (*err ? 1 : *f ? 0 : IER(562))
 			 break;
 		  if ((*f)->bucket ? PASSED(r, (*f)->bucket->label, (*e)->label) : 1)
 			 {
@@ -312,8 +312,8 @@ _cru_reduced_brigade (m, v, t, by_class, d, err)
   r.e_free = (m ? m->r_free : NULL);
   for (result = NULL; (o = t); _cru_free (o))
 	 {
-		if (t->bucket ? 1 : ! IER(564))
-		  if ((n = (by_class ? CLASS_OF(t->bucket->remote.node) : t->bucket->remote.node)) ? 1 : ! IER(565))
+		if (t->bucket ? 1 : ! IER(563))
+		  if ((n = (by_class ? CLASS_OF(t->bucket->remote.node) : t->bucket->remote.node)) ? 1 : ! IER(564))
 			 {
 				l = _cru_configurably_reduced_edges (m, v, t->bucket, by_class, WITHOUT_LOCKS, err);
 				_cru_push_edge (_cru_edge (&r, l, NO_VERTEX, n, NO_NEXT_EDGE, err), &result, err);

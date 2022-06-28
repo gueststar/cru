@@ -63,7 +63,7 @@ _cru_close_killers ()
 
 	  // Do this when the process exits.
 {
-  _cru_globally_throw (pthread_mutex_destroy (&killer_lock) ? THE_IER(1026) : 0);
+  _cru_globally_throw (pthread_mutex_destroy (&killer_lock) ? THE_IER(1025) : 0);
 }
 
 
@@ -91,7 +91,7 @@ _cru_new_kill_switch (err)
 	 goto a;
   memset (k, 0, sizeof (*k));
   k->deadly = KILL_MAGIC;
-  if (! (_cru_mutex_init (&(k->safety), err) ? IER(1027) : *err))
+  if (! (_cru_mutex_init (&(k->safety), err) ? IER(1026) : *err))
 	 goto a;
   k->deadly = MUGGLE(19);
   _cru_free (k);
@@ -118,12 +118,12 @@ _cru_enable_killing (k, r, err)
 
   if ((! k) ? 1 : (k->deadly != KILL_MAGIC) ? RAISE(CRU_BADKIL) : 0)
 	 return;
-  if ((pthread_mutex_lock (&(k->safety)) ? IER(1028) : 0) ? (k->deadly = MUGGLE(20)) : 0)
+  if ((pthread_mutex_lock (&(k->safety)) ? IER(1027) : 0) ? (k->deadly = MUGGLE(20)) : 0)
 	 return;
   k->killed = r;
   t = k->killable;
   k->killable = 0;
-  if (pthread_mutex_unlock (&(k->safety)) ? IER(1029) : 0)
+  if (pthread_mutex_unlock (&(k->safety)) ? IER(1028) : 0)
 	 k->deadly = MUGGLE(21);
   if (t)
 	 _cru_kill (r, err);
@@ -145,10 +145,10 @@ _cru_disable_killing (k, err)
 {
   if ((! k) ? 1 : (k->deadly != KILL_MAGIC) ? RAISE(CRU_BADKIL) : 0)
 	 return;
-  if ((! k) ? 1 : (pthread_mutex_lock (&(k->safety)) ? IER(1030) : 0) ? (k->deadly = MUGGLE(22)) : 0)
+  if ((! k) ? 1 : (pthread_mutex_lock (&(k->safety)) ? IER(1029) : 0) ? (k->deadly = MUGGLE(22)) : 0)
 	 return;
   k->killed = NULL;
-  if (pthread_mutex_unlock (&(k->safety)) ? IER(1031) : 0)
+  if (pthread_mutex_unlock (&(k->safety)) ? IER(1030) : 0)
 	 k->deadly = MUGGLE(23);
 }
 
@@ -166,11 +166,11 @@ _cru_kill (k, err)
 
 	  // Safely set the killed field in a router.
 {
-  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1032) : 0)
+  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1031) : 0)
 	 return;
   *k = KILLED_BY_USER;
   if (pthread_mutex_unlock (&killer_lock))
-	 IER(1033);
+	 IER(1032);
   RAISE(CRU_INTKIL);
 }
 
@@ -188,11 +188,11 @@ _cru_kill_internally (k, err)
 	  // Safely set the killed field in a router without raising a
 	  // user-facing error.
 {
-  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1034) : 0)
+  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1033) : 0)
 	 return;
   *k = KILLED_INTERNALLY;
   if (pthread_mutex_unlock (&killer_lock))
-	 IER(1035);
+	 IER(1034);
 }
 
 
@@ -211,11 +211,11 @@ _cru_killed (k, err)
   int t;
 
   t = 0;
-  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1036) : 0)
+  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1035) : 0)
 	 return 0;
   t = *k;
   if (pthread_mutex_unlock (&killer_lock))
-	 IER(1037);
+	 IER(1036);
   return t;
 }
 
@@ -237,11 +237,11 @@ _cru_killed_internally (k, err)
   int t;
 
   t = 0;
-  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1038) : 0)
+  if ((! k) ? 1 : pthread_mutex_lock (&killer_lock) ? IER(1037) : 0)
 	 return 0;
   t = *k;
   if (pthread_mutex_unlock (&killer_lock))
-	 IER(1039);
+	 IER(1038);
   return (t == KILLED_INTERNALLY);
 }
 
@@ -273,10 +273,10 @@ cru_kill (k, err)
 	 return;
   if (((k->deadly != KILL_MAGIC)) ? RAISE(CRU_BADKIL) : 0)
 	 return;
-  if ((pthread_mutex_lock (&(k->safety)) ? IER(1040) : 0) ? (k->deadly = MUGGLE(24)) : 0)
+  if ((pthread_mutex_lock (&(k->safety)) ? IER(1039) : 0) ? (k->deadly = MUGGLE(24)) : 0)
 	 return;
   dblx = k->killable = ! (k->killed);
-  if (pthread_mutex_unlock (&(k->safety)) ? IER(1041) : 0)
+  if (pthread_mutex_unlock (&(k->safety)) ? IER(1040) : 0)
 	 k->deadly = MUGGLE(25);
   if (dblx)
 	 return;
@@ -308,7 +308,7 @@ cru_free_kill_switch (k, err)
   if (((k->deadly != KILL_MAGIC)) ? RAISE(CRU_BADKIL) : 0)
 	 return;
   if (pthread_mutex_destroy (&(k->safety)))
-	 IER(1042);
+	 IER(1041);
   k->deadly = MUGGLE(26);
   _cru_free (k);
 }

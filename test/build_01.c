@@ -36,14 +36,14 @@ edge_of (n, err)
 {
   edge e;
 
-  if ((e = (edge) malloc (sizeof (*e))) ? 0 : FAIL(1734))
+  if ((e = (edge) malloc (sizeof (*e))) ? 0 : FAIL(1722))
 	 return NULL;
   memset (e, 0, sizeof (*e));
   e->e_magic = EDGE_MAGIC;
   e->e_value = n;
-  if (pthread_mutex_lock (&edge_lock) ? FAIL(1735) : ++edge_count ? 0 : FAIL(1736))
+  if (pthread_mutex_lock (&edge_lock) ? FAIL(1723) : ++edge_count ? 0 : FAIL(1724))
 	 goto a;
-  if (! (pthread_mutex_unlock (&edge_lock) ? FAIL(1737) : 0))
+  if (! (pthread_mutex_unlock (&edge_lock) ? FAIL(1725) : 0))
 	 return e;
  a: free (e);
   return NULL;
@@ -64,12 +64,12 @@ free_edge (e, err)
 	  // passed to the cru library as b.bu_sig.destructors.e_free in the builder
 	  // b.
 {
-  if ((! e) ? FAIL(1738) : (e->e_magic != EDGE_MAGIC) ? FAIL(1739) : 0)
+  if ((! e) ? FAIL(1726) : (e->e_magic != EDGE_MAGIC) ? FAIL(1727) : 0)
 	 return;
-  e->e_magic = MUGGLE(85);
-  if (pthread_mutex_lock (&edge_lock) ? FAIL(1740) : edge_count-- ? 0 : FAIL(1741))
+  e->e_magic = MUGGLE(81);
+  if (pthread_mutex_lock (&edge_lock) ? FAIL(1728) : edge_count-- ? 0 : FAIL(1729))
 	 return;
-  if (pthread_mutex_unlock (&edge_lock) ? FAIL(1742) : 0)
+  if (pthread_mutex_unlock (&edge_lock) ? FAIL(1730) : 0)
 	 return;
   free (e);
 }
@@ -120,9 +120,9 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // Return 1 if an edge is labeled by the index of the bit in
 	  // which its endpoints differ, and 0 otherwise.
 {
-  if (*err ? 1 : (! connecting_edge) ? FAIL(1743) : (connecting_edge->e_magic != EDGE_MAGIC) ? FAIL(1744) : 0)
+  if (*err ? 1 : (! connecting_edge) ? FAIL(1731) : (connecting_edge->e_magic != EDGE_MAGIC) ? FAIL(1732) : 0)
 	 return 0;
-  return ! (((local_vertex ^ remote_vertex) != (1 << connecting_edge->e_value)) ? FAIL(1745) : 0);
+  return ! (((local_vertex ^ remote_vertex) != (1 << connecting_edge->e_value)) ? FAIL(1733) : 0);
 }
 
 
@@ -142,7 +142,7 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(1746) : (edges_out != DIMENSION) ? FAIL(1747) : 0);
+  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(1734) : (edges_out != DIMENSION) ? FAIL(1735) : 0);
 }
 
 
@@ -162,7 +162,7 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(1748) : (s < r) ? FAIL(1749) : 0) ? 0 : s);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(1736) : (s < r) ? FAIL(1737) : 0) ? 0 : s);
 }
 
 
@@ -190,11 +190,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(1750))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(1738))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(1751))
+  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(1739))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(1752))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(1740))
 	 return 0;
   return 1;
 }
@@ -216,14 +216,14 @@ initialized (count, lock, lock_created, err)
   pthread_mutexattr_t mutex_attribute;
 
   if (count ? (*count = 0) : 1)
-	 FAIL(1753);
+	 FAIL(1741);
   if (lock_created ? (*lock_created = 0) : 1)
-	 FAIL(1754);
-  if (*err ? 1 : pthread_mutexattr_init (&mutex_attribute) ? FAIL(1755) : 0)
+	 FAIL(1742);
+  if (*err ? 1 : pthread_mutexattr_init (&mutex_attribute) ? FAIL(1743) : 0)
 	 return 0;
-  if (!((pthread_mutexattr_settype (&mutex_attribute, PTHREAD_MUTEX_ERRORCHECK)) ? FAIL(1756) : 0))
-	 *lock_created = ! (pthread_mutex_init (lock, &mutex_attribute) ? FAIL(1757) : 0);
-  return ! ((pthread_mutexattr_destroy (&mutex_attribute)) ? FAIL(1758) : *err);
+  if (!((pthread_mutexattr_settype (&mutex_attribute, PTHREAD_MUTEX_ERRORCHECK)) ? FAIL(1744) : 0))
+	 *lock_created = ! (pthread_mutex_init (lock, &mutex_attribute) ? FAIL(1745) : 0);
+  return ! ((pthread_mutexattr_destroy (&mutex_attribute)) ? FAIL(1746) : *err);
 }
 
 
@@ -257,9 +257,9 @@ main (argc, argv)
   v = valid (g, &err);
   cru_free_now (g, LANES, &err);
   nthm_sync (&err);
-  err = (edge_count ? THE_FAIL(1759) : err);
+  err = (edge_count ? THE_FAIL(1747) : err);
  a: if ((! edge_lock_created) ? 0 : pthread_mutex_destroy (&(edge_lock)) ? (! err) : 0)
-	 err = THE_FAIL(1760);
+	 err = THE_FAIL(1748);
   if (err ? 1 : (! v) ? 1 : ! crudev_all_clear (&err))
 	 printf (err ? "%s failed\n%s\n" : "%s failed\n", argv[0], cru_strerror (err));
   else if ((argc > 1) ? (! limit) : 0)
