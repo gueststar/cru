@@ -112,7 +112,7 @@ _cru_free_adjacencies (nodes, r, err)
   node_list t, n;
   int ux;
 
-  if (nodes ? 0 : IER(1222))
+  if (nodes ? 0 : IER(1221))
 	 return;
   for (n = *nodes; (t = n); _cru_free (t))
 	 {
@@ -216,7 +216,7 @@ _cru_pushed_node (n, nodes, err)
 
 	  // Insert a unit node list into the front of an existing node list.
 {
-  if ((! n) ? IER(1223) : (! nodes) ? IER(1224) : n->previous ? IER(1225) : n->next_node ? IER(1226) : 0)
+  if ((! n) ? IER(1222) : (! nodes) ? IER(1223) : n->previous ? IER(1224) : n->next_node ? IER(1225) : 0)
 	 return 0;
   if (*(n->previous = nodes))
 	 (*nodes)->previous = &(n->next_node);
@@ -240,7 +240,7 @@ _cru_severed (n, err)
 	  // Separate a node from its neighboring nodes in a list. If the
 	  // neighbors are already separated, leave them that way.
 {
-  if ((! n) ? IER(1227) : (!(n->previous)) ? IER(1228) : 0)
+  if ((! n) ? IER(1226) : (!(n->previous)) ? IER(1227) : 0)
 	 return NULL;
   if (*(n->previous) == n)
 	 *(n->previous) = n->next_node;
@@ -315,7 +315,7 @@ _cru_transplanted_in (l, r, err)
 	  // Return non-zero of the edges into the right node can be
 	  // transplanted to the left node, and if so, transplant them.
 {
-  if ((! l) ? IER(1229) : (! r) ? IER(1230) : (l == r))
+  if ((! l) ? IER(1228) : (! r) ? IER(1229) : (l == r))
 	 return 0;
   l->edges_in = _cru_cat_edges (r->edges_in, l->edges_in);
   r->edges_in = NULL;
@@ -338,7 +338,7 @@ _cru_transplanted_out (l, r, err)
 	  // Return non-zero of the edges from the right node can be
 	  // transplanted to the left node, and if so, transplant them.
 {
-  if ((! l) ? IER(1231) : (! r) ? IER(1232) : (l == r))
+  if ((! l) ? IER(1230) : (! r) ? IER(1231) : (l == r))
 	 return 0;
   l->edges_out = _cru_cat_edges (r->edges_out, l->edges_out);
   r->edges_out = NULL;
@@ -392,7 +392,7 @@ mapped_node (p, n, with_locks, err)
   void *ua;
   void *map_result;
 
-  if ((! n) ? IER(1233) : (! p) ? IER(1234) : (! (p->vertex.map)) ? IER(1235) : *err)
+  if ((! n) ? IER(1232) : (! p) ? IER(1233) : (! (p->vertex.map)) ? IER(1234) : *err)
 	 return NULL;
   v = (with_locks ? _cru_read (&(n->vertex), err) : n->vertex);
   if (_cru_empty_fold (&(p->incident)) ? (i = NULL) : NON_NULL)
@@ -467,20 +467,20 @@ _cru_reduced_nodes (p, n, err)
   void *reduction_result;
   void *previous_reduction_result;
 
-  if (p ? 0 : IER(1236))
+  if (p ? 0 : IER(1235))
 	 return NULL;
   if (! n)
 	 return ((p->vertex.vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(p->vertex.vacuous_case));
   if (p->vertex.vacuous_case)
 	 reduction_result = CALLED(p->vertex.vacuous_case);
-  else if ((p->vertex.m_free != p->vertex.r_free) ? IER(1237) : 0)
+  else if ((p->vertex.m_free != p->vertex.r_free) ? IER(1236) : 0)
 	 return NULL;
   else
 	 {
 		reduction_result = mapped_node (p, n, WITHOUT_LOCKS, err);
 		n = n->next_node;
 	 }
-  if ((! n) ? 0 : p->vertex.reduction ? 1 : ! IER(1238))
+  if ((! n) ? 0 : p->vertex.reduction ? 1 : ! IER(1237))
 	 for (; *err ? NULL : n; n = n->next_node)
 		{
 		  previous_reduction_result = reduction_result;

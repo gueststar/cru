@@ -4,12 +4,11 @@
 // dimensions under 4 or over 20 because of degeneracy or arithmetic
 // overflow, but the library routines are applicable to graphs of any
 // size. Each dimensional increment at least doubles the time and
-// memory usage, except in the product test, for which they
-// quadruple. If all of these tests pass, running the ktest script
+// memory usage. If all of these tests pass, running the ktest script
 // from the build directory additionally tests the library by
 // exercising some of the error handling code paths taken by killed
-// jobs, and running the mtest script tests all of the recovery
-// paths from allocation errors.
+// jobs, and running the mtest script tests all of the recovery paths
+// from allocation errors.
 
 #include <errno.h>
 

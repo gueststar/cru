@@ -48,7 +48,7 @@ _cru_scatter (p, t, err)
 {
   packet_list o;
 
-  if ((! t) ? IER(1450) : (! (t->pod)) ? IER(1451) : (! (t->arity)) ? IER(1452) : 0)
+  if ((! t) ? IER(1449) : (! (t->pod)) ? IER(1450) : (! (t->arity)) ? IER(1451) : 0)
 	 return;
   while (*err ? NULL : p ? (o = _cru_popped_packet (&p, err)) : NULL)
 	 if (! _cru_push_packet (o, &(t->pod[o->hash_value % t->arity]), err))
@@ -75,7 +75,7 @@ _cru_scattered (e, t, err)
   packet_list p;
   uintptr_t q;
 
-  if ((! t) ? IER(1453) : (! (t->arity)) ? IER(1454) : t->pod ? 0 : IER(1455))
+  if ((! t) ? IER(1452) : (! (t->arity)) ? IER(1453) : t->pod ? 0 : IER(1454))
 	 return 0;
   for (; e; e = e->next_edge)
 	 {
@@ -86,40 +86,6 @@ _cru_scattered (e, t, err)
   return 1;
 }
 
-
-
-
-
-
-
-
-
-int
-_cru_scattered_to_unmarked (e, t, err)
-	  edge_list e;
-	  packet_pod t;
-	  int *err;
-
-	  // Send an empty initial packet to another worker for each edge
-	  // connected to an unmarked node and return non-zero if successful.
-{
-  packet_list p;
-  node_list n;
-  uintptr_t q;
-  int success;
-
-  if ((! t) ? IER(1456) : (! (t->arity)) ? IER(1457) : t->pod ? 0 : IER(1458))
-	 return 0;
-  for (success = 1; e; e = e->next_edge)
-	 if (((n = e->remote.node)) ? (! _cru_read (&(n->marked), err)) : ! IER(1459))
-		{
-		  if (! (p = _cru_initial_packet_of (n, q = _cru_scalar_hash (n), err)))
-			 success = 0;
-		  else if (! _cru_push_packet (p, &(t->pod[q % t->arity]), err))
-			 success = 0;
-		}
-  return success;
-}
 
 
 
@@ -141,7 +107,7 @@ _cru_scatter_out (n, t, err)
   edge_list e;
   uintptr_t q;
 
-  if ((! n) ? IER(1460) : (! t) ? IER(1461) : (! (t->pod)) ? IER(1462) : (! (t->arity)) ? IER(1463) : 0)
+  if ((! n) ? IER(1455) : (! t) ? IER(1456) : (! (t->pod)) ? IER(1457) : (! (t->arity)) ? IER(1458) : 0)
 	 return NULL;
   for (e = n->edges_out; e; e = e->next_edge)
 	 if ((p = _cru_packet_of (e->remote.node, q = _cru_scalar_hash (e->remote.node), n, e, err)))
@@ -171,7 +137,7 @@ _cru_scatter_in (n, t, err)
   edge_list e;
   uintptr_t q;
 
-  if ((! n) ? IER(1464) : (! t) ? IER(1465) : (!(t->pod)) ? IER(1466) : (! (t->arity)) ? IER(1467) : 0)
+  if ((! n) ? IER(1459) : (! t) ? IER(1460) : (!(t->pod)) ? IER(1461) : (! (t->arity)) ? IER(1462) : 0)
 	 return;
   for (e = n->edges_in; e; e = e->next_edge)
 	 if ((p = _cru_packet_of (e->remote.node, q = _cru_scalar_hash (e->remote.node), n, e, err)))
@@ -199,7 +165,7 @@ _cru_send_from (v, c, sender, t, err)
   packet_list p;
   uintptr_t q;
 
-  if ((! t) ? IER(1468) : (! (t->pod)) ? IER(1469) : (! (t->arity)) ? IER(1470) : 0)
+  if ((! t) ? IER(1463) : (! (t->pod)) ? IER(1464) : (! (t->arity)) ? IER(1465) : 0)
 	 return;
   if ((p = _cru_packet_of (v, q = _cru_scalar_hash (c ? c->remote.node : sender), sender, c, err)))
 	 _cru_push_packet (p, &(t->pod[q % t->arity]), err);
@@ -227,7 +193,7 @@ _cru_received_by (v, c, recipient, t, err)
   packet_list p;
   uintptr_t q;
 
-  if ((! t) ? IER(1471) : (! (t->pod)) ? IER(1472) : (! (t->arity)) ? IER(1473) : 0)
+  if ((! t) ? IER(1466) : (! (t->pod)) ? IER(1467) : (! (t->arity)) ? IER(1468) : 0)
 	 return 0;
   if (! (p = _cru_packet_of (v, q = _cru_scalar_hash (recipient), NO_SENDER, c, err)))
 	 return 0;
@@ -263,10 +229,10 @@ _cru_scattered_by_hashes (n, h, t, by_class, err)
   edge_list *e;
   packet_list p;
 
-  if ((! n) ? IER(1474) : (! t) ? IER(1475) : (!(t->pod)) ? IER(1476) : (! (t->arity)) ? IER(1477) : h ? 0 : IER(1478))
+  if ((! n) ? IER(1469) : (! t) ? IER(1470) : (!(t->pod)) ? IER(1471) : (! (t->arity)) ? IER(1472) : h ? 0 : IER(1473))
 	 return 0;
   for (e = &(n->edges_out); *e; e = &((*e)->next_edge))
-	 if ((m = (*e)->remote.node) ? 0 : IER(1479))
+	 if ((m = (*e)->remote.node) ? 0 : IER(1474))
 		return 0;
 	 else if (((c = _cru_read (&(m->class_mark), err))) ? MARKED(c) : 0)
 		continue;
@@ -309,10 +275,10 @@ _cru_unscatterable_by_hashes (n, h, d, t, err)
   edge_list *e;
   packet_list p;
 
-  if ((! n) ? IER(1480) : (! t) ? IER(1481) : (!(t->pod)) ? IER(1482) : (! (t->arity)) ? IER(1483) : h ? 0 : IER(1484))
+  if ((! n) ? IER(1475) : (! t) ? IER(1476) : (!(t->pod)) ? IER(1477) : (! (t->arity)) ? IER(1478) : h ? 0 : IER(1479))
 	 return 1;
   for (e = &(n->edges_out); *e; _cru_free_edges_and_labels (d, _cru_popped_edge (e, err), err))
-	 if ((m = (*e)->remote.node) ? 0 : IER(1485))
+	 if ((m = (*e)->remote.node) ? 0 : IER(1480))
 		return 1;
 	 else if ((p = _cru_packet_of (NO_PAYLOAD, q = h (m->vertex), NO_SENDER, *e, err)))
 		_cru_push_packet (p, &(t->pod[q % t->arity]), err);
@@ -348,11 +314,11 @@ _cru_unscatterable (e, n, d, t, err)
   edge_list c;
   packet_list p;
 
-  if (e ? 0 : IER(1486))
+  if (e ? 0 : IER(1481))
 	 return 0;
-  if ((! t) ? IER(1487) : (! (t->arity)) ? IER(1488) : t->pod ? 0 : IER(1489))
+  if ((! t) ? IER(1482) : (! (t->arity)) ? IER(1483) : t->pod ? 0 : IER(1484))
 	 goto a;
-  for (; (! *e) ? 0 : (c = _cru_popped_edge (e, err)) ? 1 : ! IER(1490); _cru_free_edges_and_labels (d, c, err))
+  for (; (! *e) ? 0 : (c = _cru_popped_edge (e, err)) ? 1 : ! IER(1485); _cru_free_edges_and_labels (d, c, err))
 	 if (c->remote.node != n)
 		{
 		  if (! (p = _cru_packet_of (c->remote.node, q = _cru_scalar_hash (c->remote.node), n, NO_CARRIER, err)))
@@ -388,7 +354,7 @@ _cru_scatter_out_or_consume (n, h, z, t, err)
   edge_list *e;
   uintptr_t q;
 
-  if ((! h) ? IER(1491) : (! t) ? IER(1492) : (! (t->arity)) ? IER(1493) : (! (t->pod)) ? IER(1494) :  (! n) ? IER(1495) : 0)
+  if ((! h) ? IER(1486) : (! t) ? IER(1487) : (! (t->arity)) ? IER(1488) : (! (t->pod)) ? IER(1489) :  (! n) ? IER(1490) : 0)
 	 return;
   e = &(n->edges_out);
   for (; *err ? NULL : *e; e = &((*e)->next_edge))
@@ -426,12 +392,12 @@ _cru_scatter_and_stretch (z, e, m, h, t, err)
   node_list i;
   uintptr_t q;
 
-  if ((! h) ? IER(1496) : (! t) ? IER(1497) : (! (t->pod)) ? IER(1498) : (! (t->arity)) ? IER(1499) : 0)
+  if ((! h) ? IER(1491) : (! t) ? IER(1492) : (! (t->pod)) ? IER(1493) : (! (t->arity)) ? IER(1494) : 0)
 	 return NULL;
   i = NULL;
   for (l = NULL; *err ? NULL : e;)
 	 {
-		if ((! (e->ante)) ? IER(1500) : (! (e->post)) ? IER(1501) : e->post->remote.node ? IER(1502) : *err)
+		if ((! (e->ante)) ? IER(1495) : (! (e->post)) ? IER(1496) : e->post->remote.node ? IER(1497) : *err)
 		  break;
 		q = h (e->ante->remote.vertex);
 		if (! (i = _cru_node_of (NO_DESTRUCTORS, e->ante->remote.vertex, NO_EDGES_IN, NO_EDGES_OUT, err)))

@@ -49,7 +49,7 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // Return 1 if an edge is labeled by the index of the bit in
 	  // which its endpoints differ, and 0 otherwise.
 {
-  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(4868) : 0);
+  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(4863) : 0);
 }
 
 
@@ -69,7 +69,7 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(4869) : (edges_out != DIMENSION) ? FAIL(4870) : 0);
+  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(4864) : (edges_out != DIMENSION) ? FAIL(4865) : 0);
 }
 
 
@@ -88,7 +88,7 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4871) : (s < r) ? FAIL(4872) : 0) ? 0 : s);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4866) : (s < r) ? FAIL(4867) : 0) ? 0 : s);
 }
 
 
@@ -115,11 +115,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4873))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4868))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(4874))
+  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(4869))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4875))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4870))
 	 return 0;
   return 1;
 }
@@ -137,7 +137,7 @@ vertex_product (left_vertex, right_vertex, err)
 
 	  // Return one of two equal vertices.
 {
-  if ((left_vertex == right_vertex) ? 0 : FAIL(4876))
+  if ((left_vertex == right_vertex) ? 0 : FAIL(4871))
 	 return 0;
   return left_vertex;
 }
@@ -154,7 +154,7 @@ edge_product (left_edge, right_edge, err)
 
 	  // Return one of two equal edges.
 {
-  if ((left_edge == right_edge) ? 0 : FAIL(4877))
+  if ((left_edge == right_edge) ? 0 : FAIL(4872))
 	 return 0;
   return left_edge;
 }

@@ -45,10 +45,6 @@ _cru_scatter (packet_list p, packet_pod t, int *err);
 extern int
 _cru_scattered (edge_list e, packet_pod t, int *err);
 
-// Send an empty initial packet to another worker for each edge connected to an unmarked node
-extern int
-_cru_scattered_to_unmarked (edge_list e, packet_pod t, int *err);
-
 // send a packet with a sender field to another worker
 extern void
 _cru_send_from (void *v, edge_list c, node_list sender, packet_pod t, int *err);

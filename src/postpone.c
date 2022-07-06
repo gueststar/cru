@@ -65,13 +65,13 @@ bipartition (n, postponable, stationary, movable, err)
   edge_list *e;
   int ux, ut;
 
-  if ((! n) ? IER(1317) : (! postponable) ? IER(1318) : 0)
+  if ((! n) ? IER(1316) : (! postponable) ? IER(1317) : 0)
 	 return;
   for (e = &(n->edges_out); *err ? NULL : *e;)
 	 if ((*e)->remote.node == n)
 		e = &((*e)->next_edge);
 	 else if (! ((*e)->remote.node))
-		IER(1319);
+		IER(1318);
 	 else if PASSED(postponable, n->vertex, (*e)->label, (*e)->remote.node->vertex)
 		_cru_push_edge (_cru_popped_edge (e, err), movable, err);
 	 else
@@ -106,7 +106,7 @@ postponed (l, e, s, d, z, err)
   edge_list carrier;
   void *ua;
 
-  if ((! s) ? IER(1320) : (! (s->bpred)) ? IER(1321) : (! (s->bop)) ? IER(1322) : (! l) ? IER(1323) : (! z) ? IER(1324) : 0)
+  if ((! s) ? IER(1319) : (! (s->bpred)) ? IER(1320) : (! (s->bop)) ? IER(1321) : (! l) ? IER(1322) : (! z) ? IER(1323) : 0)
 	 return 0;
   for (result = 0; *err ? NULL : e; e = e->next_edge)
 	 if (PASSED(s->bpred, l->label, e->label))
@@ -140,7 +140,7 @@ postpone (n, p, d, z, err)
 {
   edge_list stationary, movable;
 
-  if ((! n) ? IER(1325) : (! p) ? IER(1326) : (! z) ? IER(1327) : *err)
+  if ((! n) ? IER(1324) : (! p) ? IER(1325) : (! z) ? IER(1326) : *err)
 	 return;
   if ((! (n->edges_out)) ? 1 : ! (n->edges_out->next_edge))
 	 return;
@@ -190,17 +190,17 @@ postponing_task (source, err)
 
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(1328) : (source->gruntled != PORT_MAGIC) ? IER(1329) : 0)
+  if ((! source) ? IER(1327) : (source->gruntled != PORT_MAGIC) ? IER(1328) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(1330) : (r->valid != ROUTER_MAGIC) ? IER(1331) : (killed = 0))
+  if ((!(r = source->local)) ? IER(1329) : (r->valid != ROUTER_MAGIC) ? IER(1330) : (killed = 0))
 	 goto a;
-  if ((!(d = source->peers)) ? IER(1332) : (r->tag != POS) ? IER(1333) : 0)
+  if ((!(d = source->peers)) ? IER(1331) : (r->tag != POS) ? IER(1332) : 0)
 	 return _cru_abort_status (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(24);
 		killed = (killed ? 1 : KILLED);
-		if ((n = incoming->receiver) ? 0 : IER(1334))
+		if ((n = incoming->receiver) ? 0 : IER(1333))
 		  goto b;
 		if (incoming->payload == ATTACH)
 		  _cru_push_edge (incoming->carrier, &(n->edges_postponed), err);
@@ -249,17 +249,17 @@ absorbing_task (source, err)
   sample = 0;
   seen = NULL;
   changed = 0;
-  if ((! source) ? IER(1335) : (source->gruntled != PORT_MAGIC) ? IER(1336) : 0)
+  if ((! source) ? IER(1334) : (source->gruntled != PORT_MAGIC) ? IER(1335) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(1337) : (r->valid != ROUTER_MAGIC) ? IER(1338) : (killed = 0))
+  if ((!(r = source->local)) ? IER(1336) : (r->valid != ROUTER_MAGIC) ? IER(1337) : (killed = 0))
 	 goto a;
-  if ((!(d = source->peers)) ? IER(1339) : (r->tag != POS) ? IER(1340) : 0)
+  if ((!(d = source->peers)) ? IER(1338) : (r->tag != POS) ? IER(1339) : 0)
 	 goto b;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(25);
 		killed = (killed ? 1 : KILLED);
-		if ((! (n = incoming->receiver)) ? IER(1341) : _cru_member (n, seen))
+		if ((! (n = incoming->receiver)) ? IER(1340) : _cru_member (n, seen))
 		  goto c;
 		if (! _cru_set_membership (n, &seen, err))
 		  goto c;
@@ -360,14 +360,14 @@ _cru_postpone (g, k, r, err)
   uintptr_t count;
 
   _cru_disable_killing (k, err);
-  if (*err ? 1 : (! g) ? IER(1342) : (! *g))
+  if (*err ? 1 : (! g) ? IER(1341) : (! *g))
 	 goto a;
   b = (*g)->base_node;
-  if ((! r) ? IER(1343) : (r->valid != ROUTER_MAGIC) ? IER(1344) : (r->tag != POS) ? IER(1345) : 0)
+  if ((! r) ? IER(1342) : (r->valid != ROUTER_MAGIC) ? IER(1343) : (r->tag != POS) ? IER(1344) : 0)
 	 goto b;
   if (_cru_half_duplex (*g, err))
 	 goto c;
-  if ((z = _cru_razing_router (&(r->ro_sig.destructors), (task) _cru_half_duplexing_task, r->lanes, err)) ? 0 : IER(1346))
+  if ((z = _cru_razing_router (&(r->ro_sig.destructors), (task) _cru_half_duplexing_task, r->lanes, err)) ? 0 : IER(1345))
 	 goto b;
   if (! _cru_launched (k, b, z, err))
 	 goto b;

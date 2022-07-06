@@ -65,9 +65,6 @@ struct port_s
 	 node_set deleted;
   };
   router local;                 // context in which this port co-operates with others
-#ifdef DEADLOCK_DETECTION
-  int sliced;                   // indicates the grant of a time slice to assist deadlock detection
-#endif
 };
 
 #ifdef __cplusplus

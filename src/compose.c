@@ -381,8 +381,6 @@ bypassing_task (s, err)
 	 {
 		KILL_SITE(5);
 		killed = (killed ? 1 : KILLED);
-//		if (*err ? 0 : killed)
-//		  RAISE(CRU_INTKIL);
 		changed = (bypassed (n, &(r->ro_sig.orders.e_order), r->ro_sig.destructors.e_free, err) ? 1 : changed);
 		free_props (n, &(r->composer), &(s->visited), err);
 	 }
