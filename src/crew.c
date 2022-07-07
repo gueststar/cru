@@ -413,8 +413,6 @@ _cru_maybe_disjunction (c, result, err)
 
 	  // Join with all worker threads and assign at most one result.
 {
-#define NO_DESTRUCTOR NULL
-
   int any;
   maybe x;
   uintptr_t i;

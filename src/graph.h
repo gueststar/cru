@@ -21,11 +21,6 @@
 
 #include "ptr.h"
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
-
 // arbitrary magic number for consistency checks
 #define GRAPH_MAGIC 1832393831
 
@@ -34,10 +29,15 @@ extern "C"
 struct cru_graph_s
 {
   int glad;                       // holds GRAPH_MAGIC if the graph is valid
-  node_list base_node;            // the node whose vertex is the base vertex according to the builder
+  node_list base_node;            // the node from which all other nodes are reachable through outgoing edges
   node_list nodes;                // a list whereby all nodes in the graph are accessible in an unspecified order
   struct cru_sig_s g_sig;         // description of the graph to be updated when built, merged, or mutated
 };
+
+#ifdef __cplusplus
+extern "C"
+{
+#endif
 
 // --------------- allocation ------------------------------------------------------------------------------
 

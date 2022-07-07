@@ -36,6 +36,8 @@
 
 
 
+
+
 static void
 visit (n, p, result, err)
 	  node_list n;
@@ -60,28 +62,22 @@ visit (n, p, result, err)
 	 return;
   if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1079) : 0)
 	 return;
-  if (! *result)
-	 {
-		*result = _cru_new_maybe (PRESENT, right = _cru_mapped_node (p, n, err), err);
-		if (*err ? *result : 0)
-		  {
-			 _cru_free_maybe (*result, d, err);
-			 *result = NULL;
-		  }
-		else if ((! *err) ? 0 : d ? right : NULL)
-		  APPLY(d, right);
-		return;
-	 }
-  left = _cru_mapped_node (p, n, err);
+  if (*result)
+	 goto a;
+  if (((*result = _cru_new_maybe (PRESENT, right = _cru_mapped_node (p, n, err), err))) ? (! *err) : 0)
+	 return;
+  _cru_free_maybe (*result, NO_DESTRUCTOR, err);
+  *result = NULL;
+  goto b;
+ a: left = _cru_mapped_node (p, n, err);
   right = (*result)->value;
   (*result)->value = APPLIED(p->vertex.reduction, left, right);
-  if (! d)
-	 return;
-  if (left)
+  if (d ? left : NULL)
 	 APPLY(d, left);
-  if (right)
+ b: if (d ? right : NULL)
 	 APPLY(d, right);
 }
+
 
 
 
@@ -97,8 +93,6 @@ _cru_mapreducing_task (source, err)
 	  // Apply the map to incoming vertices and return their reduction
 	  // when quiescent.
 {
-#define NO_DESTRUCTOR NULL
-
   packet_pod destinations;    // outgoing packets
   packet_list incoming;       // incoming packets
   unsigned sample;
@@ -125,26 +119,27 @@ _cru_mapreducing_task (source, err)
 	 {
 		KILL_SITE(18);
 		killed = (killed ? 1 : KILLED);
-		if ((! *err) ? (! killed) : 0)
+		if (*err ? 1 : killed)
 		  goto b;
-		if (r->mapreducer.ma_prop.vertex.r_free == r->mapreducer.ma_prop.vertex.m_free)
-		  _cru_free_maybe (result, r->mapreducer.ma_prop.vertex.r_free, err);
-		else if (IER(1086))
-		  _cru_free_maybe (result, NO_DESTRUCTOR, err);
-		result = NULL;
-		goto c;
-	 b: if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1087))
-		  goto c;
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1087))
+		  goto b;
 		_cru_scattered (r->mapreducer.ma_zone.backwards ? n->edges_in : n->edges_out, destinations, err);
 		visit (n, &(r->mapreducer.ma_prop), &result, err);
-	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
+	 b: _cru_nack (_cru_popped_packet (&incoming, err), err);
 	 }
-  _cru_forget_members (seen);
-  _cru_nack (incoming, err);
- a: if (result ? 0 : *err)
+  if ((*err ? 1 : killed) ? (! result) : 1)
+	 goto a;
+  if (r->mapreducer.ma_prop.vertex.r_free == r->mapreducer.ma_prop.vertex.m_free)
+	 _cru_free_maybe (result, r->mapreducer.ma_prop.vertex.r_free, err);
+  else if (IER(1086))
+	 _cru_free_maybe (result, NO_DESTRUCTOR, err);
+  result = NULL;
+ a: if (*err)
 	 result = _cru_new_maybe (ABSENT, NULL, err);
+  _cru_forget_members (seen);
   return result;
 }
+
 
 
 

@@ -25,6 +25,9 @@
 #define ABSENT 0
 #define PRESENT 1
 
+// default parameter to _cru_free_maybe
+#define NO_DESTRUCTOR NULL
+
 // representation for a possible value
 
 struct maybe_s

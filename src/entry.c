@@ -431,8 +431,8 @@ cru_mapreduced (g, m, k, lanes, err)
 	  unsigned lanes;
 	  int *err;
 
-	  // Compute the result of walking over a graph when the traversal
-	  // order doesn't matter.
+	  // Compute a result obtainable by visiting all vertices in a
+	  // graph concurrently.
 {
   router r;
   int ignored;
@@ -448,10 +448,15 @@ cru_mapreduced (g, m, k, lanes, err)
 	 goto x;
   if (! g)
 	 result = ((m->ma_prop.vertex.vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(m->ma_prop.vertex.vacuous_case));
-  else if ((initial = _cru_initial_node (g, k, r = _cru_mapreducing_router (m, &(g->g_sig), lanes, err), err)))
-	 result = _cru_mapreduce (k, initial, _cru_reset (r, (task) _cru_mapreducing_task, err), err);
-  else if (*err ? 1 : IER(890))
-	 _cru_free_router (r, err);
+  else
+	 {
+		initial = _cru_initial_node (g, k, r = _cru_mapreducing_router (m, &(g->g_sig), lanes, err), err);
+		if ((lanes != 1) ? 1 : (initial != g->nodes))
+		  result = _cru_mapreduce (k, initial, _cru_shared(_cru_reset (r, (task) _cru_mapreducing_task, err)), err);
+		else
+		  result = _cru_reduced_nodes (&(m->ma_prop), g->nodes, err);
+		_cru_free_router (r, err);
+	 }
   if (*err ? (m->ma_prop.vertex.r_free ? result : NULL) : NULL)
 	 APPLY(m->ma_prop.vertex.r_free, result);
   _cru_free_mapreducer (m);

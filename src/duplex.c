@@ -338,8 +338,6 @@ deduplicating_task (source, err)
 	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
  	 }
   _cru_forget_collisions (collisions, err);
-//  if (*err ? 0 : killed)
-//	 RAISE(CRU_INTKIL);
   status = *err;
   a: return (void *) status;
 }

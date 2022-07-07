@@ -112,7 +112,7 @@ cru_composed (cru_graph g, cru_composer c, cru_kill_switch k, unsigned lanes, in
 extern cru_graph
 cru_merged (cru_graph g, cru_merger c, cru_kill_switch k, unsigned lanes, int *err);
 
-// consume and return a graph derived from g by deleting selected edges and vertices, and consume g
+// return a graph derived from g by deleting selected edges and vertices and consume g
 extern cru_graph
 cru_filtered (cru_graph g, cru_filter f, cru_kill_switch k, unsigned lanes, int *err);
 

@@ -65,8 +65,6 @@
 
 
 
-
-
 // --------------- pre-mutation phase ----------------------------------------------------------------------
 
 
@@ -163,7 +161,11 @@ bounding_task (source, err)
 	  // prerequisites in the survivors list, and store the rest in the
 	  // deletions list of the port.
 {
-#define RECORDED(x) (_cru_member (x, seen) ? 1 : _cru_listed (x, source->survivors) ? 1 : _cru_listed(x, source->deletions))
+#define RECORDED(x) (\
+_cru_member (x, seen) ? 1 :\
+(*err ? 0 : ! killed) ? 0 :\
+_cru_listed (x, source->survivors) ? 1 :\
+_cru_listed(x, source->deletions))
 
   int i;                // non-zero means vertex mutations don't depend on incident edges
   int o;                   // non-zero means vertex mutations don't depend on outgoing edges
