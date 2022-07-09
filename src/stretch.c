@@ -458,9 +458,7 @@ _cru_stretched (g, k, r, err)
 		  if (g->nodes)
 			 g->nodes->previous = &(g->nodes);
 	 }
- a: if (*err == CRU_INTKIL)
-	 _cru_free_later (g, err);
-  else if (*err)
+ a: if (*err)
 	 _cru_free_now (g, err);
   _cru_sweep (r, err);
   return (*err ? NULL : g);

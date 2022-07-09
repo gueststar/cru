@@ -389,9 +389,7 @@ _cru_deduplicated (g, k, r, err)
 	 if (g->nodes)
 		g->nodes->previous = &(g->nodes);
  a: _cru_sweep (r, err);
-  if (*err == CRU_INTKIL)
-	 _cru_free_later (g, err);
-  else if (*err)
+  if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }

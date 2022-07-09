@@ -281,6 +281,8 @@ _cru_building_task (source, err)
 		  RAISE(CRU_INTOVF);
 		continue;
 	 b: _cru_free_packets (incoming, s->destructors.v_free, err);
+		if (killed ? 0 : (killed = 1))
+		  _cru_kill_internally (&(r->killed), err);
 		incoming = NULL;
 	 }
   x = IDLE;
@@ -316,9 +318,7 @@ _cru_built (v, k, r, err)
   if ((! r) ? IER(591) : (r->valid != ROUTER_MAGIC) ? IER(592) : (! (r->ro_sig.orders.v_order.hash)) ? IER(593) : 0)
 	 goto a;
   _cru_graph_launched (k, v, (r->ro_sig.orders.v_order.hash) (v), r, &g, err);
-  if (*err == CRU_INTKIL)
-	 _cru_free_later (g, err);
-  else if (*err)
+  if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
  a: _cru_free_router (r, err);

@@ -157,9 +157,9 @@ bounding_task (source, err)
 	  int *err;
 
 	  // Assuming reachability analysis has been done already, receive
-	  // nodes from other workers, mutate and store those with no
-	  // prerequisites in the survivors list, and store the rest in the
-	  // deletions list of the port.
+	  // nodes from other workers, store those with no prerequisites in
+	  // the survivors list, and store the rest in the deletions list
+	  // of the port.
 {
 #define RECORDED(x) (\
 _cru_member (x, seen) ? 1 :\
@@ -843,9 +843,7 @@ _cru_mutated (g, k, r, s, err)
   if (_cru_launched (k, n, _cru_router ((task) _cru_full_duplexing_task, r->lanes, err), err) ? *err : 0)
 	 goto a;
  b: propagate (g, k, r, n, s, err);
- a: if (*err == CRU_INTKIL)
-	 _cru_free_later (g, err);
-  else if (*err)
+ a: if (*err)
 	 _cru_free_now (g, err);
   _cru_sweep (r, err);
   return (*err ? NULL : g);

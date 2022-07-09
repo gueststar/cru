@@ -416,9 +416,7 @@ _cru_cross (g, h, k, r, err)
   if ((! g) ? 1 : (! h) ? 1 : (! r) ? 1 : ! (i = product_of (g->base_node, h->base_node, err)))
 	 goto a;
   _cru_graph_launched (k, i, rash (i), r, &x, err);
-  if (*err == CRU_INTKIL)
-	 _cru_free_later (x, err);
-  else if (*err)
+  if (*err)
 	 _cru_free_now (x, err);
   return (*err ? NULL : x);
  a: _cru_free_router (r, err);

@@ -194,9 +194,7 @@ _cru_fabricated (g, k, r, err)
   if ((! r) ? 1 : (! g) ? IER(910) : 0)
 	 goto a;
   _cru_graph_launched (k, g->base_node, _cru_scalar_hash (g->base_node), _cru_reset (r, (task) fabricating_task, err), &f, err);
-  if (*err == CRU_INTKIL)
-	 _cru_free_later (f, err);
-  else if (*err)
+  if (*err)
 	 _cru_free_now (f, err);
   return (*err ? NULL : f);
  a: _cru_free_router (r, err);

@@ -526,9 +526,7 @@ _cru_merged (g, k, r, s, err)
   merge (g, k, r, s, err);
   _cru_unset_properties (g, r, err);
  a: _cru_free_router (r, err);
-  if (*err == CRU_INTKIL)
-	 _cru_free_later (g, err);
-  else if (*err)
+  if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }

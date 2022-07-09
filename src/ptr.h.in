@@ -26,17 +26,15 @@
 // following a consistent naming convention are filled in below
 // automatically by cmake as explained in CMakeLists.txt. See
 // src/ptr.h under the build directory for the full list or
-// generate it by this command if not building with cmake.
+// generate it by this command if not using cmake.
 //
-// grep -hE "^struct[[:blank:]]+[(a-z)|_]+" *.h | grep -vE " cru" |\
-// sed -e "s/\(struct \)\( *\)\(.*\)_s/typedef \1\3_s\ \*\3;/"
+// grep -hE "^struct[[:blank:]]+[(a-z)|_]+" *.h | grep -vE " cru" | sed -e "s/\(struct \)\( *\)\(.*\)_s/typedef \1\3_s\ \*\3;/"
 
 @POINTERS@
 
 // This constant represents the number of source files containing any
 // _cru_malloc call sites; see src/ptr.h under the build directory for
-// the value or generate it by this command if not building with
-// cmake.
+// the value or generate it by this command if not using cmake.
 //
 // grep -l ") _cru_malloc" *.c | sed -n $=
 

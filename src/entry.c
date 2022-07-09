@@ -575,9 +575,7 @@ cru_stretched (g, s, k, lanes, err)
   if (((r = _cru_stretching_router (s, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err))) ? (! *err) : 0)
 	 g = _cru_stretched (g, k, r, err);
   _cru_free_stretcher (s);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -609,9 +607,7 @@ cru_split (g, s, k, lanes, err)
   if ((r = _cru_splitting_router (s, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err)))
 	 _cru_split (&g, k, r, err);
   _cru_free_splitter (s);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -646,9 +642,7 @@ cru_composed (g, c, k, lanes, err)
   if ((r = _cru_composing_router (c, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err)))
 	 g = _cru_composed (g, k, r, err);
   _cru_free_composer (c);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -694,9 +688,7 @@ cru_merged (g, c, k, lanes, err)
 	 goto x;
   g = _cru_merged (g, k, r, &new_sig, err);
   _cru_free_merger (c);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -730,13 +722,7 @@ cru_filtered (g, f, k, lanes, err)
 	 if ((r = _cru_filtered (&g, _cru_filtering_router (f, &(g->g_sig), lanes, err), k, err)))
 		_cru_pruned (g, r, k, err);
   _cru_free_filter (f);
-  if (*err != CRU_INTKIL)
-	 goto x;
-  _cru_free_later (g, err);
-  return NULL;
-  x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+  x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -773,9 +759,7 @@ cru_deduplicated (g, k, lanes, err)
   r->tag = DED;
   g = _cru_deduplicated (g, k, r, err);
  a: _cru_free_merger (c);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -818,9 +802,7 @@ cru_mutated (g, m, k, lanes, err)
   if ((r = _cru_mutating_router (m, &(g->g_sig), lanes = (lanes ? lanes: NPROC ? NPROC : 1), err)))
 	 g = _cru_mutated (g, k, r, &new_sig, err);
   _cru_free_mutator (m);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }
@@ -857,9 +839,7 @@ cru_postponed (g, p, k, lanes, err)
   if ((r = _cru_postponing_router (p, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err)))
 	 _cru_postpone (&g, k, r, err);
   _cru_free_postponer (p);
- x: if (*err == CRU_INTKIL)
-	 cru_free_later (g, err);
-  else if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }

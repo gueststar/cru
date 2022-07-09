@@ -488,7 +488,7 @@ _cru_filtered (g, r, k, err)
 	 goto c;
   if (_cru_launched (UNKILLABLE, b, _cru_shared (_cru_reset (r, (task) _cru_freeing_task, err)), err))
 	 (*g)->nodes = NULL;
-  goto d;
+  goto c;
  b: if (! _cru_half_duplex (*g, err))
 	 goto e;
   if (_cru_launched (k, b, _cru_router ((task) _cru_full_duplexing_task, r->lanes, err), err) ? *err : 0)
@@ -505,13 +505,8 @@ _cru_filtered (g, r, k, err)
   z = _cru_razing_router (&(r->ro_sig.destructors), (task) _cru_half_duplexing_task, r->lanes, err);
   if (_cru_launched (k, b, z, err) ? (! *err) : 0)
 	 goto a;
- c: if (*err == CRU_INTKIL)
-	 {
-		_cru_free_later (*g, err);
-		goto f;
-	 }
- d: _cru_free_now (*g, err);
- f: *g = NULL;
+ c: _cru_free_now (*g, err);
+  *g = NULL;
  a: return r;
 }
 
