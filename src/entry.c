@@ -78,7 +78,7 @@ static int initial_error = 0;
 #define TEST_ENTRY                                                         \
   CONTROL_ENTRY;                                                            \
   pthread_once (&once_control, initialization);                              \
-  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(885)))  \
+  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(889)))  \
 	 goto x;
 
 // done when any user code calls a published API routine
@@ -135,7 +135,7 @@ initialization ()
 	 goto f;
   if (! _cru_open_wrap (&initial_error))
 	 goto g;
-  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(886))) : 0)
+  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(890))) : 0)
 	 goto h;
   initialized = 1;
   return;
@@ -299,7 +299,7 @@ cru_connect (label, terminus, err)
   CONTROL_ENTRY;
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != BUILDING)) ? RAISE(CRU_INTOOC) : 0)
 	 return;
-  if ((e = _cru_get_edges ()) ? 0 : IER(887))
+  if ((e = _cru_get_edges ()) ? 0 : IER(891))
 	 return;
   *e = _cru_edge (_cru_get_destructors (), label, terminus, NO_NODE, *e, err);
 }
@@ -333,7 +333,7 @@ cru_stretch (label_in, new_vertex, label_out, err)
   z = _cru_get_destructors ();
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != STRETCHING)) ? RAISE(CRU_INTOOC) : 0)
 	 goto a;
-  if ((! z) ? IER(888) : (e = _cru_get_edge_maps ()) ? 0 : IER(889))
+  if ((! z) ? IER(892) : (e = _cru_get_edge_maps ()) ? 0 : IER(893))
 	 goto a;
   if (! (a = _cru_edge (z, label_in, new_vertex, NO_NODE, NO_NEXT_EDGE, err)))
 	 goto b;
@@ -722,7 +722,7 @@ cru_filtered (g, f, k, lanes, err)
 	 if ((r = _cru_filtered (&g, _cru_filtering_router (f, &(g->g_sig), lanes, err), k, err)))
 		_cru_pruned (g, r, k, err);
   _cru_free_filter (f);
-  x: if (*err)
+ x: if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);
 }

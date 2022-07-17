@@ -12,11 +12,11 @@
 // range of negative numbers reserved for all user-facing and internal error codes
 #define CRU_MIN_ERR 512
 #define CRU_INT_ERR (CRU_UNDVPR - 1)
-#define CRU_MAX_ERR 1708
+#define CRU_MAX_ERR 1715
 
 // internal error codes precede this number and test failure codes start from it
-#define CRU_MIN_FAIL 1709
-#define CRU_MAX_FAIL 5973
+#define CRU_MIN_FAIL 1716
+#define CRU_MAX_FAIL 5980
 
 // --------------- invalid api function parameters ---------------------------------------------------------
 

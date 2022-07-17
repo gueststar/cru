@@ -102,6 +102,10 @@ _cru_popped_edge (edge_list *edges, int *err);
 extern edge_list
 _cru_deleted_edge (edge_list target, edge_list *edges, int *err);
 
+// remove and return the minimum edge from a list based on a total order relational predicate
+extern edge_list
+_cru_minimum_edge (cru_qpred t, edge_list *edges, int *err);
+
 // consume two edge lists of arbitrary length and return their concatenation
 extern edge_list
 _cru_cat_edges (edge_list l, edge_list r);

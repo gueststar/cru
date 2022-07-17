@@ -170,7 +170,7 @@ populating_task (source, err)
 	  // workers in the next pass can selectively delete them without
 	  // locking.
 {
-#define RECORDED(x) (_cru_member (x, seen) ? 1 : _cru_listed (x, source->survivors))
+#define RECORDED(x) (_cru_member (x, seen) ? 1 : (! *err) ? 0 : _cru_listed (x, source->survivors))
 
   router r;
   cru_hash h;

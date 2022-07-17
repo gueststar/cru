@@ -50,9 +50,9 @@ _cru_new_port (o, l, err)
   port p;
   packet_pod d;
 
-  if ((! l) ? IER(1268) : (l->valid != ROUTER_MAGIC) ? IER(1269) : 0)
+  if ((! l) ? IER(1275) : (l->valid != ROUTER_MAGIC) ? IER(1276) : 0)
 	 return NULL;
-  if ((o >= l->lanes) ? IER(1270) : 0)
+  if ((o >= l->lanes) ? IER(1277) : 0)
 	 return NULL;
   if ((p = (port) _cru_malloc (sizeof (*p))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
@@ -61,7 +61,7 @@ _cru_new_port (o, l, err)
 	 goto a;
   if (_cru_cond_init (&(p->resumable), err))
 	 goto b;
-  if (pthread_rwlock_init (&(p->p_lock), NULL) ? IER(1271) : 0)
+  if (pthread_rwlock_init (&(p->p_lock), NULL) ? IER(1278) : 0)
 	 goto c;
   if (! (p->peers = _cru_pod_of (l->lanes, err)))
 	 goto d;
@@ -91,14 +91,14 @@ _cru_free_port (p, err)
 
 	  // Tear down a port.
 {
-  if ((! p) ? IER(1272) : ! *p)
+  if ((! p) ? IER(1279) : ! *p)
 	 return;
   if (pthread_mutex_destroy (&((*p)->suspension)))
-	 IER(1273);
+	 IER(1280);
   if (pthread_cond_destroy (&((*p)->resumable)))
-	 IER(1274);
+	 IER(1281);
   if (pthread_rwlock_destroy (&((*p)->p_lock)))
-	 IER(1275);
+	 IER(1282);
   _cru_free_pod ((*p)->peers, err);
   _cru_forget_members ((*p)->reachable);
   _cru_forget_members ((*p)->visited);
@@ -213,17 +213,17 @@ assignment (source, err)
 {
   packet_list incoming;
 
-  if ((! source) ? IER(1276) : (source->gruntled != PORT_MAGIC) ? IER(1277) : 0)
+  if ((! source) ? IER(1283) : (source->gruntled != PORT_MAGIC) ? IER(1284) : 0)
 	 return NULL;
 #ifdef CK_F_PR_FAS_PTR
   incoming = ck_pr_fas_ptr (&(source->assigned), NULL);
   return incoming;
 #endif
-  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1278) : 0) ? (source->gruntled = MUGGLE(36)) : 0)
+  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1285) : 0) ? (source->gruntled = MUGGLE(36)) : 0)
 	 return NULL;
   incoming = source->assigned;
   source->assigned = NULL;
-  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1279) : 0)
+  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1286) : 0)
 	 source->gruntled = MUGGLE(37);
   return incoming;
 }
@@ -250,13 +250,13 @@ assigned (destination, more_packets, err)
   packet_list last_packet;
   int unassigned, running;
 
-  if ((! more_packets) ? IER(1280) : ! (last_packet = *more_packets))
+  if ((! more_packets) ? IER(1287) : ! (last_packet = *more_packets))
 	 return 0;
-  if ((! destination) ? IER(1281) : (destination->gruntled != PORT_MAGIC) ? IER(1282) : 0)
+  if ((! destination) ? IER(1288) : (destination->gruntled != PORT_MAGIC) ? IER(1289) : 0)
 	 goto a;
   while (last_packet->next_packet)
 	 last_packet = last_packet->next_packet;
-  if ((pthread_mutex_lock (&(destination->suspension)) ? IER(1283) : 0) ? (destination->gruntled = MUGGLE(38)) : 0)
+  if ((pthread_mutex_lock (&(destination->suspension)) ? IER(1290) : 0) ? (destination->gruntled = MUGGLE(38)) : 0)
 	 goto a;
   unassigned = ! (last_packet->next_packet = destination->assigned);
   destination->assigned = *more_packets;
@@ -264,10 +264,10 @@ assigned (destination, more_packets, err)
   if (destination->waiting ? unassigned : 0)
 	 {
 		_cru_swell (destination->local, err);
-		if (pthread_cond_signal (&(destination->resumable)) ? IER(1284) : 0)
+		if (pthread_cond_signal (&(destination->resumable)) ? IER(1291) : 0)
 		  destination->gruntled = MUGGLE(39);
 	 }
-  if (pthread_mutex_unlock (&(destination->suspension)) ? IER(1285) : 0)
+  if (pthread_mutex_unlock (&(destination->suspension)) ? IER(1292) : 0)
 	 destination->gruntled = MUGGLE(40);
   *more_packets = NULL;
   return running;
@@ -315,11 +315,11 @@ _cru_pingback (source, err)
   packet_list incoming;
   router r;
 
-  if ((! source) ? IER(1286) : (source->gruntled != PORT_MAGIC) ? IER(1287) : 0)
+  if ((! source) ? IER(1293) : (source->gruntled != PORT_MAGIC) ? IER(1294) : 0)
 	 goto a;
-  if ((! (r = source->local)) ? IER(1288) : (r->valid != ROUTER_MAGIC) ? IER(1289) : (! (r->ports)) ? IER(1290) : 0)
+  if ((! (r = source->local)) ? IER(1295) : (r->valid != ROUTER_MAGIC) ? IER(1296) : (! (r->ports)) ? IER(1297) : 0)
 	 goto a;
-  if ((! (r->lanes)) ? IER(1291) : (source->own_index >= r->lanes) ? IER(1292) : 0)
+  if ((! (r->lanes)) ? IER(1298) : (source->own_index >= r->lanes) ? IER(1299) : 0)
 	 goto a;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, NO_POD, err));)
 	 {
@@ -378,17 +378,17 @@ expose (source, deferrals, err)
 {
   packet_list s;
 
-  if (deferrals ? (!(s = *deferrals)) : IER(1293))
+  if (deferrals ? (!(s = *deferrals)) : IER(1300))
 	 return;
-  if ((!source) ? IER(1294) : (source->gruntled != PORT_MAGIC) ? IER(1295) : 0)
+  if ((!source) ? IER(1301) : (source->gruntled != PORT_MAGIC) ? IER(1302) : 0)
 	 return;
   while (s->next_packet)
 	 s = s->next_packet;
-  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1296) : 0) ? (source->gruntled = MUGGLE(41)) : 0)
+  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1303) : 0) ? (source->gruntled = MUGGLE(41)) : 0)
 	 return;
   s->next_packet = source->deferred;
   source->deferred = *deferrals;
-  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1297) : 0)
+  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1304) : 0)
 	 source->gruntled = MUGGLE(42);
   *deferrals = NULL;
 }
@@ -418,21 +418,21 @@ circulate (source, destinations, err)
 
   uintptr_t i, enabled, runners;
 
-  if ((! destinations) ? 1 : (! (destinations->pod)) ? IER(1298) : 0)
+  if ((! destinations) ? 1 : (! (destinations->pod)) ? IER(1305) : 0)
 	 return;
-  if ((! source) ? IER(1299) : (source->gruntled != PORT_MAGIC) ? IER(1300) : 0)
+  if ((! source) ? IER(1306) : (source->gruntled != PORT_MAGIC) ? IER(1307) : 0)
 	 return;
-  if ((!(source->local)) ? IER(1301) : (source->local->valid != ROUTER_MAGIC) ? IER(1302) : 0)
+  if ((!(source->local)) ? IER(1308) : (source->local->valid != ROUTER_MAGIC) ? IER(1309) : 0)
 	 {
 		source->gruntled = MUGGLE(43);
 		return;
 	 }
-  if ((source->local->ports ? 0 : IER(1303)) ? (source->local->valid = MUGGLE(44)) : 0)
+  if ((source->local->ports ? 0 : IER(1310)) ? (source->local->valid = MUGGLE(44)) : 0)
 	 return;
   expose (source, &(destinations->deferrals), err);
   for (runners = enabled = i = 0; i < destinations->arity; i++)
 	 if (destinations->pod[i])
-		if ((i < source->local->lanes) ? (enabled = 1) : ! IER(1304))
+		if ((i < source->local->lanes) ? (enabled = 1) : ! IER(1311))
 		  runners += ! ! assigned (source->local->ports[i], &(destinations->pod[i]), err);
   if (enabled ? 0 : (runners <= 1))
 	 _cru_undefer (source->local, err);
@@ -441,11 +441,11 @@ circulate (source, destinations, err)
   usleep (MIN(MAX_PORTABLE_USLEEP_PARAMETER, 1 << source->backoff));
   if (source->backoff == BACKOFF_LIMIT)
 	 return;
-  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1305) : 0) ? (source->gruntled = MUGGLE(45)) : 0)
+  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1312) : 0) ? (source->gruntled = MUGGLE(45)) : 0)
 	 return;
-  if (++(source->backoff) ? 0 : IER(1306))
+  if (++(source->backoff) ? 0 : IER(1313))
 	 source->gruntled = MUGGLE(46);
-  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1307) : 0)
+  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1314) : 0)
 	 source->gruntled = MUGGLE(47);
 }
 
@@ -469,25 +469,25 @@ blocking_assignment (source, err)
 {
   packet_list s;
 
-  if ((! source) ? IER(1308) : (source->gruntled != PORT_MAGIC) ? IER(1309) : 0)
+  if ((! source) ? IER(1315) : (source->gruntled != PORT_MAGIC) ? IER(1316) : 0)
 	 return NULL;
-  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1310) : 0) ? (source->gruntled = MUGGLE(48)) : 0)
+  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1317) : 0) ? (source->gruntled = MUGGLE(48)) : 0)
 	 return NULL;
   if ((s = source->assigned) ? (!(source->assigned = NULL)) : source->dismissed)
 	 {
-		if (pthread_mutex_unlock (&(source->suspension)) ? IER(1311) : 0)
+		if (pthread_mutex_unlock (&(source->suspension)) ? IER(1318) : 0)
  		  source->gruntled = MUGGLE(49);
 		return s;
 	 }
   if (! _cru_dwindled (source->local, err))
 	 goto a;
   source->waiting = 1;
-  if (pthread_cond_wait (&(source->resumable), &(source->suspension)) ? IER(1312) : 0)
+  if (pthread_cond_wait (&(source->resumable), &(source->suspension)) ? IER(1319) : 0)
 	 source->gruntled = MUGGLE(50);
   s = source->assigned;
   source->assigned = NULL;
   source->waiting = 0;
- a: if (pthread_mutex_unlock (&(source->suspension)) ? IER(1313) : 0)
+ a: if (pthread_mutex_unlock (&(source->suspension)) ? IER(1320) : 0)
 	 source->gruntled = MUGGLE(51);
   return s;
 }
@@ -518,7 +518,7 @@ _cru_exchanged (source, destinations, err)
 {
   packet_list s;
 
-  if ((! source) ? IER(1314) : (source->gruntled != PORT_MAGIC) ? IER(1315) : 0)
+  if ((! source) ? IER(1321) : (source->gruntled != PORT_MAGIC) ? IER(1322) : 0)
 	 return NULL;
   if ((s = _cru_recycled (destinations, source->own_index, err)) ? s : (s = assignment (source, err)))
 	 return s;

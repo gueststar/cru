@@ -122,7 +122,7 @@ guarding_task (source, err)
 	  // Initialize all the guard mapexes in a graph and store the
 	  // nodes thus initialized in the survivors list of the port.
 {
-#define RECORDED(x) (_cru_member (x, seen) ? 1 : _cru_listed (x, source->survivors))
+#define RECORDED(x) (_cru_member (x, seen) ? 1 : (*err ? 0 : ! killed) ? 0 : _cru_listed (x, source->survivors))
 
   router r;
   int killed;
@@ -193,8 +193,8 @@ compose (l, n, c, g, f, b, z, err)
 	  node_list n;
 	  cru_composer c;
 	  mapex_pair g;
-	  edge_list *f;     // front of a queue
-	  edge_list *b;     // back of a queue, reused across calls
+	  edge_list *f;               // front of a queue
+	  edge_list *b;               // back of a queue, reused across calls
 	  cru_destructor_pair z;
 	  int *err;
 
@@ -217,10 +217,10 @@ compose (l, n, c, g, f, b, z, err)
 	 return;
   for (e = n->edges_out; *err ? NULL : e; e = e->next_edge)
 	 if ((m = e->remote.node) ? (r = m->props) : NULL)
-		if (PASSED(c->labeler.qpred, g->local_mapex, r->adjacent_mapex, l, e->label))
+		if (PASSED(c->labeler.qpred, g->local_mapex, l, r->adjacent_mapex, e->label))
 		  if (c->destructive ? MARKED_FOR_DELETION(l, g->deletable_edges) : 1)
 			 {
-				t = APPLIED(c->labeler.qop, g->local_mapex, r->adjacent_mapex, l, e->label);
+				t = APPLIED(c->labeler.qop, g->local_mapex, l, r->adjacent_mapex, e->label);
 				_cru_enqueue_edge (_cru_edge (z, t, NO_VERTEX, m, NO_NEXT_EDGE, err), f, b, err);
 			 }
 }
@@ -435,12 +435,10 @@ _cru_composed (g, k, r, err)
 		  break;
 		g->nodes = NULL;
 		for (t = (task) composing_task; t; t = ((t == (task) composing_task) ? (task) bypassing_task : NULL))
-		  {
-			 if (_cru_count_launched (k, NO_BASE, NO_PAYLOAD, NO_HASH, _cru_shared (_cru_reset (r, t, err)), &count, err))
-				iterating = (count ? r->composer.co_fix : 0);
-			 else
-				iterating = 0;
-		  }
+		  if (_cru_count_launched (k, NO_BASE, NO_PAYLOAD, NO_HASH, _cru_shared (_cru_reset (r, t, err)), &count, err))
+			 iterating = (count ? r->composer.co_fix : 0);
+		  else
+			 iterating = 0;
 		if (*err ? 1 : ! _cru_pruned (g, _cru_shared (r), k, err))
 		  break;
 		if (! iterating)

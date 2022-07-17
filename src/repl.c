@@ -33,7 +33,7 @@ _cru_undefined_hash (v)
 
 	  // Complain and return no hash at all.
 {
-  _cru_globally_throw (THE_IER(1392));
+  _cru_globally_throw (THE_IER(1399));
   return 0;
 }
 
@@ -74,7 +74,7 @@ _cru_undefined_bpred (x, y, err)
 
 	  // Always raise an error and return zero.
 {
-  IER(1393);
+  IER(1400);
   return 0;
 }
 
@@ -183,7 +183,7 @@ _cru_undefined_nop (err)
 
 	  // Unconditionally raise an error.
 {
-  IER(1394);
+  IER(1401);
   return NULL;
 }
 
@@ -230,7 +230,7 @@ _cru_undefined_bop (x, y, err)
 {
   cru_destructor d;
 
-  IER(1395);
+  IER(1402);
   return NULL;
 }
 
@@ -250,6 +250,7 @@ _cru_identity_bop (l, r, err)
 {
   return l;
 }
+
 
 
 
@@ -309,8 +310,26 @@ _cru_undefined_top (l, m, r, err)
 
 	  // Unconditionally raise an error and return NULL.
 {
-  IER(1396);
+  IER(1403);
   return NULL;
+}
+
+
+
+
+
+
+
+void *
+_cru_true_top (l, m, r, err)
+	  void *l;
+	  void *m;
+	  void *r;
+	  int *err;
+
+	  // Return a non-null value.
+{
+  return NON_NULL;
 }
 
 
@@ -344,11 +363,11 @@ _cru_identity_qop (w, x, y, z, err)
 	  void *z;
 	  int *err;
 
-	  // Unconditionally return the third argument y. Because this
+	  // Unconditionally return the second argument x. Because this
 	  // function consumes one of its arguments, it's appropriate only
 	  // as a replacement for an operator on scalar properties or
 	  // endogenous vertices or edges.
 {
-  return y;
+  return x;
 }
 

@@ -81,8 +81,10 @@ The predicate in the
 .BR cl_order
 field must be algebraically reflexive, transitive, and symmetric.
 Not meeting this requirement is an error.
-There is no way of automatically detecting or enforcing the
-error, but anomalous results are likely to follow.
+There is no way for
+.BR cru
+to enforce this requirement automatically, but anomalous results are
+likely to follow from not meeting it.
 .SH FILES
 .I @INCDIR@/data_types.h
 .SH SEE ALSO

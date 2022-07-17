@@ -105,13 +105,17 @@ _cru_undefined_top (void *l, void *m, void *r, int *err);
 extern void *
 _cru_identity_top (void *l, void *m, void *r, int *err);
 
+// return a non-null value
+extern void *
+_cru_true_top (void *l, void *m, void *r, int *err);
+
 // return the disjunction of the left and right operands
 extern void *
 _cru_disjoining_top (void *l, void *m, void *r, int *err);
 
 // --------------- replacement quarternary operators -------------------------------------------------------
 
-// unconditionally return the argument y
+// unconditionally return the argument x
 extern void *
 _cru_identity_qop (void *w, void *x, void *y, void *z, int *err);
 

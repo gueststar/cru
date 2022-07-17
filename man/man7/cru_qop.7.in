@@ -22,10 +22,10 @@ general on
 a user-defined property of the local vertex
 .TP
 *
-a user-defined property of an adjacent vertex
+the label of an edge originating from the local vertex
 .TP
 *
-the label of an edge originating from the local vertex
+a user-defined property of an adjacent vertex
 .TP
 *
 the label of an edge originating from the adjacent vertex.

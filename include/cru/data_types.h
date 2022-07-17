@@ -259,6 +259,7 @@ typedef struct cru_merger_s
 
 typedef struct cru_filter_s
 {
+  cru_qpred thinner;                         // optional total order relation on edges
   struct cru_zone_s fi_zone;                 // where to filter
   struct cru_kernel_s fi_kernel;             // only vertices and edges for which the result is non-null are retained
   struct cru_order_s fi_order;               // optionally to identify classes of edges jointly filterable

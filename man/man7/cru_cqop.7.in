@@ -41,12 +41,12 @@ NULL
 field causes the operator to be invoked unconditionally. When
 operating on a graph created with scalar edge labels,
 .BR cru
-infers a quartenary operator that unconditionally returns its third
-argument if none is specified. That is, if applied to the quadruple of
+infers a quartenary operator that unconditionally returns its second
+operand if none is specified. That is, if applied to the quadruple of
 operands
 .I (w,x,y,z)
 in that order, the inferred quartenary operator returns
-.I y.
+.I x.
 .SH ERRORS
 Except as noted above, there is no default value for the
 .BR qop

@@ -54,7 +54,7 @@ _cru_launched (k, i, r, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1042) : r->ports ? 0 : IER(1043))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1049) : r->ports ? 0 : IER(1050))
 	 goto a;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto b;
@@ -98,9 +98,9 @@ _cru_status_launched (k, i, h, r, err)
   packet_list p;
 
   started = dblx = 0;
-  if ((! r) ? IER(1044) : (r->valid != ROUTER_MAGIC) ? IER(1045) : 0)
+  if ((! r) ? IER(1051) : (r->valid != ROUTER_MAGIC) ? IER(1052) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1046) : (! (r->lanes)) ? IER(1047) : 0) ? (r->valid = MUGGLE(27)) : 0)
+  if (((! (r->ports)) ? IER(1053) : (! (r->lanes)) ? IER(1054) : 0) ? (r->valid = MUGGLE(27)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto a;
@@ -144,9 +144,9 @@ _cru_count_launched (k, i, a, q, r, count, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1048) : count ? 0 : IER(1049))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1055) : count ? 0 : IER(1056))
 	 goto a;
-  if (((! (r->ports)) ? IER(1050) : (! (r->lanes)) ? IER(1051) : 0) ? (r->valid = MUGGLE(28)) : 0)
+  if (((! (r->ports)) ? IER(1057) : (! (r->lanes)) ? IER(1058) : 0) ? (r->valid = MUGGLE(28)) : 0)
 	 goto a;
   *count = 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_count_runner, r, &dblx))
@@ -192,11 +192,11 @@ _cru_queue_launched (k, i, q, r, u, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? IER(1052) : (r->valid != ROUTER_MAGIC) ? IER(1053) : 0)
+  if ((! r) ? IER(1059) : (r->valid != ROUTER_MAGIC) ? IER(1060) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1054) : (! (r->lanes)) ? IER(1055) : 0) ? (r->valid = MUGGLE(29)) : 0)
+  if (((! (r->ports)) ? IER(1061) : (! (r->lanes)) ? IER(1062) : 0) ? (r->valid = MUGGLE(29)) : 0)
 	 return 0;
-  if ((! i) ? IER(1056) : (! u) ? IER(1057) : *u ? IER(1058) : 0)
+  if ((! i) ? IER(1063) : (! u) ? IER(1064) : *u ? IER(1065) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_queue_runner, r, &dblx))
 	 goto a;
@@ -238,12 +238,12 @@ _cru_maybe_disjunction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1059) : 0)
+  if ((! result) ? IER(1066) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1060) : (r->valid != ROUTER_MAGIC) ? IER(1061) : 0)
+  if ((! r) ? IER(1067) : (r->valid != ROUTER_MAGIC) ? IER(1068) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1062) : (! (r->lanes)) ? IER(1063) : 0) ? (r->valid = MUGGLE(30)) : 0)
+  if (((! (r->ports)) ? IER(1069) : (! (r->lanes)) ? IER(1070) : 0) ? (r->valid = MUGGLE(30)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -282,12 +282,12 @@ _cru_maybe_reduction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1064) : 0)
+  if ((! result) ? IER(1071) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1065) : (r->valid != ROUTER_MAGIC) ? IER(1066) : (r->tag != MAP) ? IER(1067) : 0)
+  if ((! r) ? IER(1072) : (r->valid != ROUTER_MAGIC) ? IER(1073) : (r->tag != MAP) ? IER(1074) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1068) : (! (r->lanes)) ? IER(1069) : 0) ? (r->valid = MUGGLE(31)) : 0)
+  if (((! (r->ports)) ? IER(1075) : (! (r->lanes)) ? IER(1076) : 0) ? (r->valid = MUGGLE(31)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -331,11 +331,11 @@ _cru_graph_launched (k, v, q, r, g, err)
 
   b = NULL;
   started = 0;
-  if ((! r) ? IER(1070) : (r->valid != ROUTER_MAGIC) ? IER(1071) : 0)
+  if ((! r) ? IER(1077) : (r->valid != ROUTER_MAGIC) ? IER(1078) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1072) : (! (r->lanes)) ? IER(1073) : 0) ? (r->valid = MUGGLE(32)) : 0)
+  if (((! (r->ports)) ? IER(1079) : (! (r->lanes)) ? IER(1080) : 0) ? (r->valid = MUGGLE(32)) : 0)
 	 return 0;
-  if ((! g) ? IER(1074) : *g ? IER(1075) : 0)
+  if ((! g) ? IER(1081) : *g ? IER(1082) : 0)
 	 return 0;
   if (*err)
 	 goto a;

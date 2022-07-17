@@ -12,9 +12,12 @@ A user-defined quaternary predicate indicates the sites in a graph
 where a new edge should be created in the course of a
 composition operation performed by the
 .BR cru_composed
-API function. The predicate
-is called once for every combination of pairs of end-to-end edges in the
-graph passed to
+API function, or a preference between edges to be filtered from a graph
+by the
+.BR cru_filtered
+API function. In the case of composition, the predicate is called once
+for every combination of pairs of end-to-end edges in the graph passed
+to
 .BR cru_composed.
 Its decision can depend in
 general on
@@ -23,32 +26,56 @@ general on
 a user-defined property of the local vertex
 .TP
 *
-a user-defined property of an adjacent vertex
+the label of an edge originating from the local vertex
 .TP
 *
-the label of an edge originating from the local vertex
+a user-defined property of an adjacent vertex
 .TP
 *
 the label of an edge originating from the adjacent vertex.
 .P
-The four operands to the predicte correspond to these
+The four operands to the predicate correspond to these
 entities in this order, and can be scalar values, pointers to heap
 allocated storage, or a combination depending on the application's way
-of representing a graph and its properties. The last parameter is a
-pointer to an error code initially zero on entry. The operator must
-treat the operands as read only but may assign the error code.
+of representing a graph and its properties. In the case of filtering,
+the four operands correspond to
+.TP
+*
+the label of an edge
+.TP
+*
+the vertex where the edge having the above label terminates
+.TP
+*
+the label of another edge originating from the same vertex as the one above
+.TP
+*
+the vertex where the latter edge terminates.
+.P
+The last parameter is a pointer to an error code initially zero on
+entry. The operator must treat the operands as read only but may
+assign the error code.
 .SH RETURN VALUE
-Any non-zero return value requests the creation of a composing edge
-corresponding to the given combination of edges using an edge label
-constructed by an associated
+In the case of composition, any non-zero return value requests the
+creation of a composing edge corresponding to the given combination of
+edges using an edge label constructed by an associated
 .BR cru_qop
-function given the same arguments.
-A return value of zero requests that no edge be created at that site.
+function given the same arguments. A return value of zero requests
+that no edge be created at that site.
+.P
+In the case of filtering, any non-zero return value indicates that the
+left edge would be better to keep in the graph than the right, and a
+zero return value indicates the opposite. The predicate is treated as
+a total order relational operator invoked as needed to discern the
+single minimum edge in a set as the only one to be kept.
 .SH ERRORS
 If a quaternary predicate sets the error code to any non-zero value, the
 .BR cru_composed
-function invoking it reclaims the graph passed to it, returns an empty
-graph, and propagates the same error code to its caller.
+or
+.BR cru_filtered
+function call causing it to be invoked reclaims the graph passed to
+it, returns an empty graph, and propagates the same error code to its
+caller.
 .P
 Applications can report POSIX error codes or define special purpose
 codes, but should not redefine any that clash with those
@@ -68,9 +95,16 @@ structure, which is built into the
 field in a
 .BR cru_composer
 structure passed to
-.BR cru_composed.
-The vertex properties contributing to the operator's input
-are computed according to the local and adjacent props defined in the
+.BR cru_composed,
+and as the
+.BR thinner
+field in a
+.BR cru_filter
+structure passed to
+.BR cru_filtered.
+In the case of composition, the vertex properties contributing to the
+operator's input are computed according to the local and adjacent
+props defined in the
 .BR co_props
 field of the
 .BR cru_composer.

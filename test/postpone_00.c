@@ -78,7 +78,7 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (edges_in != DEGREE) ? FAIL(4601) : (edges_out != DEGREE) ? FAIL(4602) : 0);
+  return ! (*err ? 1 : (edges_in != DEGREE) ? FAIL(4608) : (edges_out != DEGREE) ? FAIL(4609) : 0);
 }
 
 
@@ -97,7 +97,7 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4603) : (s < r) ? FAIL(4604) : 0) ? 0 : s);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4610) : (s < r) ? FAIL(4611) : 0) ? 0 : s);
 }
 
 
@@ -124,11 +124,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4605))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4612))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == (DEGREE * NUMBER_OF_VERTICES)) ? 0 : FAIL(4606))
+  if ((cru_edge_count (g, LANES, err) == (DEGREE * NUMBER_OF_VERTICES)) ? 0 : FAIL(4613))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4607))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4614))
 	 return 0;
   return 1;
 }

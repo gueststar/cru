@@ -58,7 +58,7 @@ _cru_inferred_builder (b, v, err)
   if (b_copy->subconnector ? (! _cru_full_order (&(b_copy->bu_sig.orders.e_order), err)) : 0)
 	 goto a;
   _cru_allow_undefined_order (&(b_copy->bu_sig.orders.e_order), err);
-  if (b_copy->bu_sig.orders.v_order.equal ? 0 : IER(1013))
+  if (b_copy->bu_sig.orders.v_order.equal ? 0 : IER(1020))
 	 goto a;
   if (FAILED(b_copy->bu_sig.orders.v_order.equal, v, v) ? RAISE(CRU_INCVEL) : 0)
 	 goto a;
@@ -240,7 +240,7 @@ _cru_inferred_splitter (x, s, err)
 {
   cru_splitter x_copy;
 
-  if ((! _cru_filled_sig (s, err)) ? 1 : (! s) ? IER(1014) : ! (x_copy = _cru_splitter_copy (x, err)))
+  if ((! _cru_filled_sig (s, err)) ? 1 : (! s) ? IER(1021) : ! (x_copy = _cru_splitter_copy (x, err)))
 	 return NULL;
   ALLOW (x_copy->fissile, (cru_bpred) _cru_true_bpred);
   if (! (_cru_filled_map (&(x_copy->sp_prop.vertex), err) ? _cru_filled_prop (&(x_copy->sp_prop), err) : 0))
@@ -310,7 +310,7 @@ inferred_merger (c, s, err)
 {
   cru_merger c_copy;
 
-  if ((! s) ? IER(1015) : ! (c_copy = _cru_merger_copy (c, err)))
+  if ((! s) ? IER(1022) : ! (c_copy = _cru_merger_copy (c, err)))
 	 return NULL;
   if (_cru_empty_prop (&(c_copy->me_kernel.v_op)))                                // if vertices are not to be fused
 	 {
@@ -370,7 +370,7 @@ _cru_inferred_merger (c, s, err)
 	  // as above but with extra validation not applicable to
 	  // deduplicators
 {
-  if ((! c) ? IER(1016) : 0)
+  if ((! c) ? IER(1023) : 0)
 	 return NULL;
   if ((_cru_empty_prop (&(c->me_kernel.v_op)) == _cru_empty_classifier (&(c->me_classifier))) ? 0 : RAISE(CRU_INCMRG))
 	 return NULL;
@@ -397,7 +397,7 @@ inferred_sig (s, o, k, err)
 {
   struct cru_sig_s n;
 
-  if ((! s) ? IER(1017) : (! o) ? IER(1018) : (! k) ? IER(1019) : 0)
+  if ((! s) ? IER(1024) : (! o) ? IER(1025) : (! k) ? IER(1026) : 0)
 	 return 0;
   memset (&n, 0, sizeof (n));
   memcpy (&(n.destructors), &(s->destructors), sizeof (n.destructors));
@@ -509,23 +509,35 @@ _cru_inferred_filter (f, s, err)
 	  // outgoing edge fold. The reduction in the vertex fold is never
 	  // needed.
 	  //
-	  // If the edge test fold is not specified, then the filter calls
-	  // for all edges in the graph to be retained. If the edge test is
-	  // specified, then its reduction is never needed.
+	  // If the edge test fold is not specified and no thinner is
+	  // specified, then the filter calls for all edges in the graph to
+	  // be retained. If the edge test is specified, then its reduction
+	  // is never needed.
 	  //
 	  // If an edge test and an order are specified, only the order's
 	  // equality relation and hash are needed, which are used for
 	  // detecting equivalence classes of edges tested jointly. If no
 	  // edge test is specified, then no ordering is needed.
+	  //
+	  // If a thinner is specified with no edge test, an edge test
+	  // whose map always returns non-null is inferred, meaning that
+	  // edges are removed base only on the thinner. If a thinner is is
+	  // specified with no vertex test, a vertex test whose map always
+	  // return non-null is inferred, meaning that edges from all
+	  // vertices in the zone are subject to removal.
 {
   cru_filter f_copy;
 
-  if ((! s) ? IER(1020) : ! (f_copy = _cru_filter_copy (f, err)))
+  if ((! s) ? IER(1027) : ! (f_copy = _cru_filter_copy (f, err)))
 	 return NULL;
+  if (f_copy->thinner ? _cru_empty_prop (&(f_copy->fi_kernel.v_op)) : 0)
+	 ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_true_top);
   ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_disjoining_top);
   ALLOW (f_copy->fi_kernel.v_op.vertex.reduction, (cru_bop) _cru_undefined_bop);
   if (_cru_empty_prop (&(f_copy->fi_kernel.v_op)) ? 0 : ! _cru_filled_prop (&(f_copy->fi_kernel.v_op), err))
 	 goto a;
+  if (f_copy->thinner ? _cru_empty_fold (&(f_copy->fi_kernel.e_op)) : 0)
+	 ALLOW (f_copy->fi_kernel.e_op.map, (cru_top) _cru_true_top);
   if (! _cru_empty_order (&(f_copy->fi_order)))
 	 {
 		_cru_allow_order (&(f_copy->fi_order), &(s->orders.e_order), err);
@@ -566,7 +578,7 @@ _cru_deduplicator (s, err)
 {
   struct cru_merger_s c;
 
-  if (*err ? 1 : s ? 0 : IER(1021))
+  if (*err ? 1 : s ? 0 : IER(1028))
 	 goto a;
   memset (&c, 0, sizeof (c));
   memcpy (&(c.me_orders), &(s->orders), sizeof (c.me_orders));
@@ -606,7 +618,7 @@ _cru_inferred_postponer (p, s, err)
 {
   cru_postponer p_copy;
 
-  if ((! s) ? IER(1022) : ! (p_copy = _cru_postponer_copy (p, err)))
+  if ((! s) ? IER(1029) : ! (p_copy = _cru_postponer_copy (p, err)))
 	 return NULL;
   if (! (s->destructors.e_free))
 	 ALLOW (p_copy->postponement.bop, (cru_bop) _cru_identity_bop);
@@ -647,7 +659,7 @@ _cru_inferred_fabricator (a, s, err)
 {
   cru_fabricator a_copy;
 
-  if ((! s) ? IER(1023) : (! a) ? IER(1024) : ! (a_copy = _cru_fabricator_copy (a, err)))
+  if ((! s) ? IER(1030) : (! a) ? IER(1031) : ! (a_copy = _cru_fabricator_copy (a, err)))
 	 return NULL;
   if (a_copy->e_fab ? (! (a_copy->fa_sig.destructors.e_free)) : 0)
 	 {
