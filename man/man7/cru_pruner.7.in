@@ -69,25 +69,6 @@ structure passed to the
 library function. This field may be omitted or assigned
 NULL
 if the pruning step is not required.
-.P
-Because this operation depends on comparison of edge labels in a
-graph, a hash function and an equality relation on edge labels need to
-have been previously defined or inferred when the graph was built,
-even if such a graph normally could be built without them. These
-functions are specified by the
-.BR hash
-and
-.BR equal
-fields within the
-.BR bu_sig.orders.e_order
-field of the
-.BR cru_builder
-used to build the graph. However, if no destructor for edges is
-defined in the
-.BR bu_sig.destructors.e_free
-field, then
-.BR cru
-infers default hashes and relations.
 .SH FILES
 .I @INCDIR@/function_types.h
 .P

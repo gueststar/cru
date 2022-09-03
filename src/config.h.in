@@ -40,4 +40,4 @@
 
 // This definition alters memory testing. See ../test/mtest.in.
 
-#undef SOFT_LIMIT
+#define SOFT_LIMIT

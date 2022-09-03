@@ -73,6 +73,10 @@ _cru_half_duplex (cru_graph g, int *err);
 extern int
 _cru_compatible (cru_graph g, cru_kernel b, int *err);
 
+// return non-zero both have all the same fields
+extern int
+_cru_identical (cru_sig l, cru_sig r, int *err);
+
 #ifdef __cplusplus
 }
 #endif

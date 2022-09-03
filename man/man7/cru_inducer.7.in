@@ -65,7 +65,7 @@ field, or the unary operator referenced by the
 .BR boundary_value
 field applied to the vertex. The latter takes precedence if it is not
 NULL. To compute the result associated with any vertex having
-prerequisites visited, these steps are taken.
+prerequisites, these steps are taken.
 .TP
 *
 For

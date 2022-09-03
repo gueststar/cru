@@ -89,20 +89,12 @@ refers to an invalid or corrupted kill switch structure.
 .BR CRU_INTKIL
 The operation was stopped by user intervention using the kill switch
 .I k.
-.TP
-.BR CRU_UNDEQU
-The graph's edge labels are dynamically allocated but no
-edge equality relation was defined when the graph was created.
-.TP
-.BR CRU_UNDHSH
-The graph's edge labels are dynamically allocated but no
-edge hash function was defined when the graph was created.
 .SH NOTES
 Graphs built by the
 .BR cru_built
 function necessarily have mutually distinct vertices but are allowed
-duplicate edges. Graphs with duplicate vertices may nevertheless result from
-the
+duplicate edge labels. Graphs with duplicate vertices may nevertheless
+result from the
 .BR cru_mutated,
 .BR cru_fabricated,
 and

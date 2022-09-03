@@ -67,15 +67,6 @@ infers a scalar vertex type and therefore a corresponding default
 field if it is omitted. A similar convention applies to the
 .BR e_order
 field.
-.P
-The
-.BR e_order
-field is not strictly necessary for building a graph, and may be
-omitted or zero-filled. However, an edge ordering is required for some
-operations on existing graphs, namely composition, merging,
-deduplication, postponement, and stretching. If any of these these
-operations is anticipated, an edge ordering must be defined or
-inferrable in advance.
 .SH FILES
 .I @INCDIR@/data_types.h
 .SH SEE ALSO

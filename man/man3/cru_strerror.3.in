@@ -40,8 +40,8 @@ documented.
 .P
 Return values of the form
 .nf
-nthm-X.Y.Z: internal error code nnn
-cru-X.Y.Z: internal error code nnn
+   nthm-X.Y.Z: internal error code nnn
+   cru-X.Y.Z: internal error code nnn
 .fi
 where "X.Y.Z" is a version number and "nnn" is a decimal internal
 error code number are indicative of possible bugs in these libraries

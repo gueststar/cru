@@ -58,24 +58,16 @@ and a
 are defined.
 .TP
 .BR CRU_UNDHSH
-No vertex hash function is defined or inferrable.
+No hash function is defined or inferrable for vertices, edges, or both.
 .TP
 .BR CRU_UNDEQU
-No vertex equality relational predicate is defined or inferrable.
+No equality relational predicate is defined or inferrable for vertices, edges, or both.
 .TP
 .BR CRU_INCVEL
 The vertex equality relational predicate is not
 reflexive.
 .P
 Non-reflexive equality is not always detected but is always an error.
-.SH NOTES
-An edge order is not necessary for building a graph, but is necessary
-for the operations of composition, merging, deduplication,
-postponement, and stretching existing graphs. For these operations, an
-edge ordering must be defined or inferrable at some point in advance,
-so it should be defined as part of the
-.BR bu_sig
-field if any of these operations is anticipated.
 .SH FILES
 .I @INCDIR@/data_types.h
 .P

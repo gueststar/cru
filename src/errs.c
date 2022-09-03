@@ -63,12 +63,12 @@ _cru_open_errs (err)
 	 global_error[i] = 0;
   if (! _cru_error_checking_mutex_type (&a, err))
 	 return 0;
-  if (pthread_mutex_init (&error_lock, &a) ? IER(894) : 0)
+  if (pthread_mutex_init (&error_lock, &a) ? IER(896) : 0)
 	 {
 		pthread_mutexattr_destroy (&a);
 		return 0;
 	 }
-  if (pthread_mutexattr_destroy (&a) ? (! IER(895)) : 1)
+  if (pthread_mutexattr_destroy (&a) ? (! IER(897)) : 1)
 	 return 1;
   pthread_mutex_destroy (&error_lock);
   return 0;
@@ -91,7 +91,7 @@ _cru_close_errs ()
 
   last_error = 0;
   nthm_sync (&last_error);
-  if (deadlocked ? 0 : (last_error = (pthread_mutex_destroy (&error_lock) ? THE_IER(896) : 0)) ? (error_count + 1) : 0)
+  if (deadlocked ? 0 : (last_error = (pthread_mutex_destroy (&error_lock) ? THE_IER(898) : 0)) ? (error_count + 1) : 0)
 	 {
 		if (error_count < ERROR_LIMIT)
 		  global_error[error_count] = last_error;
@@ -126,9 +126,9 @@ _cru_error_checking_mutex_type (a, err)
 
 	  // Initialize the attributes for a mutex to use for error checking.
 {
-  if ((! a) ? IER(897) : pthread_mutexattr_init (a) ? IER(898) : 0)
+  if ((! a) ? IER(899) : pthread_mutexattr_init (a) ? IER(900) : 0)
 	 return 0;
-  if (! (pthread_mutexattr_settype (a, PTHREAD_MUTEX_ERRORCHECK) ? IER(899) : 0))
+  if (! (pthread_mutexattr_settype (a, PTHREAD_MUTEX_ERRORCHECK) ? IER(901) : 0))
 	 return 1;
   pthread_mutexattr_destroy (a);
   return 0;
@@ -205,12 +205,13 @@ cru_strerror (err)
 	 case CRU_DEVDBF: return "cru: double free";
 	 case CRU_DEVIAL: return "cru: inconsistent allocation limits";
 	 case CRU_DEVMLK: return "cru: memory leak";
-	 case CRU_DEVPBL: return "cru: developer tool used with production build";
+	 case CRU_DEVPBL: return "cru: diagnostic feature unavailable in production";
 	 case CRU_INCCON: return "cru: inconsistent connectors in build specification";
 	 case CRU_INCFIL: return "cru: inconsistent filter specification";
 	 case CRU_INCINV: return "cru: inconsistent initial vertex in zone";
 	 case CRU_INCMRG: return "cru: inconsistent merge specification";
 	 case CRU_INCMUT: return "cru: inconsistent mutations";
+	 case CRU_INCSPB: return "cru: inconsistent spreading builder";
 	 case CRU_INCTRP: return "cru: inconsistent traversal priorities";
 	 case CRU_INCVEL: return "cru: inconsistent vertex equality relation";
 	 case CRU_INTKIL: return "cru: user interrupt";

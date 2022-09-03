@@ -51,6 +51,7 @@
 #include "ptr.h"
 #include "route.h"
 #include "split.h"
+#include "spread.h"
 #include "stretch.h"
 #include "wrap.h"
 #include "zones.h"
@@ -78,7 +79,7 @@ static int initial_error = 0;
 #define TEST_ENTRY                                                         \
   CONTROL_ENTRY;                                                            \
   pthread_once (&once_control, initialization);                              \
-  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(889)))  \
+  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(890)))  \
 	 goto x;
 
 // done when any user code calls a published API routine
@@ -135,7 +136,7 @@ initialization ()
 	 goto f;
   if (! _cru_open_wrap (&initial_error))
 	 goto g;
-  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(890))) : 0)
+  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(891))) : 0)
 	 goto h;
   initialized = 1;
   return;
@@ -299,7 +300,7 @@ cru_connect (label, terminus, err)
   CONTROL_ENTRY;
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != BUILDING)) ? RAISE(CRU_INTOOC) : 0)
 	 return;
-  if ((e = _cru_get_edges ()) ? 0 : IER(891))
+  if ((e = _cru_get_edges ()) ? 0 : IER(892))
 	 return;
   *e = _cru_edge (_cru_get_destructors (), label, terminus, NO_NODE, *e, err);
 }
@@ -333,7 +334,7 @@ cru_stretch (label_in, new_vertex, label_out, err)
   z = _cru_get_destructors ();
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != STRETCHING)) ? RAISE(CRU_INTOOC) : 0)
 	 goto a;
-  if ((! z) ? IER(892) : (e = _cru_get_edge_maps ()) ? 0 : IER(893))
+  if ((! z) ? IER(893) : (e = _cru_get_edge_maps ()) ? 0 : IER(894))
 	 goto a;
   if (! (a = _cru_edge (z, label_in, new_vertex, NO_NODE, NO_NEXT_EDGE, err)))
 	 goto b;
@@ -448,14 +449,16 @@ cru_mapreduced (g, m, k, lanes, err)
 	 goto x;
   if (! g)
 	 result = ((m->ma_prop.vertex.vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(m->ma_prop.vertex.vacuous_case));
-  else
+  else if ((r = _cru_mapreducing_router (m, &(g->g_sig), lanes, err)))
 	 {
-		initial = _cru_initial_node (g, k, r = _cru_mapreducing_router (m, &(g->g_sig), lanes, err), err);
+		initial = _cru_initial_node (g, k, r, err);
+		if (*err)
+		  goto a;
 		if ((lanes != 1) ? 1 : (initial != g->nodes))
 		  result = _cru_mapreduce (k, initial, _cru_shared(_cru_reset (r, (task) _cru_mapreducing_task, err)), err);
 		else
 		  result = _cru_reduced_nodes (&(m->ma_prop), g->nodes, err);
-		_cru_free_router (r, err);
+		a: _cru_free_router (r, err);
 	 }
   if (*err ? (m->ma_prop.vertex.r_free ? result : NULL) : NULL)
 	 APPLY(m->ma_prop.vertex.r_free, result);
@@ -576,7 +579,7 @@ cru_stretched (g, s, k, lanes, err)
 	 g = _cru_stretched (g, k, r, err);
   _cru_free_stretcher (s);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -608,7 +611,7 @@ cru_split (g, s, k, lanes, err)
 	 _cru_split (&g, k, r, err);
   _cru_free_splitter (s);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -643,7 +646,45 @@ cru_composed (g, c, k, lanes, err)
 	 g = _cru_composed (g, k, r, err);
   _cru_free_composer (c);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
+  return (*err ? NULL : g);
+}
+
+
+
+
+
+
+
+
+
+cru_graph
+cru_spread (g, b, k, lanes, err)
+	  cru_graph g;
+	  cru_builder b;
+	  cru_kill_switch k;
+	  unsigned lanes;
+	  int *err;
+
+	  // Build onto an existing graph from the vertices that have no
+	  // outgoing edges.
+{
+  router r;
+  int ignored;
+
+  API_ENTRY;
+  _cru_disable_killing (k, err);
+  if (_cru_bad (g, err) ? 1 : *err ? 1 : (! g) ? 1 : (! (g->base_node)) ? IER(895) : 0)
+	 goto x;
+  if (! (b = _cru_inferred_builder (b, g->base_node->vertex, err)))
+	 goto x;
+  if (! _cru_identical (&(b->bu_sig), &(g->g_sig), err))
+	 goto a;
+  if ((r = _cru_building_router (b, (task) _cru_prespreading_task, lanes ? lanes : NPROC ? NPROC : 1, err)))
+	 g = _cru_spread (g, k, r, err);
+ a: _cru_free_builder (b);
+ x: if (*err)
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -689,7 +730,7 @@ cru_merged (g, c, k, lanes, err)
   g = _cru_merged (g, k, r, &new_sig, err);
   _cru_free_merger (c);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -723,7 +764,7 @@ cru_filtered (g, f, k, lanes, err)
 		_cru_pruned (g, r, k, err);
   _cru_free_filter (f);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -760,7 +801,7 @@ cru_deduplicated (g, k, lanes, err)
   g = _cru_deduplicated (g, k, r, err);
  a: _cru_free_merger (c);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -803,7 +844,7 @@ cru_mutated (g, m, k, lanes, err)
 	 g = _cru_mutated (g, k, r, &new_sig, err);
   _cru_free_mutator (m);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 
@@ -840,7 +881,7 @@ cru_postponed (g, p, k, lanes, err)
 	 _cru_postpone (&g, k, r, err);
   _cru_free_postponer (p);
  x: if (*err)
-	 _cru_free_now (g, err);
+	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
 

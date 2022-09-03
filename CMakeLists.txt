@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.6.0
+  cru VERSION 0.7.0
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -58,7 +58,7 @@ elseif (CMAKE_C_COMPILER_ID MATCHES GNU)
          -fstack-clash-protection -fPIC -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack
          -Wl,-z,separate-code)
 else()
-   message (STATUS "unknown C compiler ${CMAKE_C_COMPILER_ID}; build errors possible")
+   message (STATUS "untested C compiler ${CMAKE_C_COMPILER_ID}; build errors possible")
 endif()
 
 # --------------- markdown documents ----------------------------------------------------------------------
@@ -208,7 +208,7 @@ endif ()
 # error codes in source files
 
 if (NOT BASH)
-  message(WARNING "bash shell not found; developer scripts unavailable")
+  message(WARNING "bash shell not found; developer helper scripts unavailable")
 else ()
   string (TOUPPER ${CMAKE_PROJECT_NAME} PROJECT_NAMESPACER)
   configure_file (
@@ -245,7 +245,7 @@ endif()
 # numbers. This option should be commented out for production code
 # builds.
 
-# add_compile_options (-g)
+add_compile_options (-g)
 
 # The library depends on every .c file in the src/ directory, so this
 # part saves listing all forty-something of them. Note that some

@@ -102,7 +102,7 @@ effect.
 .TP
 * 
 If multiple callback functions called concurrently by the same API
-function report conflicting errors, only the first one detetected is
+function report conflicting errors, only the first one detected is
 reported to the API function's caller. The order of detection is
 generally non-deterministic.
 .TP

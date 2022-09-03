@@ -22,7 +22,7 @@ SITE_COUNT=$(@GREP@ KILL_SITE @CMAKE_CURRENT_SOURCE_DIR@/src/*.c | @SED@ -n $=)
 @SED@ -i "s/^#define\ PERIOD.*/#define\ PERIOD\ 0x3/" @CMAKE_CURRENT_SOURCE_DIR@/src/killers.h
 
 # Don't build documentation.
-rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+if [ -e @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt ]; then rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt; fi
 @SED@ -i "/GEN_DOCS/s/ON/OFF/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
 
 # Run the tests.
@@ -47,7 +47,7 @@ done
  @CMAKE_CURRENT_SOURCE_DIR@/test/readme.h
 
 # Build documentation.
-rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+if [ -e @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt ]; then rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt; fi
 @SED@ -i "/GEN_DOCS/s/OFF/ON/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
 
 # Don't leave the test build lying around.

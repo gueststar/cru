@@ -24,7 +24,7 @@ This function creates an edge labeled by the given argument
 .I label
 and terminating at a vertex given by
 .I terminus
-in a graph that is being built. The
+in a graph that is being built or spread. The
 .BR cru_edge
 and
 .BR cru_vertex

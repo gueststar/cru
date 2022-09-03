@@ -135,7 +135,7 @@ fi
  "s/^#define\ RESERVE_PACKET_LIMIT.*/#define\ RESERVE_PACKET_LIMIT\ 0x100/" \
  @CMAKE_CURRENT_SOURCE_DIR@/src/pack.c
 @SED@ -i "s/^#define\ WRAP/#undef\ WRAP/" @CMAKE_CURRENT_SOURCE_DIR@/src/config.h.in
-rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt
+if [ -e @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt ]; then rm @CMAKE_CURRENT_BINARY_DIR@/CMakeCache.txt; fi
 @SED@ -i "/GEN_DOCS/s/OFF/ON/" @CMAKE_CURRENT_SOURCE_DIR@/CMakeLists.txt
 echo "rebuilding for production"
 make > /dev/null

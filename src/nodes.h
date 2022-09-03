@@ -44,16 +44,13 @@
 
 struct node_list_s
 {
-  struct
+  void *vertex;                   // content of a node in a graph
+  union
   {
-	 void *vertex;                 // content of a node in a graph
-	 union
-	 {
-		void *marked;               // used during mutation
-		void *accumulator;          // used during induction
-		void *vertex_property;      // used during expansion
-		mapex_pair props;           // used during composition
-	 };
+	 void *marked;                 // used during mutation
+	 void *accumulator;            // used during induction
+	 void *vertex_property;        // used during expansion
+	 mapex_pair props;             // used during composition
   };
   edge_list edges_out;            // connections to successor adjacent nodes
   union

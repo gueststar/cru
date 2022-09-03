@@ -102,9 +102,9 @@ cru_stretched (cru_graph g, cru_stretcher s, cru_kill_switch k, unsigned lanes, 
 extern cru_graph
 cru_split (cru_graph g, cru_splitter s, cru_kill_switch k, unsigned lanes, int *err);
 
-// consume and return a graph like g with additional edges based on compositions of consecutive edges
+// build onto an existing graph from the vertices that have no outgoing edges
 extern cru_graph
-cru_composed (cru_graph g, cru_composer c, cru_kill_switch k, unsigned lanes, int *err);
+cru_spread (cru_graph g, cru_builder b, cru_kill_switch k, unsigned lanes, int *err);
 
 // --------------- graph contraction -----------------------------------------------------------------------
 
@@ -129,6 +129,10 @@ cru_mutated (cru_graph g, cru_mutator m, cru_kill_switch k, unsigned lanes, int 
 // consume and return a graph like g with edges selectively relocated to the termini of their siblings
 extern cru_graph
 cru_postponed (cru_graph g, cru_postponer p, cru_kill_switch k, unsigned lanes, int *err);
+
+// consume and return a graph like g with additional edges based on compositions of consecutive edges
+extern cru_graph
+cru_composed (cru_graph g, cru_composer c, cru_kill_switch k, unsigned lanes, int *err);
 
 // --------------- reclamation -----------------------------------------------------------------------------
 

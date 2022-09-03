@@ -38,18 +38,10 @@ If the library function has already finished,
 this function has no effect.
 .TP
 *
-If the same kill switch is passed to multiple
-library functions, the last one takes precedence.
+If the same kill switch is passed to multiple library functions,
+only the last one to which it is passed is killable by it.
 .SH RETURN VALUE
 none
-.SH NOTES
-This function is useful only when called in the context of a
-separate thread from the job to be stopped.
-.P
-To work around the limitation of kill switches being applicable to
-only one library function at a time, applications can allocate multiple
-kill switches through multiple calls to
-.BR cru_new_kill_switch.
 .SH ERRORS
 .\"errs
 .TP
@@ -63,6 +55,14 @@ The parameter
 .I k
 does not refer to a valid
 .BR cru_kill_switch.
+.SH NOTES
+This function is useful only when called in the context of a
+separate thread from the job to be stopped.
+.P
+To work around the limitation of kill switches being applicable to
+only one library function at a time, applications can allocate multiple
+kill switches through multiple calls to
+.BR cru_new_kill_switch.
 .SH FILES
 .I @INCDIR@/cru.h
 .P

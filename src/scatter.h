@@ -61,6 +61,10 @@ _cru_scatter_out (node_list n, packet_pod t, int *err);
 extern void
 _cru_scatter_in (node_list n, packet_pod t, int *err);
 
+// send an initial packet to each adjacent node
+extern void
+_cru_scattered_initially (node_list n, cru_hash h, packet_pod t, int *err);
+
 // send a vertex-addressed edge-labeled packet to a worker for each outgoing edge from n
 extern int
 _cru_scattered_by_hashes (node_list n, cru_hash h, packet_pod t, int by_class, int *err);
@@ -69,7 +73,7 @@ _cru_scattered_by_hashes (node_list n, cru_hash h, packet_pod t, int by_class, i
 
 // send a vertex-addressed edge-labeled packet to a worker for each outgoing edge from n and delete the edges
 extern int
-_cru_unscatterable_by_hashes (node_list n, cru_hash h, cru_destructor d, packet_pod t, int *err);
+_cru_unscatterable_by_hashes (node_list n, cru_hash h, cru_destructor d, packet_pod t, int is_initial, int *err);
 
 // remove scattered edges with no carriers from the list
 extern int

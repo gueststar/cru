@@ -219,7 +219,7 @@ _cru_push_edge (new_edge, old_edges, err)
 
 	  // Insert a unit edge list at the beginning of an existing edge list.
 {
-  if ((! new_edge) ? 1 : new_edge->next_edge ? IER(852) : old_edges ? 0 : IER(853))
+  if ((! new_edge) ? 1 : new_edge->next_edge ? IER(853) : old_edges ? 0 : IER(854))
 	 return;
   new_edge->next_edge = *old_edges;
   *old_edges = new_edge;
@@ -241,9 +241,9 @@ _cru_enqueue_edge (new_edge, front, back, err)
 
 	  // Append an edge list to an existing edge list.
 {
-  if ((! new_edge) ? 1 : (! front) ? IER(854) : (! back) ? IER(855) : ((! *front) != ! *back) ? IER(856) : 0)
+  if ((! new_edge) ? 1 : (! front) ? IER(855) : (! back) ? IER(856) : ((! *front) != ! *back) ? IER(857) : 0)
 	 return;
-  if ((! *back) ? 0 : (*back)->next_edge ? IER(857) : 0)
+  if ((! *back) ? 0 : (*back)->next_edge ? IER(858) : 0)
 	 return;
   if (*front)
 	 (*back)->next_edge = new_edge;
@@ -302,7 +302,7 @@ _cru_repeating_labels (o, n, err)
 
   r = NULL;
   e = &n;
-  if ((! o) ? IER(858) : (! (o->hash)) ? IER(859) : (! *e) ? 1 : ! ((*e)->next_edge))
+  if ((! o) ? IER(859) : (! (o->hash)) ? IER(860) : (! *e) ? 1 : ! ((*e)->next_edge))
 	 return NULL;
   for (t = NULL; *err ? NULL : *e;)
 	 if (_cru_already_recorded (h = (o->hash) ((*e)->label), o->equal, (*e)->label, t, err))
@@ -332,7 +332,7 @@ _cru_popped_edge (edges, err)
 {
   edge_list o;
 
-  if ((! edges) ? IER(860) : *edges ? 0 : IER(861))
+  if ((! edges) ? IER(861) : *edges ? 0 : IER(862))
 	 return NULL;
   *edges = (o = *edges)->next_edge;
   o->next_edge = NULL;
@@ -354,12 +354,12 @@ _cru_deleted_edge (target, edges, err)
 {
   edge_list *e;
 
-  if ((! edges) ? IER(862) : 0)
+  if ((! edges) ? IER(863) : 0)
 	 return NULL;
   for (e = edges; *e; e = &((*e)->next_edge))
 	 if (*e == target)
 		return _cru_popped_edge (e, err);
-  IER(863);
+  IER(864);
   return NULL;
 }
 
@@ -382,10 +382,10 @@ _cru_minimum_edge (t, edges, err)
   int ux, ut;
 
   m = NULL;
-  if ((! t) ? IER(864) : (! edges) ? IER(865) : *edges ? 0 : IER(866))
+  if ((! t) ? IER(865) : (! edges) ? IER(866) : *edges ? 0 : IER(867))
 	 return NULL;
   for (e = *edges; *err ? NULL : e; e = e->next_edge)
-	 if (! (e->remote.node ? 0 : IER(867)))
+	 if (! (e->remote.node ? 0 : IER(868)))
 		if (m ? PASSED(t, e->label, m->label, e->remote.node->vertex, m->remote.node->vertex) : 1)
 		  m = e;
   return (*err ? NULL : _cru_deleted_edge (m, edges, err));
@@ -411,7 +411,7 @@ _cru_disconnections (terminus, carrier, edges, err)
   edge_list *e;
   edge_list result;
 
-  if (terminus ? (carrier ? (edges ? (carrier->next_edge ? IER(868) : 0) : IER(869)) : 1) : 1)
+  if (terminus ? (carrier ? (edges ? (carrier->next_edge ? IER(869) : 0) : IER(870)) : 1) : 1)
 	 return NULL;
   result = NULL;
   for (e = edges; *e;)
@@ -496,7 +496,7 @@ reduced_edges (m, v, e, by_class, by_accumulator, with_locks, err)
 	  // being run, allow an allocation error to be simulated at each
 	  // call site to the test code.
 {
-#define DANGLING(l,x) (((x = (by_class ? CLASS_OF(l->remote.node) : l->remote.node))) ? 0 : IER(870))
+#define DANGLING(l,x) (((x = (by_class ? CLASS_OF(l->remote.node) : l->remote.node))) ? 0 : IER(871))
 #define VERTEX(x) (by_accumulator ? x->accumulator : with_locks ? _cru_read (&(x->vertex), err) : x->vertex)
 
   int ux;
@@ -506,22 +506,22 @@ reduced_edges (m, v, e, by_class, by_accumulator, with_locks, err)
   void *reduction_result;
   void *previous_reduction_result;
 
-  if (m ? 0 : IER(871))
+  if (m ? 0 : IER(872))
 	 return NULL;
   if (! e)
 	 return ((m->vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(m->vacuous_case));
-  if (m->map ? 0 : IER(872))
+  if (m->map ? 0 : IER(873))
 	 return NULL;
   if (m->vacuous_case)
 	 reduction_result = CALLED(m->vacuous_case);
-  else if ((m->m_free != m->r_free) ? IER(873) : DANGLING(e,n))
+  else if ((m->m_free != m->r_free) ? IER(874) : DANGLING(e,n))
 	 return NULL;
   else
 	 {
 		reduction_result = APPLIED(m->map, v, e->label, VERTEX(n));
 		e = e->next_edge;
 	 }
-  if ((! e) ? 0 : m->reduction ? 1 : ! IER(874))
+  if ((! e) ? 0 : m->reduction ? 1 : ! IER(875))
 	 for (; *err ? 0 : e ? (! DANGLING(e,n)) : 0; e = e->next_edge)
 		{
 		  previous_reduction_result = reduction_result;

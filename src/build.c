@@ -45,64 +45,9 @@
 
 
 
-static void
-reach_extant_node (i, c, b, d, err)
-	  packet_list *i;
-	  packet_list c;       // colliding packet
-	  cru_builder b;
-	  packet_pod d;
-	  int *err;
-
-	  // Discard a packet i whose payload vertex matches one already in
-	  // the graph recorded in a packet c, and connect its sender node
-	  // to the latter. If the graph is being built by subconnector
-	  // functions and the label on the edge leading to the vertex
-	  // hasn't been seen already, then call the subconnector function
-	  // and percolate messages to other workers through any new edges
-	  // it creates.
-{
-  int ux;
-  void *l;
-  uintptr_t h;
-  edge_list *new_edges_out;
-  edge_list extant_edges_out;
-
-  if ((! i) ? IER(565) : (! *i) ? IER(566) : (! ((*i)->carrier)) ? IER(567) : c ? 0 : IER(568))
-	 goto a;
-  if ((! b) ? IER(569) : (new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(570))
-	 goto b;
-  if (b->bu_sig.destructors.v_free ? (*i)->payload : NULL)           // get rid of the extra copy of the vertex
-	 APPLY(b->bu_sig.destructors.v_free, (*i)->payload);
-  if (c->receiver ? 0 : IER(571))
-	 goto b;
-  if (b->connector ? (b->subconnector ? IER(572) : 1) : 0)
-	 goto b;
-  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(573)) : IER(574))
-	 goto b;
-  h = (b->bu_sig.orders.e_order.hash) (l = (*i)->carrier->label);
-  if ((*i)->initial ? IER(575) : _cru_already_recorded (h, b->bu_sig.orders.e_order.equal, l, c->seen_carriers, err))
-	 goto b;
-  _cru_record_edge (h, b->bu_sig.orders.e_order.equal, l, &(c->seen_carriers), err);
-  APPLY(b->subconnector, NOT_INITIAL, l, c->receiver->vertex);                     // make new edges
-  extant_edges_out = c->receiver->edges_out;                                       // don't yet mix them with the old edges
-  c->receiver->edges_out = *new_edges_out;
-  *new_edges_out = NULL;
-  _cru_scatter_out_or_consume (c->receiver, b->bu_sig.orders.v_order.hash, &(b->bu_sig.destructors), d, err);
-  c->receiver->edges_out = _cru_cat_edges (c->receiver->edges_out, extant_edges_out);
- b: (*i)->carrier->remote.node = c->receiver;                                             // overwrite a vertex field
- a: _cru_nack (_cru_popped_packet (i, err), err);
-}
-
-
-
-
-
-
-
-
 
 static edge_list
-deduplicated (e, s, err)
+unique (e, s, err)
 	  edge_list e;
 	  cru_sig s;
 	  int *err;
@@ -110,8 +55,8 @@ deduplicated (e, s, err)
 	  // Deduplicate edges by label and remote vertex. Time is
 	  // quadratic in the cardinality of the largest edge label
 	  // equivalence class, making it possibly a bottleneck if
-	  // subconnectors create large numbers of identically labeled
-	  // outgoing edges from the same vertex.
+	  // connectors create large numbers of identically labeled
+	  // outgoing edges between the same vertices.
 {
   brigade b, t;           // each bucket has only one edge label but multiple remote vertices
   edge_list *l;           // all edges in a bucket
@@ -120,7 +65,7 @@ deduplicated (e, s, err)
   edge_list r;            // cumulative unique edges
   int ux, ut;
 
-  if (s ? 0 : IER(576))
+  if (s ? 0 : IER(566))
 	 return NULL;
   t = _cru_rallied (s->orders.e_order.hash, s->orders.e_order.equal, &e, err);
   _cru_free_edges_and_termini (&(s->destructors), e, err);
@@ -149,8 +94,73 @@ deduplicated (e, s, err)
 
 
 
-static packet_list
-reached_new_node (i, b, q, d, err)
+
+
+
+void
+_cru_reach_extant_node (i, c, b, d, err)
+	  packet_list *i;
+	  packet_list c;       // colliding packet
+	  cru_builder b;
+	  packet_pod d;
+	  int *err;
+
+	  // Discard a packet i whose payload vertex matches one already in
+	  // the graph recorded in a packet c, and connect its sender node
+	  // to the latter. If the graph is being built by subconnector
+	  // functions and the label on the edge leading to the vertex
+	  // hasn't been seen already, then call the subconnector function
+	  // and percolate messages to other workers through any new edges
+	  // it creates.
+{
+  int ux;
+  void *l;
+  uintptr_t h;
+  node_list n;
+  edge_list *new_edges_out;
+  edge_list extant_edges_out;
+
+  if ((! i) ? IER(567) : (! *i) ? IER(568) : (! ((*i)->carrier)) ? IER(569) : c ? 0 : IER(570))
+	 goto a;
+  if ((! b) ? IER(571) : (new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(572))
+	 goto b;
+  if (b->bu_sig.destructors.v_free ? (*i)->payload : NULL)           // get rid of the extra copy of the vertex
+	 APPLY(b->bu_sig.destructors.v_free, (*i)->payload);
+  (*i)->payload = NULL;
+  if (((n = c->receiver)) ? 0 : IER(573))
+	 goto b;
+  if (b->connector ? (b->subconnector ? IER(574) : 1) : 0)
+	 goto b;
+  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(575)) : IER(576))
+	 goto b;
+  h = (b->bu_sig.orders.e_order.hash) (l = (*i)->carrier->label);
+  if ((*i)->initial ? IER(577) : _cru_already_recorded (h, b->bu_sig.orders.e_order.equal, l, c->seen_carriers, err))
+	 goto b;
+  _cru_record_edge (h, b->bu_sig.orders.e_order.equal, l, &(c->seen_carriers), err);
+  APPLY(b->subconnector, NOT_INITIAL, l, c->receiver->vertex);                                  // make new edges
+  extant_edges_out = c->receiver->edges_out;
+  c->receiver->edges_out = unique (*new_edges_out, &(b->bu_sig), err);
+  *new_edges_out = NULL;
+  _cru_scatter_out_or_consume (c->receiver, b->bu_sig.orders.v_order.hash, &(b->bu_sig.destructors), d, err);
+  c->receiver->edges_out = _cru_cat_edges (c->receiver->edges_out, extant_edges_out);
+ b: (*i)->carrier->remote.node = c->receiver;
+ a: _cru_nack (_cru_popped_packet (i, err), err);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+packet_list
+_cru_reached_new_node (i, b, q, d, err)
 	  packet_list *i;
 	  cru_builder b;
 	  node_queue *q;       // the output queue where all newly created nodes are stored
@@ -169,19 +179,19 @@ reached_new_node (i, b, q, d, err)
   void *l;                // incident edge label
   int ux;
 
-  if ((! i) ? IER(577) : (! *i) ? IER(578) : (! b) ? IER(579) : 0)
+  if ((! i) ? IER(578) : (! *i) ? IER(579) : (! b) ? IER(580) : 0)
 	 goto a;
-  if (((! (b->connector)) == ! (b->subconnector)) ? IER(580) : 0)
+  if (((! (b->connector)) == ! (b->subconnector)) ? IER(581) : 0)
 	 goto a;
-  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(581)) : 0)
+  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(582)) : 0)
 	 goto a;
-  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(582))
+  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(583))
 	 goto a;
   if (b->connector)
 	 APPLY(b->connector, (*i)->payload);
   else if ((*i)->initial)
 	 APPLY(b->subconnector, INITIAL, NO_INCIDENT_EDGE_LABEL, (*i)->payload);
-  else if ((*i)->carrier ? 0 : IER(583))
+  else if ((*i)->carrier ? 0 : IER(584))
 	 goto a;
   else
 	 {
@@ -190,6 +200,7 @@ reached_new_node (i, b, q, d, err)
 		APPLY(b->subconnector, NOT_INITIAL, l, (*i)->payload);
 	 }
   n = _cru_node_of (&(b->bu_sig.destructors), (*i)->payload, NO_EDGES_IN, *new_edges_out, err);
+  *new_edges_out = NULL;
   if (! _cru_enqueued_node (n, q, err))
 	 {
 		_cru_free_adjacencies (&n, &(b->bu_sig.destructors), err);
@@ -197,8 +208,7 @@ reached_new_node (i, b, q, d, err)
 	 }
   if ((*i)->carrier)
 	 (*i)->carrier->remote.node = n;
-  if (b->subconnector)
-	 n->edges_out = deduplicated (n->edges_out, &(b->bu_sig), err);
+  n->edges_out = unique (n->edges_out, &(b->bu_sig), err);
   _cru_scatter_out_or_consume ((*i)->receiver = n, b->bu_sig.orders.v_order.hash, &(b->bu_sig.destructors), d, err);
   return _cru_popped_packet (i, err);
  a: _cru_nack (_cru_popped_packet (i, err), err);
@@ -234,6 +244,7 @@ _cru_building_task (source, err)
   cru_builder b;
   node_queue q;
   packet_pod d;
+  node_list n;
   int killed;                 // non-zero when the job is killed
   context x;
   cru_sig s;
@@ -247,14 +258,14 @@ _cru_building_task (source, err)
   x = BUILDING;
   collisions = NULL;
   new_edges_out = NULL;
-  if ((! source) ? IER(584) : (source->gruntled != PORT_MAGIC) ? IER(585) : 0)
+  if ((! source) ? IER(585) : (source->gruntled != PORT_MAGIC) ? IER(586) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(586) : (r->valid != ROUTER_MAGIC) ? IER(587) : 0)
+  if ((!(r = source->local)) ? IER(587) : (r->valid != ROUTER_MAGIC) ? IER(588) : 0)
 	 return NULL;
   b = &(r->builder);
-  if ((!(d = source->peers)) ? IER(588) : (r->tag != BUI) ? IER(589) : ! (s = &(b->bu_sig)))
+  if ((!(d = source->peers)) ? IER(589) : (r->tag != BUI) ? IER(590) : ! (s = &(b->bu_sig)))
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(590))
+  if ((s->orders.v_order.equal) ? 0 : IER(591))
 	 goto a;
   if (_cru_set_destructors (&(b->bu_sig.destructors), err) ? 1 : _cru_set_kill_switch (&(r->killed), err) ? 1 : 0)
 	 goto a;
@@ -274,9 +285,9 @@ _cru_building_task (source, err)
 		if (*err)
 		  goto b;
 		if (*c ? (! unequal) : 0)
-		  reach_extant_node (&incoming, *c, b, d, err);
+		  _cru_reach_extant_node (&incoming, *c, b, d, err);
 		else if (limit ? (count++ < limit) : 1)
-		  _cru_push_packet (reached_new_node (&incoming, b, &q, d, err), *c ? &((*c)->next_packet) : c, err);
+		  _cru_push_packet (_cru_reached_new_node (&incoming, b, &q, d, err), *c ? &((*c)->next_packet) : c, err);
 		else
 		  RAISE(CRU_INTOVF);
 		continue;
@@ -287,6 +298,9 @@ _cru_building_task (source, err)
 	 }
   x = IDLE;
   _cru_forget_collisions (collisions, err);
+  if ((! q) ? 0 : *err ? 0 : ! (b->connector))
+	 for (n = q->front; n; n = n->next_node)
+		n->edges_out = _cru_deduplicated_edges (n->edges_out, &(b->bu_sig.orders.e_order), b->bu_sig.destructors.e_free, err);
   if (*err)
 	 _cru_free_node_queue (q, &(s->destructors), err);
   return (*err ? NULL : q);
@@ -312,12 +326,15 @@ _cru_built (v, k, r, err)
 	  // initial vertex, and consume the initial vertex and the router.
 {
   cru_graph g;
+  int ux;
 
   g = NULL;
   _cru_disable_killing (k, err);
-  if ((! r) ? IER(591) : (r->valid != ROUTER_MAGIC) ? IER(592) : (! (r->ro_sig.orders.v_order.hash)) ? IER(593) : 0)
+  if ((! r) ? IER(592) : (r->valid != ROUTER_MAGIC) ? IER(593) : (! (r->ro_sig.orders.v_order.hash)) ? IER(594) : 0)
 	 goto a;
-  _cru_graph_launched (k, v, (r->ro_sig.orders.v_order.hash) (v), r, &g, err);
+  if (! _cru_graph_launched (k, v, (r->ro_sig.orders.v_order.hash) (v), r, &g, err))
+	 if (v ? r->ro_sig.destructors.v_free : NULL)
+		APPLY(r->ro_sig.destructors.v_free, v);
   if (*err)
 	 _cru_free_now (g, err);
   return (*err ? NULL : g);

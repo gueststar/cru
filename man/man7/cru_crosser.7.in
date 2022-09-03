@@ -104,15 +104,6 @@ No vertex product operator is defined.
 .BR CRU_UNDEPR
 No edge product operator is defined.
 .SH NOTES
-An edge order in the input graphs is not necessary for forming a graph
-product, and need not be defined for the product, but is necessary for
-the operations of composition, merging, deduplication, postponement,
-and stretching existing graphs. For these operations, an edge ordering
-must be defined or inferrable at some point in advance, so it should
-be defined as part of the
-.BR cr_sig
-field if any of these operations is anticipated.
-.P
 Graph products are memory intensive because they need memory for both
 input graphs and the result simultaneously. Moreover, the space needed
 for the result is proportional in the worst case to the product of the

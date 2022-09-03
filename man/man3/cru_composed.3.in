@@ -28,11 +28,11 @@ int *
 .I err
 )
 .SH DESCRIPTION
-Some graph algorithms might benefit when an edge into a vertex having
-another edge out of it can be replaced by an edge directly from the
-origin of the former to the terminus of the latter, in effect
-bypassing the vertex. This function creates new edges of that form in
-an existing graph
+Some graph algorithms might involve replacing an edge into a vertex
+and another edge out of it by an edge directly from the origin of
+the former to the terminus of the latter, in effect bypassing the
+vertex. This function creates new edges of that form in an existing
+graph
 .I g
 based on criteria specified in
 .I c

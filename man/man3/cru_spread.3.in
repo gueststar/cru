@@ -1,19 +1,19 @@
-.TH CRU_BUILT 3 @DATE_VERSION_TITLE@
+.TH CRU_SPREAD 3 @DATE_VERSION_TITLE@
 .SH NAME
-cru_built \- graph building function in the cru library
+cru_spread \- resume building a partially built graph
 .SH SYNOPSIS
 #include <cru/cru.h>
 .sp
 .BR cru_graph
-.BR cru_built
+.BR cru_spread
 (
+.br
+.BR cru_graph
+.I g
+,
 .br
 .BR cru_builder
 .I b
-,
-.br
-.BR cru_vertex
-.I v
 ,
 .br
 .BR cru_kill_switch
@@ -28,53 +28,86 @@ int *
 .I err
 )
 .SH DESCRIPTION
-This function allocates and builds the graph containing
-all vertices reachable from a given initial vertex
-.I v
-according to the specification
-.I b,
-which is a pointer to a
+This function enables graphs to be built in multiple passes. When
+.BR cru_spread
+is passed an existing graph
+.I g
+previously built by
+.BR cru_built,
+these conditions apply.
+.TP
+*
+Any vertex in
+.I g
+that has any outgoing edges before
+.BR cru_spread
+is called acquires no additional outgoing edges.
+.TP
+*
+Any vertex in
+.I g
+lacking outgoing edges at the time
+.BR cru_spread
+is called, and any new vertex created afterwards, is passed to the
+.BR connector
+or
+.BR subconnector
+function in
+.I b
+following the usual
 .BR cru_builder
-structure initialized by the caller.
+calling conventions to create new outgoing edges from it and possibly
+new adjacent vertices.
 .P
-Because the
-.BR cru_vertex
-type is a
-.I void
-pointer alias,
-.I v
-can be of any compatible type.
-If
-.I v
-is a pointer to dynamically allocated storage, then
-.I b->bu_sig.destructors.v_free
-must be initialized by the caller as a pointer to a compatible
-.BR cru_destructor
-function.
+The parameter
+.I b
+is required to point to a
+.BR cru_builder
+whose
+.BR bu_sig
+field is contains
+.BR orders
+and
+.BR destructors
+identical to those of the
+.BR cru_sig
+in the
+.BR cru_builder
+initially used to build
+.I g
+by
+.BR cru_built,
+but whose
+.BR connector
+or
+.BR subconnector
+functions may differ. The
+.BR bu_sig.vertex_limit
+field may also differ.
 .\"killsw
-In this case, no graph is built.
+In this case,
+.I g
+is reclaimed and a NULL value is returned.
 .\"lanes
 .P
 For purposes of memory management,
-.I v
+.I g
 is consumed by
-.BR cru_built
+.BR cru_spread
 and should not be reclaimed by the caller.
-The other parameters are not consumed.
 .SH RETURN VALUE
 On successful completion, the returned value is a pointer to a graph
-built according to the given specification, which applications should
-treat as opaque but may pass as a parameter to other library
-functions. In the event of any error, a
-NULL
-pointer is returned. A
-NULL
-pointer is also returned if the parameter
+derived from
+.I g
+by being spread according to the given specification, which
+applications should treat as opaque but may pass as a parameter to
+other library functions. In the event of any error, a NULL pointer is
+returned. An unmodified copy of
+.I g
+is returned if the parameter
 .I b
 is
-NULL,
-which in this case represents an empty graph and is not in itself an
-error.
+NULL.
 .SH ERRORS
 .\"cb_errs
 .TP
@@ -109,11 +142,6 @@ and
 are initialized as something other than
 NULL. 
 .TP
-.BR CRU_INCVEL
-The vertex equality relation
-.I b->bu_sig.orders.v_order.equal
-is not reflexive.
-.TP
 .BR CRU_INTOVF
 The number of vertices approached or exceeded the limit set by
 .I b->bu_sig.vertex_limit.
@@ -137,6 +165,23 @@ or an edge destructor is defined by
 .I b->bu_sig.destructors.e_free
 but no vertex hash function is defined in
 .I b->bu_sig.orders.e_order.hash.
+.TP
+.BR CRU_INCSPB
+The given orders
+.I b->bu_sig.orders
+or the destructors
+.I b->bu_sig.destructors
+differ from those used in the
+.BR cru_builder
+previously passed to
+.BR cru_built
+to build the graph
+.I g.
+.SH NOTES
+This function may be useful for saving memory in applications that
+build a graph and then prune it. When building the whole graph before
+pruning it is prohibitive, building the graph in phases and pruning it
+during each phase may be feasible.
 .SH FILES
 .I @INCDIR@/cru.h
 .P

@@ -70,9 +70,9 @@ or
 is passed the vertex being visited as its left operand, the label of
 an edge connected to the vertex as its middle operand, and the
 adjacent vertex at the other end of the edge as the right operand.
-However, sometimes the operands are those initially appearing in the
-graph before being mutated, and sometimes they are the modified
-versions.
+However, in some cases the operands are those initially appearing in
+the graph before being mutated, and in other cases they are the
+modified versions, depending on the following criteria.
 .TP
 *
 For the operator referenced through the

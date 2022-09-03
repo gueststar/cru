@@ -21,7 +21,7 @@
 
 #include "ptr.h"
 
-// a list of pairs of unit lists of edges used during graph expansion
+// a list of pairs of unit lists of edges used during graph stretching
 
 struct edge_map_s
 {

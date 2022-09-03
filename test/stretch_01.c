@@ -71,14 +71,14 @@ redex_of (n, err)
 {
   redex r;
 
-  if ((r = (redex) malloc (sizeof (*r))) ? 0 : FAIL(5637))
+  if ((r = (redex) malloc (sizeof (*r))) ? 0 : FAIL(5915))
 	 return NULL;
   memset (r, 0, sizeof (*r));
   r->r_magic = REDEX_MAGIC;
   r->r_value = n;
-  if (pthread_mutex_lock (&redex_lock) ? FAIL(5638) : ++redex_count ? 0 : FAIL(5639))
+  if (pthread_mutex_lock (&redex_lock) ? FAIL(5916) : ++redex_count ? 0 : FAIL(5917))
 	 goto a;
-  if (! (pthread_mutex_unlock (&redex_lock) ? FAIL(5640) : 0))
+  if (! (pthread_mutex_unlock (&redex_lock) ? FAIL(5918) : 0))
 	 return r;
  a: free (r);
   return NULL;
@@ -95,12 +95,12 @@ free_redex (r, err)
 
 	  // Reclaim a redex.
 {
-  if ((! r) ? FAIL(5641) : (r->r_magic != REDEX_MAGIC) ? FAIL(5642) : 0)
+  if ((! r) ? FAIL(5919) : (r->r_magic != REDEX_MAGIC) ? FAIL(5920) : 0)
 	 return;
-  r->r_magic = MUGGLE(232);
-  if (pthread_mutex_lock (&redex_lock) ? FAIL(5643) : redex_count-- ? 0 : FAIL(5644))
+  r->r_magic = MUGGLE(236);
+  if (pthread_mutex_lock (&redex_lock) ? FAIL(5921) : redex_count-- ? 0 : FAIL(5922))
 	 return;
-  if (pthread_mutex_unlock (&redex_lock) ? FAIL(5645) : 0)
+  if (pthread_mutex_unlock (&redex_lock) ? FAIL(5923) : 0)
 	 return;
   free (r);
 }
@@ -115,7 +115,7 @@ free_vredex (r, err)
 
 	  // Reclaim a redex as above but expect a different magic number.
 {
-  if ((! r) ? FAIL(5646) : (r->r_magic != VREDEX_MAGIC) ? FAIL(5647) : 0)
+  if ((! r) ? FAIL(5924) : (r->r_magic != VREDEX_MAGIC) ? FAIL(5925) : 0)
 	 return;
   r->r_magic = REDEX_MAGIC;
   free_redex (r, err);
@@ -131,7 +131,7 @@ free_iredex (r, err)
 
 	  // Reclaim a redex as above but expect a different magic number.
 {
-  if ((! r) ? FAIL(5648) : (r->r_magic != IREDEX_MAGIC) ? FAIL(5649) : 0)
+  if ((! r) ? FAIL(5926) : (r->r_magic != IREDEX_MAGIC) ? FAIL(5927) : 0)
 	 return;
   r->r_magic = REDEX_MAGIC;
   free_redex (r, err);
@@ -147,7 +147,7 @@ free_imapex (r, err)
 
 	  // Reclaim a redex as above but expect a different magic number.
 {
-  if ((! r) ? FAIL(5650) : (r->r_magic != IMAPEX_MAGIC) ? FAIL(5651) : 0)
+  if ((! r) ? FAIL(5928) : (r->r_magic != IMAPEX_MAGIC) ? FAIL(5929) : 0)
 	 return;
   r->r_magic = REDEX_MAGIC;
   free_redex (r, err);
@@ -164,7 +164,7 @@ free_oredex (r, err)
 
 	  // Reclaim a redex as above but expect a different magic number.
 {
-  if ((! r) ? FAIL(5652) : (r->r_magic != OREDEX_MAGIC) ? FAIL(5653) : 0)
+  if ((! r) ? FAIL(5930) : (r->r_magic != OREDEX_MAGIC) ? FAIL(5931) : 0)
 	 return;
   r->r_magic = REDEX_MAGIC;
   free_redex (r, err);
@@ -185,14 +185,14 @@ edge_of (n, err)
 {
   edge e;
 
-  if ((e = (edge) malloc (sizeof (*e))) ? 0 : FAIL(5654))
+  if ((e = (edge) malloc (sizeof (*e))) ? 0 : FAIL(5932))
 	 return NULL;
   memset (e, 0, sizeof (*e));
   e->e_magic = EDGE_MAGIC;
   e->e_value = n;
-  if (pthread_mutex_lock (&edge_lock) ? FAIL(5655) : ++edge_count ? 0 : FAIL(5656))
+  if (pthread_mutex_lock (&edge_lock) ? FAIL(5933) : ++edge_count ? 0 : FAIL(5934))
 	 goto a;
-  if (! (pthread_mutex_unlock (&edge_lock) ? FAIL(5657) : 0))
+  if (! (pthread_mutex_unlock (&edge_lock) ? FAIL(5935) : 0))
 	 return e;
  a: free (e);
   return NULL;
@@ -213,12 +213,12 @@ free_edge (e, err)
 	  // passed to the cru library as b.bu_sig.destructors.e_free in the builder
 	  // b.
 {
-  if ((! e) ? FAIL(5658) : (e->e_magic != EDGE_MAGIC) ? FAIL(5659) : 0)
+  if ((! e) ? FAIL(5936) : (e->e_magic != EDGE_MAGIC) ? FAIL(5937) : 0)
 	 return;
-  e->e_magic = MUGGLE(233);
-  if (pthread_mutex_lock (&edge_lock) ? FAIL(5660) : edge_count-- ? 0 : FAIL(5661))
+  e->e_magic = MUGGLE(237);
+  if (pthread_mutex_lock (&edge_lock) ? FAIL(5938) : edge_count-- ? 0 : FAIL(5939))
 	 return;
-  if (pthread_mutex_unlock (&edge_lock) ? FAIL(5662) : 0)
+  if (pthread_mutex_unlock (&edge_lock) ? FAIL(5940) : 0)
 	 return;
   free (e);
 }
@@ -239,9 +239,9 @@ equal_edges (a, b, err)
 	  // function cast to a cru_bpred is passed to the cru library
 	  // as b.bu_sig.orders.e_order.equal in the builder b.
 {
-  if ((! a) ? FAIL(5663) : (a->e_magic != EDGE_MAGIC) ? FAIL(5664) : 0)
+  if ((! a) ? FAIL(5941) : (a->e_magic != EDGE_MAGIC) ? FAIL(5942) : 0)
 	 return 0;
-  if ((! b) ? FAIL(5665) : (b->e_magic != EDGE_MAGIC) ? FAIL(5666) : 0)
+  if ((! b) ? FAIL(5943) : (b->e_magic != EDGE_MAGIC) ? FAIL(5944) : 0)
 	 return 0;
   return a->e_value == b->e_value;
 }
@@ -263,7 +263,7 @@ edge_hash (e)
   size_t i;
   uintptr_t u;
 
-  if ((! e) ? GLOBAL_FAIL(5667) : (e->e_magic != EDGE_MAGIC) ? GLOBAL_FAIL(5668) : 0)
+  if ((! e) ? GLOBAL_FAIL(5945) : (e->e_magic != EDGE_MAGIC) ? GLOBAL_FAIL(5946) : 0)
 	 return 0;
   u = e->e_value;
   for (i = 0; i < sizeof (u); i++)  // ignore overflow
@@ -288,14 +288,14 @@ vertex_of (n, err)
 {
   vertex v;
 
-  if ((v = (vertex) malloc (sizeof (*v))) ? 0 : FAIL(5669))
+  if ((v = (vertex) malloc (sizeof (*v))) ? 0 : FAIL(5947))
 	 return NULL;
   memset (v, 0, sizeof (*v));
   v->v_magic = VERTEX_MAGIC;
   v->v_value = n;
-  if (pthread_mutex_lock (&vertex_lock) ? FAIL(5670) : ++vertex_count ? 0 : FAIL(5671))
+  if (pthread_mutex_lock (&vertex_lock) ? FAIL(5948) : ++vertex_count ? 0 : FAIL(5949))
 	 goto a;
-  if (! (pthread_mutex_unlock (&vertex_lock) ? FAIL(5672) : 0))
+  if (! (pthread_mutex_unlock (&vertex_lock) ? FAIL(5950) : 0))
 	 return v;
  a: free (v);
   return NULL;
@@ -317,12 +317,12 @@ free_vertex (v, err)
 	  // passed to the cru library as b.bu_sig.destructors.v_free in the builder
 	  // b.
 {
-  if ((! v) ? FAIL(5673) : (v->v_magic != VERTEX_MAGIC) ? FAIL(5674) : 0)
+  if ((! v) ? FAIL(5951) : (v->v_magic != VERTEX_MAGIC) ? FAIL(5952) : 0)
 	 return;
-  v->v_magic = MUGGLE(234);
-  if (pthread_mutex_lock (&vertex_lock) ? FAIL(5675) : vertex_count-- ? 0 : FAIL(5676))
+  v->v_magic = MUGGLE(238);
+  if (pthread_mutex_lock (&vertex_lock) ? FAIL(5953) : vertex_count-- ? 0 : FAIL(5954))
 	 return;
-  if (pthread_mutex_unlock (&vertex_lock) ? FAIL(5677) : 0)
+  if (pthread_mutex_unlock (&vertex_lock) ? FAIL(5955) : 0)
 	 return;
   free (v);
 }
@@ -343,9 +343,9 @@ equal_vertices (a, b, err)
 	  // equal. This function cast to a cru_bpred is passed to the
 	  // cru library as b.bu_sig.orders.v_order.equal in the builder b.
 {
-  if ((! a) ? FAIL(5678) : (a->v_magic != VERTEX_MAGIC) ? FAIL(5679) : 0)
+  if ((! a) ? FAIL(5956) : (a->v_magic != VERTEX_MAGIC) ? FAIL(5957) : 0)
 	 return 0;
-  if ((! b) ? FAIL(5680) : (b->v_magic != VERTEX_MAGIC) ? FAIL(5681) : 0)
+  if ((! b) ? FAIL(5958) : (b->v_magic != VERTEX_MAGIC) ? FAIL(5959) : 0)
 	 return 0;
   return a->v_value == b->v_value;
 }
@@ -369,7 +369,7 @@ vertex_hash (v)
   size_t i;
   uintptr_t u;
 
-  if ((! v) ? GLOBAL_FAIL(5682) : (v->v_magic != VERTEX_MAGIC) ? GLOBAL_FAIL(5683) : 0)
+  if ((! v) ? GLOBAL_FAIL(5960) : (v->v_magic != VERTEX_MAGIC) ? GLOBAL_FAIL(5961) : 0)
 	 return 0;
   u = v->v_value;
   for (i = 0; i < sizeof (u); i++)  // ignore overflow
@@ -400,7 +400,7 @@ building_rule (given_vertex, err)
   uintptr_t outgoing_edge;
   vertex remote_vertex;
 
-  if ((! given_vertex) ? FAIL(5684) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5685) : 0)
+  if ((! given_vertex) ? FAIL(5962) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5963) : 0)
 	 return;
   for (outgoing_edge = 0; outgoing_edge < DIMENSION; outgoing_edge++)
 	 {
@@ -430,15 +430,15 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 {
   uintptr_t e;
 
-  if (*err ? 1 : (! connecting_edge) ? FAIL(5686) : (connecting_edge->e_magic != EDGE_MAGIC) ? FAIL(5687) : 0)
+  if (*err ? 1 : (! connecting_edge) ? FAIL(5964) : (connecting_edge->e_magic != EDGE_MAGIC) ? FAIL(5965) : 0)
 	 return NULL;
-  if ((! local_vertex) ? FAIL(5688) : (local_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5689) : 0)
+  if ((! local_vertex) ? FAIL(5966) : (local_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5967) : 0)
 	 return NULL;
-  if ((! remote_vertex) ? FAIL(5690) : (remote_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5691) : 0)
+  if ((! remote_vertex) ? FAIL(5968) : (remote_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5969) : 0)
 	 return NULL;
   if (! (connecting_edge->e_value))
 	 goto a;
-  if (((local_vertex->v_value ^ remote_vertex->v_value) != (1 << connecting_edge->e_value)) ? FAIL(5692) : 0)
+  if (((local_vertex->v_value ^ remote_vertex->v_value) != (1 << connecting_edge->e_value)) ? FAIL(5970) : 0)
   	 return NULL;
  a: return redex_of (1, err);
 }
@@ -460,13 +460,13 @@ vertex_checker (edges_in, given_vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  if (*err ? 1 : (! given_vertex) ? FAIL(5693) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5694) : 0)
+  if (*err ? 1 : (! given_vertex) ? FAIL(5971) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5972) : 0)
 	 return NULL;
-  if ((! edges_in) ? FAIL(5695) : (edges_in->r_magic != REDEX_MAGIC) ? FAIL(5696) : 0)
+  if ((! edges_in) ? FAIL(5973) : (edges_in->r_magic != REDEX_MAGIC) ? FAIL(5974) : 0)
 	 return NULL;
-  if ((! edges_out) ? FAIL(5697) : (edges_out->r_magic != REDEX_MAGIC) ? FAIL(5698) : 0)
+  if ((! edges_out) ? FAIL(5975) : (edges_out->r_magic != REDEX_MAGIC) ? FAIL(5976) : 0)
 	 return NULL;
-  if ((edges_in->r_value != DIMENSION) ? FAIL(5699) : (edges_out->r_value != DIMENSION) ? FAIL(5700) : 0)
+  if ((edges_in->r_value != DIMENSION) ? FAIL(5977) : (edges_out->r_value != DIMENSION) ? FAIL(5978) : 0)
 	 return NULL;
   return redex_of (1, err);
 }
@@ -491,12 +491,12 @@ sum (l, r, err)
 
   if (*err)
 	 return NULL;
-  if ((! l) ? 0 : (l->r_magic != REDEX_MAGIC) ? FAIL(5701) : 0)
+  if ((! l) ? 0 : (l->r_magic != REDEX_MAGIC) ? FAIL(5979) : 0)
 	 return NULL;
-  if ((! r) ? 0 : (r->r_magic != REDEX_MAGIC) ? FAIL(5702) : 0)
+  if ((! r) ? 0 : (r->r_magic != REDEX_MAGIC) ? FAIL(5980) : 0)
 	 return NULL;
   s = (l ? l->r_value : 0) + (r ? r->r_value : 0);
-  if ((s < (l ? l->r_value : 0)) ? FAIL(5703) : (s < (r ? r->r_value : 0)) ? FAIL(5704) : 0)
+  if ((s < (l ? l->r_value : 0)) ? FAIL(5981) : (s < (r ? r->r_value : 0)) ? FAIL(5982) : 0)
 	 return NULL;
   return redex_of (s, err);
 }
@@ -538,16 +538,16 @@ valid (g, err)
   redex r;
   int v;
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(5705))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(5983))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == (DIMENSION * NUMBER_OF_VERTICES)) ? 0 : FAIL(5706))
+  if ((cru_edge_count (g, LANES, err) == (DIMENSION * NUMBER_OF_VERTICES)) ? 0 : FAIL(5984))
 	 return 0;
-  if ((r = (redex) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) ? 0 : FAIL(5707))
+  if ((r = (redex) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) ? 0 : FAIL(5985))
 	 return 0;
-  if ((r->r_magic == REDEX_MAGIC) ? 0 : FAIL(5708))
+  if ((r->r_magic == REDEX_MAGIC) ? 0 : FAIL(5986))
 	 return 0;
   if (!(v = (r->r_value == NUMBER_OF_VERTICES)))
-	 FAIL(5709);
+	 FAIL(5987);
   free_redex (r, err);
   return v;
 }
@@ -589,11 +589,11 @@ iredex_map (source_vertex, edge_label, target_vertex, err)
 {
   redex r;
 
-  if ((! source_vertex) ? FAIL(5710) : (source_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5711) : 0)
+  if ((! source_vertex) ? FAIL(5988) : (source_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5989) : 0)
 	 return NULL;
-  if ((! target_vertex) ? FAIL(5712) : (target_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5713) : 0)
+  if ((! target_vertex) ? FAIL(5990) : (target_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5991) : 0)
 	 return NULL;
-  if ((! edge_label) ? FAIL(5714) : (edge_label->e_magic != EDGE_MAGIC) ? FAIL(5715) : 0)
+  if ((! edge_label) ? FAIL(5992) : (edge_label->e_magic != EDGE_MAGIC) ? FAIL(5993) : 0)
 	 return NULL;
   if ((r = redex_of (edge_label->e_value, err)))
 	 r->r_magic = IMAPEX_MAGIC;
@@ -637,11 +637,11 @@ oredex_map (source_vertex, edge_label, target_vertex, err)
 {
   redex r;
 
-  if ((! source_vertex) ? FAIL(5716) : (source_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5717) : 0)
+  if ((! source_vertex) ? FAIL(5994) : (source_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5995) : 0)
 	 return NULL;
-  if ((! target_vertex) ? FAIL(5718) : (target_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5719) : 0)
+  if ((! target_vertex) ? FAIL(5996) : (target_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5997) : 0)
 	 return NULL;
-  if ((! edge_label) ? FAIL(5720) : (edge_label->e_magic != EDGE_MAGIC) ? FAIL(5721) : 0)
+  if ((! edge_label) ? FAIL(5998) : (edge_label->e_magic != EDGE_MAGIC) ? FAIL(5999) : 0)
 	 return NULL;
   if ((r = redex_of (edge_label->e_value, err)))
 	 r->r_magic = OREDEX_MAGIC;
@@ -666,11 +666,11 @@ vredex_map (redex_in, given_vertex, redex_out, err)
 {
   redex r;
 
-  if ((! redex_in) ? FAIL(5722) : (redex_in->r_magic != IREDEX_MAGIC) ? FAIL(5723) : 0)
+  if ((! redex_in) ? FAIL(6000) : (redex_in->r_magic != IREDEX_MAGIC) ? FAIL(6001) : 0)
 	 return NULL;
-  if ((! redex_out) ? FAIL(5724) : (redex_out->r_magic != OREDEX_MAGIC) ? FAIL(5725) : 0)
+  if ((! redex_out) ? FAIL(6002) : (redex_out->r_magic != OREDEX_MAGIC) ? FAIL(6003) : 0)
 	 return NULL;
-  if ((! given_vertex) ? FAIL(5726) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(5727) : 0)
+  if ((! given_vertex) ? FAIL(6004) : (given_vertex->v_magic != VERTEX_MAGIC) ? FAIL(6005) : 0)
 	 return NULL;
   if ((r = redex_of (given_vertex->v_value, err)))
 	 r->r_magic = VREDEX_MAGIC;
@@ -693,9 +693,9 @@ either_iredex (a, b, err)
 {
   redex r;
 
-  if ((! a) ? FAIL(5728) : (a->r_magic != IMAPEX_MAGIC) ? FAIL(5729) : 0)
+  if ((! a) ? FAIL(6006) : (a->r_magic != IMAPEX_MAGIC) ? FAIL(6007) : 0)
 	 return NULL;
-  if ((! b) ? FAIL(5730) : (b->r_magic != IREDEX_MAGIC) ? FAIL(5731) : 0)
+  if ((! b) ? FAIL(6008) : (b->r_magic != IREDEX_MAGIC) ? FAIL(6009) : 0)
 	 return NULL;
   if ((r = redex_of (a->r_value, err)))
 	 r->r_magic = IREDEX_MAGIC;
@@ -718,9 +718,9 @@ either_oredex (a, b, err)
 {
   redex r;
 
-  if ((! a) ? FAIL(5732) : (a->r_magic != OREDEX_MAGIC) ? FAIL(5733) : 0)
+  if ((! a) ? FAIL(6010) : (a->r_magic != OREDEX_MAGIC) ? FAIL(6011) : 0)
 	 return NULL;
-  if ((! b) ? FAIL(5734) : (b->r_magic != OREDEX_MAGIC) ? FAIL(5735) : 0)
+  if ((! b) ? FAIL(6012) : (b->r_magic != OREDEX_MAGIC) ? FAIL(6013) : 0)
 	 return NULL;
   if ((r = redex_of (b->r_value, err)))
 	 r->r_magic = OREDEX_MAGIC;
@@ -741,14 +741,14 @@ initialized (count, lock, lock_created, err)
   pthread_mutexattr_t mutex_attribute;
 
   if (count ? (*count = 0) : 1)
-	 FAIL(5736);
+	 FAIL(6014);
   if (lock_created ? (*lock_created = 0) : 1)
-	 FAIL(5737);
-  if (*err ? 1 : pthread_mutexattr_init (&mutex_attribute) ? FAIL(5738) : 0)
+	 FAIL(6015);
+  if (*err ? 1 : pthread_mutexattr_init (&mutex_attribute) ? FAIL(6016) : 0)
 	 return 0;
-  if (!((pthread_mutexattr_settype (&mutex_attribute, PTHREAD_MUTEX_ERRORCHECK)) ? FAIL(5739) : 0))
-	 *lock_created = ! (pthread_mutex_init (lock, &mutex_attribute) ? FAIL(5740) : 0);
-  return ! ((pthread_mutexattr_destroy (&mutex_attribute)) ? FAIL(5741) : *err);
+  if (!((pthread_mutexattr_settype (&mutex_attribute, PTHREAD_MUTEX_ERRORCHECK)) ? FAIL(6017) : 0))
+	 *lock_created = ! (pthread_mutex_init (lock, &mutex_attribute) ? FAIL(6018) : 0);
+  return ! ((pthread_mutexattr_destroy (&mutex_attribute)) ? FAIL(6019) : *err);
 }
 
 
@@ -817,11 +817,11 @@ main (argc, argv)
   cru_free_now (g, LANES, &err);
   nthm_sync (&err);
   if (! err)
-	 err = (edge_count ? THE_FAIL(5742) : vertex_count ? THE_FAIL(5743) : redex_count ? THE_FAIL(5744) : global_err);
+	 err = (edge_count ? THE_FAIL(6020) : vertex_count ? THE_FAIL(6021) : redex_count ? THE_FAIL(6022) : global_err);
  a: if ((! vertex_lock_created) ? 0 : pthread_mutex_destroy (&(vertex_lock)) ? (! err) : 0)
-	 err = THE_FAIL(5745);
+	 err = THE_FAIL(6023);
   if ((! edge_lock_created) ? 0 : pthread_mutex_destroy (&(edge_lock)) ? (! err) : 0)
-	 err = THE_FAIL(5746);
+	 err = THE_FAIL(6024);
   if (err ? 1 : (! v) ? 1 : ! crudev_all_clear (&err))
 	 printf (err ? "%s failed\n%s\n" : "%s failed\n", argv[0], cru_strerror (err));
   else if ((argc > 1) ? (! limit) : 0)

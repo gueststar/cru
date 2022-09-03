@@ -54,7 +54,7 @@ _cru_launched (k, i, r, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1049) : r->ports ? 0 : IER(1050))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1053) : r->ports ? 0 : IER(1054))
 	 goto a;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto b;
@@ -98,13 +98,13 @@ _cru_status_launched (k, i, h, r, err)
   packet_list p;
 
   started = dblx = 0;
-  if ((! r) ? IER(1051) : (r->valid != ROUTER_MAGIC) ? IER(1052) : 0)
+  if ((! r) ? IER(1055) : (r->valid != ROUTER_MAGIC) ? IER(1056) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1053) : (! (r->lanes)) ? IER(1054) : 0) ? (r->valid = MUGGLE(27)) : 0)
+  if (((! (r->ports)) ? IER(1057) : (! (r->lanes)) ? IER(1058) : 0) ? (r->valid = MUGGLE(27)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto a;
-  if (((p = _cru_packet_of (NO_PAYLOAD, h, NO_SENDER, NO_CARRIER, &dblx))) ? (p->payload = p->receiver = i) : NULL)
+  if (((p = _cru_packet_of ((r->tag == BUI) ? NULL : i, h, NO_SENDER, NO_CARRIER, &dblx))) ? (p->receiver = i) : NULL)
 	 if ((started = _cru_assigned (r->ports[h % r->lanes], &p, &dblx)))
 		_cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
@@ -144,9 +144,9 @@ _cru_count_launched (k, i, a, q, r, count, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1055) : count ? 0 : IER(1056))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1059) : count ? 0 : IER(1060))
 	 goto a;
-  if (((! (r->ports)) ? IER(1057) : (! (r->lanes)) ? IER(1058) : 0) ? (r->valid = MUGGLE(28)) : 0)
+  if (((! (r->ports)) ? IER(1061) : (! (r->lanes)) ? IER(1062) : 0) ? (r->valid = MUGGLE(28)) : 0)
 	 goto a;
   *count = 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_count_runner, r, &dblx))
@@ -192,11 +192,11 @@ _cru_queue_launched (k, i, q, r, u, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? IER(1059) : (r->valid != ROUTER_MAGIC) ? IER(1060) : 0)
+  if ((! r) ? IER(1063) : (r->valid != ROUTER_MAGIC) ? IER(1064) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1061) : (! (r->lanes)) ? IER(1062) : 0) ? (r->valid = MUGGLE(29)) : 0)
+  if (((! (r->ports)) ? IER(1065) : (! (r->lanes)) ? IER(1066) : 0) ? (r->valid = MUGGLE(29)) : 0)
 	 return 0;
-  if ((! i) ? IER(1063) : (! u) ? IER(1064) : *u ? IER(1065) : 0)
+  if ((! i) ? IER(1067) : (! u) ? IER(1068) : *u ? IER(1069) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_queue_runner, r, &dblx))
 	 goto a;
@@ -238,12 +238,12 @@ _cru_maybe_disjunction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1066) : 0)
+  if ((! result) ? IER(1070) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1067) : (r->valid != ROUTER_MAGIC) ? IER(1068) : 0)
+  if ((! r) ? IER(1071) : (r->valid != ROUTER_MAGIC) ? IER(1072) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1069) : (! (r->lanes)) ? IER(1070) : 0) ? (r->valid = MUGGLE(30)) : 0)
+  if (((! (r->ports)) ? IER(1073) : (! (r->lanes)) ? IER(1074) : 0) ? (r->valid = MUGGLE(30)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -282,12 +282,12 @@ _cru_maybe_reduction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1071) : 0)
+  if ((! result) ? IER(1075) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1072) : (r->valid != ROUTER_MAGIC) ? IER(1073) : (r->tag != MAP) ? IER(1074) : 0)
+  if ((! r) ? IER(1076) : (r->valid != ROUTER_MAGIC) ? IER(1077) : (r->tag != MAP) ? IER(1078) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1075) : (! (r->lanes)) ? IER(1076) : 0) ? (r->valid = MUGGLE(31)) : 0)
+  if (((! (r->ports)) ? IER(1079) : (! (r->lanes)) ? IER(1080) : 0) ? (r->valid = MUGGLE(31)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -320,8 +320,10 @@ _cru_graph_launched (k, v, q, r, g, err)
 	  cru_graph *g;
 	  int *err;
 
-	  // Launch a traversal to build a graph from the
-	  // base v. Consume v and the router.
+	  // Launch a traversal to build or spread a graph from the base
+	  // v. Consume v and the router. If *g is NULL, then assume the an
+	  // existing graph is being spread. Otherwise assume a new graph
+	  // is being built.
 {
   node_list n, b;
   packet_list p;
@@ -331,25 +333,42 @@ _cru_graph_launched (k, v, q, r, g, err)
 
   b = NULL;
   started = 0;
-  if ((! r) ? IER(1077) : (r->valid != ROUTER_MAGIC) ? IER(1078) : 0)
+  if ((! r) ? IER(1081) : (r->valid != ROUTER_MAGIC) ? IER(1082) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1079) : (! (r->lanes)) ? IER(1080) : 0) ? (r->valid = MUGGLE(32)) : 0)
-	 return 0;
-  if ((! g) ? IER(1081) : *g ? IER(1082) : 0)
+  if (((! (r->ports)) ? IER(1083) : (! (r->lanes)) ? IER(1084) : 0) ? (r->valid = MUGGLE(32)) : (! g) ? IER(1085) : 0)
 	 return 0;
   if (*err)
 	 goto a;
   if (! _cru_crewed (c = _cru_crew_of (err), (runner) _cru_queue_runner, r, err))
 	 goto b;
   if ((p = _cru_initial_packet_of (v, q, err)))
-	 if ((started = _cru_assigned (r->ports[q % r->lanes], &p, err)) ? (! (v = NULL)) : 0)
-		_cru_wait_for_quiescence (k, r, err);
+	 {
+		if (*g)
+		  p->receiver = (*g)->base_node;
+		if ((started = _cru_assigned (r->ports[q % r->lanes], &p, err)))
+		  {
+			 v = NULL;
+			 if (*g)
+				(*g)->nodes = NULL;
+			 _cru_wait_for_quiescence (k, r, err);
+		  }
+	 }
   _cru_dismiss (r, err);
  b: n = _cru_node_union (c, (unsigned) (q % r->lanes), &b, err);
   RAISE(r->ro_status);
-  if (*err ? 1 : ! (*g = _cru_graph_of (&(r->ro_sig), &b, n, err)))
-	 _cru_free_nodes (n, &(r->ro_sig.destructors), err);
- a: if ((r->tag == FAB) ? NULL : (r->tag == CRO) ? NULL : r->ro_sig.destructors.v_free ? v : NULL)
+  if (*err ? NULL : *g)
+	 (*g)->nodes = n;
+  else if (*err ? 1 : ! (*g = _cru_graph_of (&(r->ro_sig), &b, n, err)))
+	 {
+		_cru_free_nodes (n, &(r->ro_sig.destructors), err);
+		if (*g)
+		  {
+			 _cru_free_now (*g, err);
+			 v = NULL;
+		  }
+		*g = NULL;
+	 }
+ a: if ((r->tag == FAB) ? NULL : (r->tag == CRO) ? NULL : (r->tag == BUI) ? NULL : r->ro_sig.destructors.v_free ? v : NULL)
 	 APPLY(r->ro_sig.destructors.v_free, v);
   _cru_free_router (r, err);
   return started;

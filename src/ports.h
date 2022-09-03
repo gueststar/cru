@@ -61,6 +61,7 @@ struct port_s
   packet_pod peers;
   union
   {
+	 packet_table collided;
 	 node_set visited;           // set of nodes assigned to this port for which results have been computed
 	 node_set deleted;
   };
@@ -95,6 +96,10 @@ _cru_abort_status (port source, packet_pod destinations, int *err);
 // discard all further packets and their payloads, and return the error code
 extern void *
 _cru_abort_packets (port source, packet_pod destinations, cru_destructor_pair z, int *err);
+
+// discard all packets and selectively free their payloads
+extern void *
+_cru_abort_new_packets (port source, packet_pod destinations, cru_destructor_pair z, int *err);
 
 // --------------- dataflow --------------------------------------------------------------------------------
 

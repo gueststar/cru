@@ -77,7 +77,7 @@ product_of (l, r, err)
 {
   product result;
 
-  if (*err ? 1 : (! l) ? IER(741) : (! r) ? IER(742) : 0)
+  if (*err ? 1 : (! l) ? IER(742) : (! r) ? IER(743) : 0)
 	 return NULL;
   if ((result = (product) _cru_malloc (sizeof (*result))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
@@ -147,7 +147,7 @@ free_productive_packets (p, z, err)
 {
   packet_list o;
 
-  if (z ? 0 : IER(743))
+  if (z ? 0 : IER(744))
 	 return;
   for (o = p; o; o = o->next_packet)
 	 {
@@ -184,9 +184,9 @@ productive_packets_of (i, x, err)
   void *ua;
 
   result = NULL;
-  if ((! i) ? IER(744) : (! x) ? IER(745) : (! (x->e_prod.bop)) ? IER(746) : 0)
+  if ((! i) ? IER(745) : (! x) ? IER(746) : (! (x->e_prod.bop)) ? IER(747) : 0)
 	 return NULL;
-  if ((! (x->e_prod.bpred)) ? IER(747) : (! (i->multiplicand)) ? IER(748) : (! (i->multiplier)) ? IER(749) :  0)
+  if ((! (x->e_prod.bpred)) ? IER(748) : (! (i->multiplicand)) ? IER(749) : (! (i->multiplier)) ? IER(750) :  0)
 	 return NULL;
   for (l = i->multiplicand->edges_out; *err ? NULL : l; l = l->next_edge)
 	 for (r = i->multiplier->edges_out; *err ? NULL : r; r = r->next_edge)
@@ -239,10 +239,10 @@ reach_extant_node (i, c, d, err)
 	  // the graph recorded in a packet c, and connect its sender to
 	  // the latter.
 {
-  if ((! i) ? IER(750) : (! *i) ? IER(751) : (! ((*i)->payload)) ? IER(752) : 0)
+  if ((! i) ? IER(751) : (! *i) ? IER(752) : (! ((*i)->payload)) ? IER(753) : 0)
 	 goto a;
   _cru_free ((product) (*i)->payload);
-  if ((! c) ? IER(753) : (!((*i)->carrier)) ? IER(754) : 0)
+  if ((! c) ? IER(754) : (!((*i)->carrier)) ? IER(755) : 0)
 	 goto a;
   (*i)->carrier->remote.node = c->receiver;                           // overwrite a vertex field with a node field
  a: _cru_nack (_cru_popped_packet (i, err), err);
@@ -278,11 +278,11 @@ reached_new_node (i, x, q, d, err)
   int ux;
   void *ua;
 
-  if ((! i) ? IER(755) : (! *i) ? IER(756) : (! (l = (product) (*i)->payload)) ? IER(757) : 0)
+  if ((! i) ? IER(756) : (! *i) ? IER(757) : (! (l = (product) (*i)->payload)) ? IER(758) : 0)
 	 goto a;
-  if ((! (l->multiplicand)) ? IER(758) : (! (l->multiplier)) ? IER(759) : 0)
+  if ((! (l->multiplicand)) ? IER(759) : (! (l->multiplier)) ? IER(760) : 0)
 	 goto a;
-  if ((! x) ? IER(760) : (! (x->v_prod)) ? IER(761) : 0)
+  if ((! x) ? IER(761) : (! (x->v_prod)) ? IER(762) : 0)
 	 goto a;
   p = productive_packets_of (l, x, err);
   if (*err)
@@ -323,7 +323,7 @@ _cru_crossing_task (source, err)
 	  // and send them to other workers.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! (a)) ? (! IER(762)) : (! (b)) ? (! IER(763)) : \
+(*err ? 0 : (! (a)) ? (! IER(763)) : (! (b)) ? (! IER(764)) : \
 ((a)->multiplicand != (b)->multiplicand) ? 1 : ((a)->multiplier != (b)->multiplier))
 
   packet_table collisions;    // previous incoming packets
@@ -346,14 +346,14 @@ _cru_crossing_task (source, err)
   sample = 0;
   killed = 0;
   collisions = NULL;
-  if ((! source) ? IER(764) : (source->gruntled != PORT_MAGIC) ? IER(765) : 0)
+  if ((! source) ? IER(765) : (source->gruntled != PORT_MAGIC) ? IER(766) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(766) : (r->valid != ROUTER_MAGIC) ? IER(767) : 0)
+  if ((!(r = source->local)) ? IER(767) : (r->valid != ROUTER_MAGIC) ? IER(768) : 0)
 	 return NULL;
   x = &(r->crosser);
-  if ((!(d = source->peers)) ? IER(768) : (r->tag != CRO) ? IER(769) : ! (s = &(x->cr_sig)))
+  if ((!(d = source->peers)) ? IER(769) : (r->tag != CRO) ? IER(770) : ! (s = &(x->cr_sig)))
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(770))
+  if ((s->orders.v_order.equal) ? 0 : IER(771))
 	 goto a;
   limit = x->cr_sig.vertex_limit / r->lanes;
   limit = (limit ? limit : x->cr_sig.vertex_limit ? 1 : 0);
@@ -361,7 +361,7 @@ _cru_crossing_task (source, err)
 	 {
 		KILL_SITE(8);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(771))
+		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(772))
 		  goto b;
 		if (! (c = _cru_collision (incoming->hash_value, &collisions, err)))
 		  goto b;

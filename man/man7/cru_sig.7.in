@@ -82,11 +82,6 @@ structure is a field in the
 and
 .BR cru_fabricator
 structures.
-.P
-An edge order is not necessary for building a graph, but necessary is
-for the operations of composition, merging, deduplication,
-postponement, and stretching existing graphs. For these operations, an
-edge ordering must be defined or inferrable in advance.
 .SH FILES
 .I @INCDIR@/data_types.h
 .P
