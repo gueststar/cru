@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.7.1
+  cru VERSION 0.7.2
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -252,8 +252,6 @@ endif()
 # schools of thought deem it bad cmake practice to avoid enumerating
 # them explicitly.
 
-configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
-
 execute_process(
   OUTPUT_VARIABLE C_FILES
   COMMAND ${FIND} ${CMAKE_CURRENT_SOURCE_DIR}/src -name "*.c"
@@ -357,6 +355,8 @@ if (JUDY)
 else ()
   message (WARNING "Judy array library not in use; expect severe performance degradation")
 endif()
+
+configure_file (${CMAKE_CURRENT_SOURCE_DIR}/src/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/src/config.h)
 
 # --------------- automated tests -------------------------------------------------------------------------
 
