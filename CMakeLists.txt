@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.7.0
+  cru VERSION 0.7.1
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -245,7 +245,7 @@ endif()
 # numbers. This option should be commented out for production code
 # builds.
 
-add_compile_options (-g)
+# add_compile_options (-g)
 
 # The library depends on every .c file in the src/ directory, so this
 # part saves listing all forty-something of them. Note that some

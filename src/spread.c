@@ -394,7 +394,7 @@ spreading_task (source, err)
   x = IDLE;
   _cru_forget_collisions (source->collided, err);
   source->collided = NULL;
-  if ((! q) ? 0 : *err ? 0 : ! b->connector)
+  if ((! q) ? 0 : *err ? 0 : ! (b->connector))
 	 for (n = q->front; n; n = n->next_node)
 		n->edges_out = _cru_deduplicated_edges (n->edges_out, &(b->bu_sig.orders.e_order), b->bu_sig.destructors.e_free, err);
   if (*err)

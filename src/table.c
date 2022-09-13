@@ -284,7 +284,7 @@ _cru_rallied (h, r, e, err)
   unwind (e, &b, p, index, t, err);
   return b;
 #else
- a: return _cru_bundled (r, e, err);         // equivalent result in quadratic time
+  return _cru_bundled (r, e, err);         // equivalent result in quadratic time
 #endif
 }
 

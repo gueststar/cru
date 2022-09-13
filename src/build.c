@@ -61,7 +61,6 @@ unique (e, s, err)
   brigade b, t;           // each bucket has only one edge label but multiple remote vertices
   edge_list *l;           // all edges in a bucket
   edge_list p;            // next edge in a bucket
-  edge_list u;            // unique edges in a bucket
   edge_list r;            // cumulative unique edges
   int ux, ut;
 
@@ -70,20 +69,14 @@ unique (e, s, err)
   t = _cru_rallied (s->orders.e_order.hash, s->orders.e_order.equal, &e, err);
   _cru_free_edges_and_termini (&(s->destructors), e, err);
   for (r = NULL; (b = _cru_popped_bucket (&t, err)); _cru_free_brigade (b, err))
-	 {
-		if (! (b->bucket ? b->bucket->next_edge : (u = NULL)))
-		  u = b->bucket;
-		else
-		  for (l = &(b->bucket); (p = (*l ? _cru_popped_edge (l, err) : NULL));)
-			 {
-				for (e = u; e ? UNEQUAL(p->remote.vertex, e->remote.vertex) : 0; e = e->next_edge);
-				if (e ? 1 : *err)
-				  _cru_free_edges_and_termini (&(s->destructors), p, err);
-				else
-				  _cru_push_edge (p, &u, err);
-			 }
-		r = _cru_cat_edges (u, r);
-	 }
+	 for (l = &(b->bucket); (p = (*l ? _cru_popped_edge (l, err) : NULL));)
+		{
+		  for (e = b->bucket; e ? UNEQUAL(p->remote.vertex, e->remote.vertex) : 0; e = e->next_edge);
+		  if (e ? 1 : *err)
+			 _cru_free_edges_and_termini (&(s->destructors), p, err);
+		  else
+			 _cru_push_edge (p, &r, err);
+		}
   return r;
 }
 

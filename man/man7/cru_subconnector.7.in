@@ -69,7 +69,7 @@ outgoing edges created across the calls (that is, with duplicate edges
 pruned).
 .SH ERRORS
 If a subconnector function sets the error code to any non-zero value,
-the instance
+the instance of
 .BR cru_built
 that calls it terminates without building a graph and
 propagates the same error code to its caller.

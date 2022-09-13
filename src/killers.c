@@ -17,7 +17,7 @@
 */
 
 #include <errno.h>
-#include "string.h"
+#include <string.h>
 #include <stdlib.h>
 #include "cthread.h"
 #include "errs.h"
