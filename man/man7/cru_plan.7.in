@@ -61,25 +61,25 @@ is reachable, whereas a forward oriented zone consists of all vertices
 reachable from the initial vertex.
 .TP
 *
-if the priority is
+If the priority is
 .BR local_first
 and the zone orientation is forward, then the prerequisites of each vertex are
 the origins within the zone of its incoming edges.
 .TP
 *
-if the priority is
+If the priority is
 .BR remote_first
 and the zone orientation is forward, then the prerequisites of each vertex are
 all termini of its outgoing edges.
 .TP
 *
-if the priority is
+If the priority is
 .BR local_first
 and the zone orientation is backwards, then the prerequisites of each vertex are
 the termini within the zone of its outgoing edges.
 .TP
 *
-if the priority is
+If the priority is
 .BR remote_first
 and the zone orientation is backwards, then the prerequisites of each vertex are
 all origins of its incoming edges.

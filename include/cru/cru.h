@@ -1,3 +1,4 @@
+
 #ifndef CRU_H
 #define CRU_H 1
 
@@ -58,7 +59,7 @@ cru_stretch (cru_edge label_in, cru_vertex new_vertex, cru_edge label_out, int *
 
 // --------------- analysis --------------------------------------------------------------------------------
 
-// return the number of nodes in a graph
+// return the number of vertices in a graph
 extern uintptr_t
 cru_vertex_count (cru_graph g, unsigned lanes, int *err);
 

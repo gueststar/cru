@@ -386,7 +386,7 @@ _cru_minimum_edge (t, edges, err)
 	 return NULL;
   for (e = *edges; *err ? NULL : e; e = e->next_edge)
 	 if (! (e->remote.node ? 0 : IER(868)))
-		if (m ? PASSED(t, e->label, m->label, e->remote.node->vertex, m->remote.node->vertex) : 1)
+		if (m ? PASSED(t, e->label, e->remote.node->vertex, m->label, m->remote.node->vertex) : 1)
 		  m = e;
   return (*err ? NULL : _cru_deleted_edge (m, edges, err));
 }

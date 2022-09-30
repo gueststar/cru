@@ -154,12 +154,12 @@ omitted, or zero-filled.
 If the
 kernel's vertex operation in
 .BR mu_kernel.v_op
-is omitted or zero-filled and the
+is omitted or zero-filled or the
+.BR mu_kernel.v_op.vertex.m_free
+field is identical to the vertex destructor of the given graph,
+then the vertex ordering
 .BR mu_orders.v_order
-field is unspecified or partially specified, then the vertex ordering
-in the
-.BR mu_orders.v_order
-field is inferred as needed from that of the given graph.
+is inferred as needed from that of the given graph.
 .TP
 *
 If the kernel's vertex operation specifies a vertex map through the
@@ -176,10 +176,12 @@ field.
 *
 If the kernel's edge operation in
 .BR mu_kernel.e_op
-is omitted, zero-filled, or partially specified, then the edge ordering
-in the
+is omitted, zero-filled, or partially specified, or if the
+.BR mu_kernel.e_op.m_free
+field is identical to the given graph's edge destructor,
+then the edge ordering
 .BR mu_orders.e_order
-field is inferred as needed from that of the given graph.
+is inferred as needed from that of the given graph.
 .TP
 *
 If the kernel's edge operation in

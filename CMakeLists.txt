@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.7.2
+  cru VERSION 0.7.3
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -60,6 +60,12 @@ elseif (CMAKE_C_COMPILER_ID MATCHES GNU)
 else()
    message (STATUS "untested C compiler ${CMAKE_C_COMPILER_ID}; build errors possible")
 endif()
+
+# The option -g can be used to make valgrind display line
+# numbers. This option should be commented out for production code
+# builds.
+
+# add_compile_options (-g)
 
 # --------------- markdown documents ----------------------------------------------------------------------
 
@@ -240,12 +246,6 @@ if(NOT TARGET uninstall)
 endif()
 
 # --------------- shared library --------------------------------------------------------------------------
-
-# The option -g can be used to make valgrind display line
-# numbers. This option should be commented out for production code
-# builds.
-
-# add_compile_options (-g)
 
 # The library depends on every .c file in the src/ directory, so this
 # part saves listing all forty-something of them. Note that some

@@ -49,7 +49,7 @@ field with the usual
 calling conventions if one is specified. The interpretation of the
 test result differs depending on whether the
 .BR thinner
-field specified. The
+field is specified. The
 .BR thinner
 field, if non-NULL, provides further edge filtering functionality
 explained below following an explanation of the simpler case where the

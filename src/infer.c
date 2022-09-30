@@ -405,11 +405,11 @@ inferred_sig (s, o, k, err)
   memcpy (&(n.destructors), &(s->destructors), sizeof (n.destructors));
   _cru_allow_order (&(n.orders.e_order), &(o->e_order), err);
   _cru_allow_order (&(n.orders.v_order), &(o->v_order), err);
-  if (_cru_empty_fold (&(k->e_op)))
+  if (_cru_empty_fold (&(k->e_op)) ? 1 : (k->e_op.m_free == s->destructors.e_free))
 	 _cru_allow_order (&(n.orders.e_order), &(s->orders.e_order), err);
   else
 	 n.destructors.e_free = k->e_op.m_free;
-  if (_cru_empty_prop (&(k->v_op)))
+  if (_cru_empty_prop (&(k->v_op)) ? 1 : (k->v_op.vertex.m_free == s->destructors.v_free))
 	 _cru_allow_order (&(n.orders.v_order), &(s->orders.v_order), err);
   else
 	 n.destructors.v_free = k->v_op.vertex.m_free;
@@ -450,7 +450,6 @@ _cru_inferred_mutator (m, s, err)
 
   if (! (m_copy = _cru_mutator_copy (m, err)))
 	 goto a;
-  _cru_allow_undefined_order (&(m_copy->mu_orders.e_order), err);
   if (! inferred_sig (s, &(m_copy->mu_orders), &(m_copy->mu_kernel), err))
 	 goto b;
   if (m_copy->mu_plan.local_first ? m_copy->mu_plan.remote_first : 0)   // contradictory orders
