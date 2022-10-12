@@ -61,7 +61,7 @@ base_size (t, err)
 	 case FAB: return sizeof (*((cru_fabricator) v)) >> QUANTUM;
 	 case DED: return sizeof (*((cru_classifier) v)) >> QUANTUM;
 	 case NON:
-	 default: IER(669);
+	 default: IER(676);
 	 }
   return 0;
 }
@@ -118,7 +118,7 @@ _cru_builder_copy (i, err)
 {
   cru_builder o;
 
-  if ((! i) ? IER(670) : ((o = (cru_builder) _cru_malloc (sizeof (*o) + pad[BUI]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(677) : ((o = (cru_builder) _cru_malloc (sizeof (*o) + pad[BUI]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -157,7 +157,7 @@ _cru_crosser_copy (i, err)
 {
   cru_crosser o;
 
-  if ((! i) ? IER(671) : ((o = (cru_crosser) _cru_malloc (sizeof (*o) + pad[CRO]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(678) : ((o = (cru_crosser) _cru_malloc (sizeof (*o) + pad[CRO]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -197,7 +197,7 @@ _cru_mapreducer_copy (i, err)
 {
   cru_mapreducer o;
 
-  if ((! i) ? IER(672) : ((o = (cru_mapreducer) _cru_malloc (sizeof (*o) + pad[MAP]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(679) : ((o = (cru_mapreducer) _cru_malloc (sizeof (*o) + pad[MAP]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -237,7 +237,7 @@ _cru_inducer_copy (i, err)
 {
   cru_inducer o;
 
-  if ((! i) ? IER(673) : ((o = (cru_inducer) _cru_malloc (sizeof (*o) + pad[IND]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(680) : ((o = (cru_inducer) _cru_malloc (sizeof (*o) + pad[IND]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -279,7 +279,7 @@ _cru_composer_copy (i, err)
 {
   cru_composer o;
 
-  if ((! i) ? IER(674) : ((o = (cru_composer) _cru_malloc (sizeof (*o) + pad[COM]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(681) : ((o = (cru_composer) _cru_malloc (sizeof (*o) + pad[COM]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -322,7 +322,7 @@ _cru_stretcher_copy (i, err)
 {
   cru_stretcher o;
 
-  if ((! i) ? IER(675) : ((o = (cru_stretcher) _cru_malloc (sizeof (*o) + pad[EXT]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(682) : ((o = (cru_stretcher) _cru_malloc (sizeof (*o) + pad[EXT]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -363,7 +363,7 @@ _cru_splitter_copy (i, err)
 {
   cru_splitter o;
 
-  if ((! i) ? IER(676) : ((o = (cru_splitter) _cru_malloc (sizeof (*o) + pad[SPL]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(683) : ((o = (cru_splitter) _cru_malloc (sizeof (*o) + pad[SPL]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -406,7 +406,7 @@ _cru_classifier_copy (i, err)
 {
   cru_classifier o;
 
-  if ((! i) ? IER(677) : ((o = (cru_classifier) _cru_malloc (sizeof (*o) + pad[DED]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(684) : ((o = (cru_classifier) _cru_malloc (sizeof (*o) + pad[DED]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -448,7 +448,7 @@ _cru_merger_copy (i, err)
 {
   cru_merger o;
 
-  if ((! i) ? IER(678) : ((o = (cru_merger) _cru_malloc (sizeof (*o) + pad[CLU]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(685) : ((o = (cru_merger) _cru_malloc (sizeof (*o) + pad[CLU]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -487,7 +487,7 @@ _cru_mutator_copy (i, err)
 {
   cru_mutator o;
 
-  if ((! i) ? IER(679) : ((o = (cru_mutator) _cru_malloc (sizeof (*o) + pad[MUT]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(686) : ((o = (cru_mutator) _cru_malloc (sizeof (*o) + pad[MUT]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -528,7 +528,7 @@ _cru_filter_copy (i, err)
 {
   cru_filter o;
 
-  if ((! i) ? IER(680) : ((o = (cru_filter) _cru_malloc (sizeof (*o) + pad[FIL]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(687) : ((o = (cru_filter) _cru_malloc (sizeof (*o) + pad[FIL]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -569,7 +569,7 @@ _cru_postponer_copy (i, err)
 {
   cru_postponer o;
 
-  if ((! i) ? IER(681) : ((o = (cru_postponer) _cru_malloc (sizeof (*o) + pad[POS]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(688) : ((o = (cru_postponer) _cru_malloc (sizeof (*o) + pad[POS]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;
@@ -610,7 +610,7 @@ _cru_fabricator_copy (i, err)
 {
   cru_fabricator o;
 
-  if ((! i) ? IER(682) : ((o = (cru_fabricator) _cru_malloc (sizeof (*o) + pad[FAB]))) ? 0 : RAISE(ENOMEM))
+  if ((! i) ? IER(689) : ((o = (cru_fabricator) _cru_malloc (sizeof (*o) + pad[FAB]))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memcpy (o, i, sizeof (*o));
   return o;

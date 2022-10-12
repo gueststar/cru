@@ -52,9 +52,9 @@ _cru_graph_of (s, base, n, err)
 {
   cru_graph g;
 
-  if (*err ? 1 : (! base) ? IER(986) : (! *base) ? 1 : (! n) ? 0 : n->previous ? IER(987) : 0)
+  if (*err ? 1 : (! base) ? IER(998) : (! *base) ? 1 : (! n) ? 0 : n->previous ? IER(999) : 0)
 	 goto a;
-  if ((! s) ? IER(988) : (g = (cru_graph) _cru_malloc (sizeof (*g))) ? 0 : RAISE(ENOMEM))
+  if ((! s) ? IER(1000) : (g = (cru_graph) _cru_malloc (sizeof (*g))) ? 0 : RAISE(ENOMEM))
 	 goto a;
   memset (g, 0, sizeof (*g));
   memcpy (&(g->g_sig), s, sizeof (g->g_sig));
@@ -88,7 +88,7 @@ _cru_free_now (g, err)
 
   if ((! g) ? 1 : (*err == CRU_BADGPH))
 	 return;
- if ((g->glad == GRAPH_MAGIC) ? 1 : ! IER(989))
+ if ((g->glad == GRAPH_MAGIC) ? 1 : ! IER(1001))
 	_cru_free_nodes (g->nodes, &(g->g_sig.destructors), err);
   g->glad = MUGGLE(16);
   _cru_free (g);
@@ -162,16 +162,16 @@ _cru_freeing_task (s, err)
 
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! s) ? IER(990) : (s->gruntled != PORT_MAGIC) ? IER(991) : 0)
+  if ((! s) ? IER(1002) : (s->gruntled != PORT_MAGIC) ? IER(1003) : 0)
 	 goto a;
-  if ((! (r = s->local)) ? IER(992) : (r->valid != ROUTER_MAGIC) ? IER(993) : 0)
+  if ((! (r = s->local)) ? IER(1004) : (r->valid != ROUTER_MAGIC) ? IER(1005) : 0)
 	 goto a;
-  if (((destinations = s->peers)) ? 0 : IER(994))
+  if (((destinations = s->peers)) ? 0 : IER(1006))
 	 goto b;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, destinations, err));)
 	 {
 		_cru_free_edges_and_labels (r->ro_sig.destructors.e_free, incoming->carrier, err);
-		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(995))
+		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(1007))
 		  goto c;
 		if (! _cru_unscatterable (&(n->edges_out), n, r->ro_sig.destructors.e_free, destinations, err))
 		  goto d;
@@ -253,13 +253,13 @@ _cru_half_duplex (g, err)
 
   if (! g)
 	 return 1;
-  if ((g->glad != GRAPH_MAGIC) ? IER(996) : 0)
+  if ((g->glad != GRAPH_MAGIC) ? IER(1008) : 0)
 	 return 1;
-  if (((n = g->base_node) ? 0 : IER(997)) ? (g->glad = MUGGLE(18)) : 0)
+  if (((n = g->base_node) ? 0 : IER(1009)) ? (g->glad = MUGGLE(18)) : 0)
 	 return 0;
   if (! (e = n->edges_out))
-	 return (n->edges_in ? IER(998) : 1);
-  if ((m = e->remote.node) ? 0 : IER(999))
+	 return (n->edges_in ? IER(1010) : 1);
+  if ((m = e->remote.node) ? 0 : IER(1011))
 	 return 0;
   return (! (m->edges_in));
 }
@@ -280,7 +280,7 @@ _cru_compatible (g, b, err)
 {
   if (! b)
 	 return 1;
-  if (g ? 0 : IER(1000))
+  if (g ? 0 : IER(1012))
 	 return 0;
   if (g->g_sig.destructors.v_free != b->v_op.vertex.m_free)
 	 return 0;
@@ -306,7 +306,7 @@ _cru_identical (l, r, err)
 {
   if (l == r)
 	 return 1;
-  if ((! l) ? IER(1001) : (! r) ? IER(1002) : 0)
+  if ((! l) ? IER(1013) : (! r) ? IER(1014) : 0)
 	 return 0;
   if ((l->orders.v_order.hash == r->orders.v_order.hash) ? 0 : RAISE(CRU_INCSPB))
 	 return 0;

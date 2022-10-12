@@ -58,9 +58,9 @@ assimilated (incoming, extant_class, err)
 	  // the class. Pushing into the tail is necessary to preserve the
 	  // base node in the graph.
 {
-  if ((! extant_class) ? IER(1102) : (! incoming) ? IER(1103) : (! (incoming->receiver)) ? IER(1104) : 0)
+  if ((! extant_class) ? IER(1114) : (! incoming) ? IER(1115) : (! (incoming->receiver)) ? IER(1116) : 0)
 	 return 0;
-  if ((incoming == extant_class) ? IER(1105) : extant_class->receiver ? 0 : IER(1106))
+  if ((incoming == extant_class) ? IER(1117) : extant_class->receiver ? 0 : IER(1118))
 	 return 0;
   _cru_pushed_node (_cru_half_severed (incoming->receiver), &(extant_class->receiver->next_node), err);
   incoming->receiver = NULL;
@@ -90,12 +90,12 @@ fuse_vertices (incoming, c, s, err)
   node_list n;
   void *composite_vertex;
 
-  if ((! c) ? IER(1107) : (! s) ? IER(1108) : 0)
+  if ((! c) ? IER(1119) : (! s) ? IER(1120) : 0)
 	 return;
   for (; incoming; incoming = incoming->next_packet)
-	 if (incoming->receiver ? 1 : ! IER(1109))
+	 if (incoming->receiver ? 1 : ! IER(1121))
 		{
-		  if (*err ? 1 : (c->me_kernel.v_op.vertex.map != _cru_undefined_top) ? 1 : incoming->receiver->next_node ? IER(1110) : 0)
+		  if (*err ? 1 : (c->me_kernel.v_op.vertex.map != _cru_undefined_top) ? 1 : incoming->receiver->next_node ? IER(1122) : 0)
 			 {
 				composite_vertex = (*err ? NULL : _cru_reduced_nodes (&(c->me_kernel.v_op), incoming->receiver, err));
 				_cru_free_vertices (incoming->receiver, s->destructors.v_free, err);
@@ -128,7 +128,7 @@ vertex_merging_task (s, err)
 	  // cleared.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! b) ? (! IER(1111)) : (a->vertex_property == b->vertex_property) ? 0 : \
+(*err ? 0 : (! b) ? (! IER(1123)) : (a->vertex_property == b->vertex_property) ? 0 : \
 FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_property))
 
 #define RECORDED(x) (_cru_member (x, seen) ? 1 : (*err ? 0 : ! killed) ? 0 : _cru_listed (x, s->deletions))
@@ -153,19 +153,19 @@ FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_pro
   seen = NULL;
   collisions = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! s) ? IER(1112) : (s->gruntled != PORT_MAGIC) ? IER(1113) : 0)
+  if ((! s) ? IER(1124) : (s->gruntled != PORT_MAGIC) ? IER(1125) : 0)
 	 goto a;
-  if ((!(r = s->local)) ? IER(1114) : (r->valid != ROUTER_MAGIC) ? IER(1115) : (killed = 0))
+  if ((!(r = s->local)) ? IER(1126) : (r->valid != ROUTER_MAGIC) ? IER(1127) : (killed = 0))
 	 goto a;
-  if ((! (d = s->peers)) ? IER(1116) : (r->tag != CLU) ? IER(1117) : 0)
+  if ((! (d = s->peers)) ? IER(1128) : (r->tag != CLU) ? IER(1129) : 0)
 	 goto b;
-  if (r->merger.me_classifier.cl_order.equal ? 0 : IER(1118))
+  if (r->merger.me_classifier.cl_order.equal ? 0 : IER(1130))
 	 goto b;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
 		KILL_SITE(19);
 		killed = (killed ? 1 : KILLED);
-		if ((! (n = incoming->receiver)) ? IER(1119) : RECORDED(n))
+		if ((! (n = incoming->receiver)) ? IER(1131) : RECORDED(n))
 		  goto c;
 		if (*err ? 1 : killed ? 1 : _cru_set_membership (n, &seen, err) ? *err : 1)
 		  goto d;
@@ -176,10 +176,10 @@ FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_pro
 		  goto d;
 		if (*c)
 		  for (; (unequal = UNEQUAL(n, (*c)->receiver)) ? (*c)->next_packet : NULL; c = &((*c)->next_packet));
-		if ((*c ? (! unequal) : 0) ? (assimilated (incoming, *c, err) ? 1 : IER(1120)) : 0)
+		if ((*c ? (! unequal) : 0) ? (assimilated (incoming, *c, err) ? 1 : IER(1132)) : 0)
 		  goto c;
 		p = (*c ? &((*c)->next_packet) : c);
-		if ((((*p = _cru_popped_packet (&incoming, err))) ? (n = _cru_half_severed ((*p)->receiver)) : NULL) ? 1 : ! IER(1121))
+		if ((((*p = _cru_popped_packet (&incoming, err))) ? (n = _cru_half_severed ((*p)->receiver)) : NULL) ? 1 : ! IER(1133))
 		  n->previous = &((*p)->receiver);
 		continue;
 	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
@@ -219,7 +219,7 @@ demerge_vertices (s, c, r, err)
 {
   struct cru_destructor_pair_s z;
 
-  if ((! s) ? IER(1122) : (s->gruntled != PORT_MAGIC) ? IER(1123) : (! c) ? IER(1124) : (! r) ? IER(1125) : 0)
+  if ((! s) ? IER(1134) : (s->gruntled != PORT_MAGIC) ? IER(1135) : (! c) ? IER(1136) : (! r) ? IER(1137) : 0)
 	 return;
   memset (&z, 0, sizeof (z));
   z.e_free = r->e_free;
@@ -264,9 +264,9 @@ filter_edges (f, t, s, edges, o, d, err)
   int ux, ut, e;
 
   q = NULL;
-  if ((! (l = edges)) ? IER(1126) : 0)
+  if ((! (l = edges)) ? IER(1138) : 0)
 	 goto a;
-  if ((! f) ? 1 : (! s--) ? IER(1127) : (! s) ? 0 : (! o) ? IER(1128) : (h = o->hash) ? 0 : IER(1129))
+  if ((! f) ? 1 : (! s--) ? IER(1139) : (! s) ? 0 : (! o) ? IER(1140) : (h = o->hash) ? 0 : IER(1141))
 	 goto a;
   while (*l)
 	 {
@@ -307,7 +307,7 @@ fused_edges (n, c, d, o, err)
 
   t = NULL;
   e = NULL;
-  if ((! c) ? IER(1130) : (! o) ? IER(1131) : (! n) ? IER(1132) : 0)
+  if ((! c) ? IER(1142) : (! o) ? IER(1143) : (! n) ? IER(1144) : 0)
 	 return NULL;
   v = n->vertex;
   for (class_size = 0; n ? ++class_size : 0; n = n->next_node)
@@ -315,7 +315,7 @@ fused_edges (n, c, d, o, err)
 		for (q = NULL; n->edges_out;)
 		  {
 			 _cru_push_edge (_cru_popped_edge (&(n->edges_out), err), &e, err);
-			 if (*err ? 0 : (! (c->pruner)) ? 0 : ! ((! e) ? IER(1133) : (! (o->hash)) ? IER(1134) : 0))
+			 if (*err ? 0 : (! (c->pruner)) ? 0 : ! ((! e) ? IER(1145) : (! (o->hash)) ? IER(1146) : 0))
 				_cru_record_edge ((o->hash) (e->label), o->equal, e->label, &q, err);
 		  }
 		_cru_merge (&t, q, o->equal, err);
@@ -360,9 +360,9 @@ edge_merging_task (s, err)
 
   killed = 0;
   sample = 0;
-  if ((! s) ? IER(1135) : (s->gruntled != PORT_MAGIC) ? IER(1136) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1147) : (s->gruntled != PORT_MAGIC) ? IER(1148) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1137) : (r->valid != ROUTER_MAGIC) ? IER(1138) : (r->tag != CLU) ? IER(1139) : 0)
+  if ((! (r = s->local)) ? IER(1149) : (r->valid != ROUTER_MAGIC) ? IER(1150) : (r->tag != CLU) ? IER(1151) : 0)
 	 return NULL;
   z = &(r->ro_sig);
   d = &(z->destructors);
@@ -403,7 +403,7 @@ demerge_edges (s, c, r, err)
 {
   struct cru_destructor_pair_s z;
 
-  if ((! s) ? IER(1140) : (s->gruntled != PORT_MAGIC) ? IER(1141) : (! c) ? IER(1142) : 0)
+  if ((! s) ? IER(1152) : (s->gruntled != PORT_MAGIC) ? IER(1153) : (! c) ? IER(1154) : 0)
 	 return;
   memset (&z, 0, sizeof (z));
   z.v_free = c->me_kernel.v_op.vertex.r_free;
@@ -433,9 +433,9 @@ demerging_task (s, err)
 {
   router r;
 
-  if ((! s) ? IER(1143) : (s->gruntled != PORT_MAGIC) ? IER(1144) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1155) : (s->gruntled != PORT_MAGIC) ? IER(1156) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1145) : (r->valid != ROUTER_MAGIC) ? IER(1146) : (r->tag != CLU) ? IER(1147) : 0)
+  if ((! (r = s->local)) ? IER(1157) : (r->valid != ROUTER_MAGIC) ? IER(1158) : (r->tag != CLU) ? IER(1159) : 0)
 	 return NULL;
   demerge_vertices (s, &(r->merger), &(r->ro_sig.destructors), err);
   demerge_edges (s, &(r->merger), &(r->ro_sig.destructors), err);
@@ -465,11 +465,11 @@ merge (g, k, r, s, err)
   unsigned i;
   uintptr_t q;
 
-  if ((! r) ? IER(1148) : (r->valid != ROUTER_MAGIC) ? IER(1149) : (! g) ? IER(1150) : (! (g->base_node)) ? IER(1151) : *err)
+  if ((! r) ? IER(1160) : (r->valid != ROUTER_MAGIC) ? IER(1161) : (! g) ? IER(1162) : (! (g->base_node)) ? IER(1163) : *err)
 	 return;
-  if (((! (r->ports)) ? IER(1152) : (! (r->lanes)) ? IER(1153) : 0) ? (r->valid = MUGGLE(33)) : s ? 0 : IER(1154))
+  if (((! (r->ports)) ? IER(1164) : (! (r->lanes)) ? IER(1165) : 0) ? (r->valid = MUGGLE(33)) : s ? 0 : IER(1166))
 	 return;
-  if ((r->tag != CLU) ? IER(1155) : (! (h = r->merger.me_classifier.cl_order.hash)) ? IER(1156) : 0)
+  if ((r->tag != CLU) ? IER(1167) : (! (h = r->merger.me_classifier.cl_order.hash)) ? IER(1168) : 0)
 	 return;
   _cru_reset (r, (task) vertex_merging_task, err);
   if (! _cru_status_launched (k, g->base_node, q = h (g->base_node->vertex_property), r, err))
@@ -515,7 +515,7 @@ _cru_merged (g, k, r, s, err)
   _cru_disable_killing (k, err);
   if (*err ? 1 : ! g)
 	 goto a;
-  if ((! r) ? IER(1157) : (r->valid != ROUTER_MAGIC) ? IER(1158) : (r->tag != CLU) ? IER(1159) : (! (r->ports)) ? IER(1160) : 0)
+  if ((! r) ? IER(1169) : (r->valid != ROUTER_MAGIC) ? IER(1170) : (r->tag != CLU) ? IER(1171) : (! (r->ports)) ? IER(1172) : 0)
 	 goto a;
   if (_cru_half_duplex (g, err))
 	 goto b;

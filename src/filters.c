@@ -79,16 +79,16 @@ _cru_populating_task (source, err)
   d = NULL;
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! source) ? IER(916) : (source->gruntled != PORT_MAGIC) ? IER(917) : 0)
+  if ((! source) ? IER(923) : (source->gruntled != PORT_MAGIC) ? IER(924) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(918) : (r->valid != ROUTER_MAGIC) ? IER(919) : 0)
+  if ((! (r = source->local)) ? IER(925) : (r->valid != ROUTER_MAGIC) ? IER(926) : 0)
 	 return NULL;
-  if ((! (d = source->peers)) ? IER(920) : 0)
+  if ((! (d = source->peers)) ? IER(927) : 0)
 	 return _cru_abort_status (source, d, err);
   i = ((r->tag == EXT) ? &(r->stretcher.st_prop) : (r->tag == SPL) ? &(r->splitter.sp_prop) : NULL);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
-		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(921))
+		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(928))
 		  goto a;
 		if (*err ? 0 : _cru_scattered (n->edges_out, d, err))
 		  goto b;
@@ -144,7 +144,7 @@ is_deletable (v, n, err)
   void *undeletable;
   int ux;
 
-  if (*err ? 1 : _cru_empty_prop (v) ? 1 : v ? 0 : IER(922))
+  if (*err ? 1 : _cru_empty_prop (v) ? 1 : v ? 0 : IER(929))
 	 return 0;
   if ((undeletable = _cru_mapped_node (v, n, err)) ? v->vertex.m_free : NULL)
 	 APPLY(v->vertex.m_free, undeletable);
@@ -179,17 +179,17 @@ node_filtering_task (source, err)
 
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(923) : (source->gruntled != PORT_MAGIC) ? IER(924) : 0)
+  if ((! source) ? IER(930) : (source->gruntled != PORT_MAGIC) ? IER(931) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(925) : (r->valid != ROUTER_MAGIC) ? IER(926) : (killed = 0))
+  if ((!(r = source->local)) ? IER(932) : (r->valid != ROUTER_MAGIC) ? IER(933) : (killed = 0))
 	 goto a;
-  if ((!(d = source->peers)) ? IER(927) : (r->tag != FIL) ? IER(928) : 0)
+  if ((!(d = source->peers)) ? IER(934) : (r->tag != FIL) ? IER(935) : 0)
 	 return _cru_abort_status (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(13);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : (! (n = incoming->receiver)) ? IER(929) : 0)
+		if (*err ? 1 : killed ? 1 : (! (n = incoming->receiver)) ? IER(936) : 0)
 		  goto c;
 		if (source->reachable ? (! _cru_member (n, source->reachable)) : 0)
 		  goto c;
@@ -232,7 +232,7 @@ disconnection_acknowledged (incoming, c, err)
 {
   edge_list e;
 
-  if ((! incoming) ? IER(930) : (! (incoming->receiver)) ? IER(931) : (! c) ? IER(932) : 0)
+  if ((! incoming) ? IER(937) : (! (incoming->receiver)) ? IER(938) : (! c) ? IER(939) : 0)
 	 return 0;
   if (incoming->payload == CUT_FORWARD)
 	 e = _cru_deleted_edge (incoming->carrier, &(incoming->receiver->edges_out), err);
@@ -272,10 +272,10 @@ individually_filtered (test, t, v, e, c, err)
   void *ua;
   int ux;
 
-  if ((! e) ? IER(933) : (! c) ? IER(934) : (! test) ? IER(935) : test->map ? 0 : IER(936))
+  if ((! e) ? IER(940) : (! c) ? IER(941) : (! test) ? IER(942) : test->map ? 0 : IER(943))
 	 return 0;
   for (p = NULL; *e;)
-	 if (((*e)->remote.node ? 0 : IER(937)) ? 1 : ! (pass = APPLIED(test->map, v, (*e)->label, (*e)->remote.node->vertex)))
+	 if (((*e)->remote.node ? 0 : IER(944)) ? 1 : ! (pass = APPLIED(test->map, v, (*e)->label, (*e)->remote.node->vertex)))
 		*c = _cru_cat_edges (_cru_popped_edge (e, err), *c);
 	 else if ((p = _cru_cat_edges (_cru_popped_edge (e, err), p)) ? test->m_free : NULL)
 		APPLY(test->m_free, pass);
@@ -298,17 +298,14 @@ individually_filtered (test, t, v, e, c, err)
 
 
 static int
-jointly_filtered (test, t, n, b, c, err)
+jointly_filtered (test, n, b, c, err)
 	  cru_fold test;
-	  cru_qpred t;     // thinner relational predicate
 	  node_list n;
 	  brigade b;
 	  edge_list *c;    // failing edges
 	  int *err;
 
 	  // Retain the edges in buckets whose reduction passes the test.
-	  // If a relational predicate is defined, retain only the minimum
-	  // edge in each bucket.
 {
   edge_list e;
   void *pass;
@@ -317,7 +314,7 @@ jointly_filtered (test, t, n, b, c, err)
   int ux;
 
   o = b;
-  if ((! n) ? IER(938) : n->edges_out ? IER(939) : (! test) ? IER(940) : (! c) ? IER(941) : 0)
+  if ((! n) ? IER(945) : n->edges_out ? IER(946) : (! test) ? IER(947) : (! c) ? IER(948) : 0)
 	 return 0;
   for (e = NULL; b; b = b->other_buckets)
 	 if (! (pass = _cru_reduced_edges (test, n->vertex, b->bucket, err)))
@@ -326,15 +323,59 @@ jointly_filtered (test, t, n, b, c, err)
 		{
 		  if (test->r_free)
 			 APPLY(test->r_free, pass);
-		  if (t ? NULL : (e = _cru_cat_edges (b->bucket, e)))
-			 continue;
-		  e = _cru_cat_edges (_cru_minimum_edge (t, &(b->bucket), err), e);
-		  *c = _cru_cat_edges (b->bucket, *c);
+		  e = _cru_cat_edges (b->bucket, e);
 		}
   _cru_free_brigade (o, err);
   n->edges_out = e;
  b: return ! *err;
 }
+
+
+
+
+
+
+static int
+jointly_thinned (test, t, n, b, c, err)
+	  cru_fold test;
+	  cru_qpred t;     // thinner relational predicate
+	  node_list n;
+	  brigade b;
+	  edge_list *c;    // failing edges
+	  int *err;
+
+	  // Retain the edges in the minimum bucket of whose members the
+	  // reduction passes the test.
+{
+  brigade passing, minimum;
+  void *pass;
+  void *ua;
+  int ux;
+
+  if ((! n) ? IER(949) : n->edges_out ? IER(950) : (! test) ? IER(951) : (! c) ? IER(952) : (! t) ? IER(953) : 0)
+	 return 0;
+  for (passing = NULL; b;)
+	 if (! (pass = _cru_reduced_edges (test, n->vertex, b->bucket, err)))
+		{
+		  *c = _cru_cat_edges (b->bucket, *c);
+		  _cru_free_brigade (_cru_popped_bucket (&b, err), err);
+		}
+	 else
+		{
+		  if (test->r_free)
+			 APPLY(test->r_free, pass);
+		  passing = _cru_cat_brigades (_cru_popped_bucket (&b, err), passing);
+		}
+  minimum = (passing ? _cru_minimum_bucket (t, &passing, err) : NULL);
+  n->edges_out = (minimum ? minimum->bucket : NULL);
+  _cru_free_brigade (minimum, err);
+  for (b = passing; b; b = b->other_buckets)
+	 *c = _cru_cat_edges (b->bucket, *c);
+  _cru_free_brigade (passing, err);
+ b: return ! *err;
+}
+
+
 
 
 
@@ -362,7 +403,7 @@ filtered (n, f, d, c, err)
   cru_fold test;
   int unordered;
 
-  if ((! n) ? IER(942) : (! f) ? IER(943) : (! c) ? IER(944) : *err)
+  if ((! n) ? IER(954) : (! f) ? IER(955) : (! c) ? IER(956) : *err)
 	 return 0;
   if (_cru_empty_fold (test = &(f->fi_kernel.e_op)) ? (! (f->thinner)) : 0)       // no edges are to be deleted
 	 return 1;
@@ -371,7 +412,7 @@ filtered (n, f, d, c, err)
 	 return individually_filtered (test, f->thinner, n->vertex, &(n->edges_out), c, err);
   b = (unordered ? _cru_bundled (UNRELATED, &(n->edges_out), err) : _cru_rallied (r->hash, r->equal, &(n->edges_out), err));
   if (! (n->edges_out))
-	 return jointly_filtered (test, f->thinner, n, b, c, err);
+	 return (f->thinner ? jointly_thinned (test, f->thinner, n, b, c, err) : jointly_filtered (test, n, b, c, err));
   *c = _cru_cat_edges (*c, n->edges_out);
   n->edges_out = NULL;
 }
@@ -409,7 +450,7 @@ request_disconnection (incoming, backwards, d, err)
 {
   edge_list e;
 
-  if ((! incoming) ? IER(945) : (! (incoming->receiver)) ? IER(946) : 0)
+  if ((! incoming) ? IER(957) : (! (incoming->receiver)) ? IER(958) : 0)
 	 return;
   if (! backwards)
 	 _cru_received_by (CUT_FORWARD, incoming->carrier, incoming->sender, d, err);
@@ -448,11 +489,11 @@ edge_filtering_task (source, err)
   sample = 0;
   killed = 0;
   seen = NULL;
-  if ((! source) ? IER(947) : (source->gruntled != PORT_MAGIC) ? IER(948) : 0)
+  if ((! source) ? IER(959) : (source->gruntled != PORT_MAGIC) ? IER(960) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(949) : (r->valid != ROUTER_MAGIC) ? IER(950) : 0)
+  if ((!(r = source->local)) ? IER(961) : (r->valid != ROUTER_MAGIC) ? IER(962) : 0)
 	 goto a;
-  if ((!(d = source->peers)) ? IER(951) : (r->tag != FIL) ? IER(952) : 0)
+  if ((!(d = source->peers)) ? IER(963) : (r->tag != FIL) ? IER(964) : 0)
 	 return _cru_abort (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
@@ -529,11 +570,11 @@ _cru_filtered (g, r, k, err)
   task t;
 
   _cru_disable_killing (k, err);
-  if (*err ? 1 : (! g) ? IER(953) : (! *g) ? IER(954) : (! r) ? IER(955) : (r->valid != ROUTER_MAGIC) ? IER(956) : 0)
+  if (*err ? 1 : (! g) ? IER(965) : (! *g) ? IER(966) : (! r) ? IER(967) : (r->valid != ROUTER_MAGIC) ? IER(968) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(957) : (! (r->lanes)) ? IER(958) : 0) ? (r->valid = MUGGLE(14)) : 0)
+  if (((! (r->ports)) ? IER(969) : (! (r->lanes)) ? IER(970) : 0) ? (r->valid = MUGGLE(14)) : 0)
 	 goto a;
-  if ((r->tag != FIL) ? IER(959) : ! (i = _cru_initial_node (*g, k, r, err)))
+  if ((r->tag != FIL) ? IER(971) : ! (i = _cru_initial_node (*g, k, r, err)))
 	 goto a;
   s = (r->ports[_cru_scalar_hash (b = (*g)->base_node) % r->lanes])->reachable;
   if (! ((s ? _cru_member (b, s) : 1) ? is_deletable (&(r->filter.fi_kernel.v_op), b, err) : 0))
@@ -602,17 +643,17 @@ pruning_task (source, err)
   d = NULL;
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(960) : (source->gruntled != PORT_MAGIC) ? IER(961) : (killed = 0))
+  if ((! source) ? IER(972) : (source->gruntled != PORT_MAGIC) ? IER(973) : (killed = 0))
 	 return NULL;
-  if ((!(r = source->local)) ? IER(962) : (r->valid != ROUTER_MAGIC) ? IER(963) : 0)
+  if ((!(r = source->local)) ? IER(974) : (r->valid != ROUTER_MAGIC) ? IER(975) : 0)
 	 return NULL;
-  if (((d = source->peers)) ? 0 : IER(964))
+  if (((d = source->peers)) ? 0 : IER(976))
 	 return (node_queue) _cru_abort (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(15);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(965))
+		if (*err ? 1 : killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(977))
 		  goto a;
 		if (_cru_member (n, seen) ? 1 : ! _cru_set_membership (n, &seen, err))
 		  goto a;
@@ -656,9 +697,9 @@ _cru_pruned (g, r, k, err)
 {
   router z;
 
-  if (*err ? 1 : (! r) ? IER(966) : (r->valid != ROUTER_MAGIC) ? IER(967) : (! g) ? 1 : g->base_node ? 0 : IER(968))
+  if (*err ? 1 : (! r) ? IER(978) : (r->valid != ROUTER_MAGIC) ? IER(979) : (! g) ? 1 : g->base_node ? 0 : IER(980))
 	 goto a;
-  if (((! (r->ports)) ? IER(969) : (! (r->lanes)) ? IER(970) : 0) ? (r->valid = MUGGLE(15)) : 0)
+  if (((! (r->ports)) ? IER(981) : (! (r->lanes)) ? IER(982) : 0) ? (r->valid = MUGGLE(15)) : 0)
 	 goto a;
   if (_cru_half_duplex (g, err))
 	 goto b;

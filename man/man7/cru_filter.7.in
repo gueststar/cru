@@ -148,14 +148,18 @@ If the
 field is NULL, then no edges are filtered directly but may be
 deleted as a consequence of being connected to a deleted vertex.
 .P
-Alternatively to the above, in the case where the
+The remainder of this section pertains to filtering when the
 .BR thinner
-field is not NULL, the vertices are still tested by the
+field refers to a user-defined quarternary predicate.
+.P
+If the
+.BR thinner
+field is defined (i.e., non-NULL), then no vertices are deleted unless
+they become unreachable. However, the vertices are still tested by the
 .BR fi_kernel.v_op
-probe in the same way if it is defined, but the result does not
-directly mandate the deletion of any vertex. Instead, the test result
-determines whether any outgoing edges from the vertex being tested can
-be deleted.
+probe in the same way as above if it is defined. The test result or
+lack thereof indicates only whether any outgoing edges from the tested
+vertex should be deleted.
 .TP
 *
 If a
@@ -164,47 +168,59 @@ probe is specifed and its test result is non-NULL, then no outgoing
 edges from the tested vertex are deleted.
 .TP
 *
-If the probe is not specified or its test result is NULL, and
-a fold is specified in the
-.BR fi_kernel.e_op
-field, then the outgoing edges from that vertex are filtered as above
-based on the
-.BR fi_kernel.e_op
-and also on the
-.BR fi_kernel.fi_order
-structure if any.
-.TP
-*
-If no fold is specified in the
+If the vertex probe is not specified or its test result is NULL, and
+if no fold is specified in the
 .BR fi_kernel.e_op
 field, all outgoing edges from the vertex being tested are admitted
-for consideration as described next.
-.P
-Similarly to the case of a NULL
-.BR thinner
-field described above, this edge filtering operation (or lack thereof)
-determines either a set of surviving outgoing edges from the vertex if
-no
+for consideration as described below.
+.TP
+*
+If the vertex probe is not specified or its test result is NULL, and
+if a map is is specified in the
+.BR fi_kernel.e_op.map
+field but no reduction is specified in the
+.BR fi_kernel.e_op.reduction
+field, then all outgoing edges from the vertex being tested for
+which the map returns NULL are deleted, and the surviving ones are
+admitted for consideration as described below.
+.TP
+*
+If the probe is not specified or its test result is NULL, and an
+ordering is defined in the
 .BR fi_order
-field is specified, or a set of classes of surviving outgoing edges
-otherwise. However, when the
+field, and both the
+.BR fi_kernel.e_op.map
+field and the
+.BR fi_kernel.e_op.reduction
+field are specified, then the outgoing edges from the vertex being
+tested are partitioned into equivalence classes based on the ordering
+and each class as a whole is deleted or kept depending on the
+result of the reduction over that class.
+.P
+The set of edges or the set of classes of edges obtained as above is
+then filtered further according to the
 .BR thinner
-field is non-NULL, an additional step follows: within each set or
-class of outgoing edges that survive filtering, only the minimum edge
-with respect to the predicate referenced via the
-.BR thinner
-field is kept, and all other edges in it are deleted.
+predicate as follows.
+.TP
+*
+If the edges have been partitioned into classes, all members of
+the minimum class with respect to the predicate are kept, and
+all members of any other classes are deleted.
+.TP
+*
+If the edges have not been partitioned into classes, only the single
+minimum edge with respect to the predicate is kept, and all other
+outgoing edges from the vertex being tested are deleted.
 .P
 To this end, the application should initialize the
 .BR thinner
-field to refer to a total order relational predicate on edges with the
-desired effect. That is, it should be antisymmetric and it should
-return a non-zero value whenever its left operand is preferable to be
-kept in the graph. As a quarternary predicate, its four operands are
-an edge label, the terminal vertex of the edge thus labeled, another
-edge label, and the latter edge's terminus in that order. As always,
-the predicate must not modify its operands but may assign the error
-code.
+field to refer to a relational predicate on edges with the desired
+effect. That is, it should be antisymmetric and it should return a
+non-zero value whenever its left operand is preferable to be kept in
+the graph. As a quarternary predicate, its four operands are an edge
+label, the terminal vertex of the edge thus labeled, another edge
+label, and the latter edge's terminus in that order. As always, the
+predicate must not modify its operands but may assign the error code.
 .SH ERRORS
 If an ordering is defined by the
 .BR fi_order
@@ -217,6 +233,21 @@ is reported by the
 function, for an inconsistent
 .BR cru_filter
 structure.
+.P
+If an ordering is specified by the
+.BR fi_kernel.e_order
+field and a
+.BR thinner
+is also specified, then the
+.BR thinner
+should be defined consistently with the ordering insofar as equivalent
+edges under the ordering are also equivalent with respect to the
+.BR thinner.
+This condition is necessary because comparison of classes is based on
+comparison of arbitrarily selected members of the classes. This
+condition is not enforceable by
+.BR cru
+but failure to meet it may lead to non-deterministic results.
 .SH NOTES
 It is not impossible for vertices outside of a zone of the graph
 restricted by the

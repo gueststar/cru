@@ -61,7 +61,7 @@ map_size (p, err)
   vertex_map v;
   size_t result;
 
-  if ((! p) ? IER(595) : ((result = p * sizeof (v)) < p) ? IER(596) : (result < sizeof (v)) ? IER(597) : 0)
+  if ((! p) ? IER(602) : ((result = p * sizeof (v)) < p) ? IER(603) : (result < sizeof (v)) ? IER(604) : 0)
 	 return 0;
   return result;
 }
@@ -83,13 +83,13 @@ _cru_partition (p, err)
   size_t m;
   cru_partition h;
 
-  if ((m = map_size (p, err)) ? *err : IER(598))
+  if ((m = map_size (p, err)) ? *err : IER(605))
 	 return NULL;
   if ((h = (cru_partition) _cru_malloc (sizeof (*h))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
   memset (h, 0, sizeof (*h));
   h->plurality = p;
-  if (pthread_rwlock_init (&(h->loch), NULL) ? IER(599) : 0)
+  if (pthread_rwlock_init (&(h->loch), NULL) ? IER(606) : 0)
 	 goto a;
   if ((h->maps = (vertex_map *) _cru_malloc (m)) ? 0 : RAISE(ENOMEM))
 	 goto a;
@@ -119,11 +119,11 @@ class_freeing_slacker (h)
   unsigned p;
   int err;
 
-  if ((err = (h ? 0 : THE_IER(600))))
+  if ((err = (h ? 0 : THE_IER(607))))
 	 goto a;
-  if ((err = ((h->parted == PARTITION_MAGIC) ? 0 : THE_IER(601))))
+  if ((err = ((h->parted == PARTITION_MAGIC) ? 0 : THE_IER(608))))
 	 goto a;
-  if ((err = (h->maps ? (h->plurality ? 0 : THE_IER(602)) : THE_IER(603))))
+  if ((err = (h->maps ? (h->plurality ? 0 : THE_IER(609)) : THE_IER(610))))
 	 goto a;
   for (p = h->plurality; p--;)
 	 _cru_free_vertex_map (h->maps[p], &err);
@@ -133,7 +133,7 @@ class_freeing_slacker (h)
   free (h->maps);
 #endif
   if (pthread_rwlock_destroy (&(h->loch)))
-	 err = THE_IER(604);
+	 err = THE_IER(611);
   h->parted = MUGGLE(1);
   _cru_free (h);
  a: _cru_globally_throw (err);
@@ -181,7 +181,7 @@ _cru_free_class (h, err)
 
 	  // Free a class.
 {
-  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(605) : 0)
+  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(612) : 0)
 	 return;
   if ((h->references)--)
 	 return;
@@ -204,7 +204,7 @@ copied_class (h, err)
 
 	  // Return a shared copy of a class.
 {
-  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(606) : 0)
+  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(613) : 0)
 	 return NULL;
   if (++(h->references))
 	 return h;
@@ -237,7 +237,7 @@ classifying_task (source, err)
 	  // the hash of its property.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! b) ? (! IER(607)) : (a->vertex_property == b->vertex_property) ? 0 : \
+(*err ? 0 : (! b) ? (! IER(614)) : (a->vertex_property == b->vertex_property) ? 0 : \
 FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_property))
 
   packet_table collisions;    // previous incoming packets
@@ -258,25 +258,25 @@ FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_pro
   sample = 0;
   seen = NULL;
   collisions = NULL;
-  if ((! source) ? IER(608) : (source->gruntled != PORT_MAGIC) ? IER(609) : 0)
+  if ((! source) ? IER(615) : (source->gruntled != PORT_MAGIC) ? IER(616) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(610) : (r->valid != ROUTER_MAGIC) ? IER(611) : (killed = 0))
+  if ((!(r = source->local)) ? IER(617) : (r->valid != ROUTER_MAGIC) ? IER(618) : (killed = 0))
 	 goto a;
-  if ((! (d = source->peers)) ? IER(612) : (r->tag != CLU) ? IER(613) : 0)
+  if ((! (d = source->peers)) ? IER(619) : (r->tag != CLU) ? IER(620) : 0)
 	 goto b;
-  if ((! (r->partition)) ? IER(614) : (! (r->partition->maps)) ? IER(615) : 0)
+  if ((! (r->partition)) ? IER(621) : (! (r->partition->maps)) ? IER(622) : 0)
 	 goto b;
   m = &(r->partition->maps[source->own_index]);
-  if (r->merger.me_classifier.cl_order.equal ? 0 : IER(616))
+  if (r->merger.me_classifier.cl_order.equal ? 0 : IER(623))
 	 goto b;
   h = r->merger.me_classifier.cl_order.hash;
-  if (h ? 0 : r->ro_sig.destructors.v_free ? IER(617) : ! (h = (cru_hash) _cru_scalar_hash))
+  if (h ? 0 : r->ro_sig.destructors.v_free ? IER(624) : ! (h = (cru_hash) _cru_scalar_hash))
 	 goto b;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(2);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : ((n = incoming->receiver)) ? _cru_member (n, seen) : IER(618))
+		if (*err ? 1 : killed ? 1 : ((n = incoming->receiver)) ? _cru_member (n, seen) : IER(625))
 		  goto c;
 		if (! (c = _cru_collision (incoming->hash_value, &collisions, err)))
 		  goto c;
@@ -290,7 +290,7 @@ FAILED(r->merger.me_classifier.cl_order.equal, a->vertex_property, b->vertex_pro
 		p = (*c ? &((*c)->next_packet) : c);
 		*p = _cru_popped_packet (&incoming, err);
 		continue;
-	 d: if ((*c)->receiver ? 1 : ! IER(619))
+	 d: if ((*c)->receiver ? 1 : ! IER(626))
 		  _cru_associate (m, n->vertex, copied_class (_cru_image (*m, (*c)->receiver->vertex, err), err), err);
 	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
  	 }
@@ -324,9 +324,9 @@ _cru_partition_of (g, k, r, err)
 
   result = NULL;
   _cru_disable_killing (k, err);
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(620) : (! g) ? IER(621) : (! (b = g->base_node)) ? IER(622) : 0)
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(627) : (! g) ? IER(628) : (! (b = g->base_node)) ? IER(629) : 0)
 	 goto a;
-  if ((r->tag != CLU) ? IER(623) : 0)
+  if ((r->tag != CLU) ? IER(630) : 0)
 	 goto a;
   h = r->merger.me_classifier.cl_order.hash;
   if (h ? 0 : r->ro_sig.destructors.v_free ? RAISE(CRU_UNDHSH) : ! (h = (cru_hash) _cru_scalar_hash))
@@ -337,7 +337,7 @@ _cru_partition_of (g, k, r, err)
 		goto a;
 	 }
   if (_cru_status_launched (k, b, h (b->vertex_property), _cru_reset (r, (task) classifying_task, err), err))
-	 if ((result = r->partition) ? 1 : ! IER(624))
+	 if ((result = r->partition) ? 1 : ! IER(631))
 		goto b;
   cru_free_partition (r->partition, (*err == CRU_INTKIL) ? LATER : NOW, err);
  b: _cru_unset_properties (g, r, err);
@@ -374,7 +374,7 @@ cru_class_size (c, err)
   CONTROL_ENTRY;
   if (c ? ((c->classed == CLASS_MAGIC) ? 0 : RAISE(CRU_BADCLS)) : RAISE(CRU_NULCLS))
 	 return 0;
-  return ((((s = c->references + 1) ? 0 : IER(625)) ? (c->classed = MUGGLE(4)) : 0) ? 0 : s);
+  return ((((s = c->references + 1) ? 0 : IER(632)) ? (c->classed = MUGGLE(4)) : 0) ? 0 : s);
 }
 
 
@@ -418,7 +418,7 @@ cru_free_partition (p, now, err)
   free (p->maps);
 #endif
  a: if (pthread_rwlock_destroy (&(p->loch)))
-	 IER(626);
+	 IER(633);
   p->parted = MUGGLE(5);
   _cru_free (p);
 }
@@ -450,11 +450,11 @@ cru_class_of (p, x, err)
 		break;
   if (i ? 0 : (*err == ENOMEM) ? 1 : RAISE(CRU_PARVNF))
 	 return NULL;
-  if ((pthread_rwlock_rdlock (&(p->loch)) ? IER(627) : 0) ? (p->parted = MUGGLE(6)) : 0)
+  if ((pthread_rwlock_rdlock (&(p->loch)) ? IER(634) : 0) ? (p->parted = MUGGLE(6)) : 0)
 	 return NULL;
   while (i->superclass)
 	 i = i->superclass;
-  if ((pthread_rwlock_unlock (&(p->loch)) ? IER(628) : 0) ? (p->parted = MUGGLE(7)) : 0)
+  if ((pthread_rwlock_unlock (&(p->loch)) ? IER(635) : 0) ? (p->parted = MUGGLE(7)) : 0)
 	 return NULL;
   return i;
 }
@@ -487,7 +487,7 @@ cru_united (p, x, y, err)
 	 return 0;
   if ((p->parted == PARTITION_MAGIC) ? 0 : RAISE(CRU_BADPRT))
 	 return 0;
-  if ((pthread_rwlock_wrlock (&(p->loch)) ? IER(629) : 0) ? (p->parted = MUGGLE(8)) : 0)
+  if ((pthread_rwlock_wrlock (&(p->loch)) ? IER(636) : 0) ? (p->parted = MUGGLE(8)) : 0)
 	 return 0;
   dblx = 0;
   for (xs = 0; ((x->classed != CLASS_MAGIC) ? ((dblx = CRU_BADCLS)) : 0) ? NULL : x->superclass; x = x->superclass)
@@ -509,7 +509,7 @@ cru_united (p, x, y, err)
 		y->superclass = x;
 	 }
  a: RAISE(dblx);
-  if ((pthread_rwlock_unlock (&(p->loch)) ? IER(630) : 0) ? (p->parted = MUGGLE(9)) : 0)
+  if ((pthread_rwlock_unlock (&(p->loch)) ? IER(637) : 0) ? (p->parted = MUGGLE(9)) : 0)
 	 return 0;
   return ! dblx;
 }

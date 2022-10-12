@@ -46,9 +46,9 @@ _cru_status_runner (s)
   router r;
   int err;
 
-  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1449))))
+  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1461))))
 	 goto a;
-  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1450))))
+  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1462))))
 	 goto a;
   status = (uintptr_t) (r->work) (s, &err);
   _cru_throw (r, &err);
@@ -74,9 +74,9 @@ _cru_maybe_runner (s)
   int err;
 
   m = NULL;
-  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1451))))
+  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1463))))
 	 goto a;
-  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1452))))
+  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1464))))
 	 goto a;
   if ((m = (maybe) (r->work) (s, &err)) ? 0 : err)
 	 m = _cru_new_maybe (ABSENT, NULL, &err);             // report the error through the result if possible
@@ -105,9 +105,9 @@ _cru_queue_runner (s)
   node_queue q;
 
   q = NULL;
-  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1453))))
+  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1465))))
 	 goto a;
-  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1454))))
+  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1466))))
 	 goto a;
   if ((q = (r->work) (s, &err)) ? 0 : err)
 	 q = _cru_queue_of (NO_NODES, &err);            // report the error through the result if possible
@@ -135,9 +135,9 @@ _cru_count_runner (s)
   uintptr_t c;
   int err;
 
-  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1455))))
+  if ((err = ((s ? (s->gruntled == PORT_MAGIC) : 0) ? 0 : THE_IER(1467))))
 	 goto a;
-  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1456))))
+  if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1468))))
 	 goto a;
   c = (uintptr_t) (r->work) (s, &err);
   _cru_throw (r, &err);
@@ -168,7 +168,7 @@ _cru_maybe_joiner (id, err)
   maybe result;
 
   result = NULL;
-  if ((! id) ? IER(1457) : pthread_join (*id, (void **) &result) ? IER(1458) : 0)
+  if ((! id) ? IER(1469) : pthread_join (*id, (void **) &result) ? IER(1470) : 0)
 	 return NULL;
   RAISE(result ? result->ma_status : 0);
   return result;

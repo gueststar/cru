@@ -71,12 +71,12 @@ base_searching_task (source, err)
   seen = NULL;
   result = NULL;
   killed = found = dblx = 0;
-  if ((! source) ? IER(1724) : (source->gruntled != PORT_MAGIC) ? IER(1725) : 0)
+  if ((! source) ? IER(1736) : (source->gruntled != PORT_MAGIC) ? IER(1737) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(1726) : (r->valid != ROUTER_MAGIC) ? IER(1727) : 0)
+  if ((!(r = source->local)) ? IER(1738) : (r->valid != ROUTER_MAGIC) ? IER(1739) : 0)
 	 return NULL;
   z = &(r->ro_plan.zone);
-  if ((! (d = source->peers)) ? IER(1728) : (e = r->ro_sig.orders.v_order.equal) ? *err : IER(1729))
+  if ((! (d = source->peers)) ? IER(1740) : (e = r->ro_sig.orders.v_order.equal) ? *err : IER(1741))
 	 {
 		_cru_abort (source, d, err);
 		return _cru_new_maybe (ABSENT, NULL, err);
@@ -87,7 +87,7 @@ base_searching_task (source, err)
 		killed = (killed ? 1 : KILLED);
 		if (killed ? 1 : found)
 		  goto a;
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1730))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1742))
 		  goto a;
 		_cru_scattered (n->edges_out, d, err);
 		if (! (found = ((z->initial_vertex == n->vertex) ? 1 : PASSED(e, z->initial_vertex, n->vertex))))
@@ -160,17 +160,17 @@ reachability_analyzing_task (source, err)
 
   sample = 0;
   killed = 0;
-  if ((! source) ? IER(1731) : (source->gruntled != PORT_MAGIC) ? IER(1732) : 0)
+  if ((! source) ? IER(1743) : (source->gruntled != PORT_MAGIC) ? IER(1744) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1733) : (r->valid != ROUTER_MAGIC) ? IER(1734) : 0)
+  if ((! (r = source->local)) ? IER(1745) : (r->valid != ROUTER_MAGIC) ? IER(1746) : 0)
 	 return NULL;
-  if (! (destinations = source->peers) ? IER(1735) : *err)
+  if (! (destinations = source->peers) ? IER(1747) : *err)
 	 return _cru_abort_status (source, destinations, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, destinations, err));)
 	 {
 		KILL_SITE(33);
 		killed = (killed ? 1 : KILLED);
-		if (killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(1736))
+		if (killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(1748))
 		  goto a;
 		if (_cru_test_and_set_membership (n, &(source->reachable), err) ? 0 : ! *err)
 		  _cru_scattered (r->ro_plan.zone.backwards ? n->edges_in : n->edges_out, destinations, err);
@@ -210,7 +210,7 @@ _cru_initial_node (g, k, r, err)
   node_list result;
   cru_destructor_pair d;
 
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1737) : 0)
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1749) : 0)
 	 return NULL;
   z = &((w = &(r->ro_plan))->zone);
   if (! _cru_half_duplex (g, err))
@@ -265,25 +265,25 @@ all_visited (e, r, s, unvisitable, err)
   node_list o;
   int visited;
 
-  if ((! r) ? IER(1738) : (r->valid != ROUTER_MAGIC) ? IER(1739) : 0)
+  if ((! r) ? IER(1750) : (r->valid != ROUTER_MAGIC) ? IER(1751) : 0)
 	 return 0;
-  if (((! r->ports) ? IER(1740) : (! (r->lanes)) ? IER(1741) : 0) ? (r->valid = MUGGLE(75)) : 0)
+  if (((! r->ports) ? IER(1752) : (! (r->lanes)) ? IER(1753) : 0) ? (r->valid = MUGGLE(75)) : 0)
 	 return 0;
-  if ((! unvisitable) ? IER(1742) : *unvisitable ? IER(1743) : 0)
+  if ((! unvisitable) ? IER(1754) : *unvisitable ? IER(1755) : 0)
 	 return 0;
   for (visited = 1; (! e) ? 0 : *unvisitable ? 0 : visited; e = e->next_edge)
 	 {
-		if (((p = r->ports[_cru_scalar_hash (o = e->remote.node) % r->lanes]) ? 0 : IER(1744)) ? (r->valid = MUGGLE(76)) : 0)
+		if (((p = r->ports[_cru_scalar_hash (o = e->remote.node) % r->lanes]) ? 0 : IER(1756)) ? (r->valid = MUGGLE(76)) : 0)
 		  return 0;
-		if ((p->gruntled != PORT_MAGIC) ? IER(1745) : 0)
+		if ((p->gruntled != PORT_MAGIC) ? IER(1757) : 0)
 		  return 0;
 		if (p->reachable ? (! _cru_member (o, p->reachable)) : 0)
 		  continue;
-		if ((p == s) ? 0 : (pthread_rwlock_rdlock (&(p->p_lock)) ? IER(1746) : 0) ? (p->gruntled = MUGGLE(77)) : 0)
+		if ((p == s) ? 0 : (pthread_rwlock_rdlock (&(p->p_lock)) ? IER(1758) : 0) ? (p->gruntled = MUGGLE(77)) : 0)
 		  return 0;
 		if (! (*unvisitable = p->disabled))
 		  visited = _cru_member (o, p->visited);
-		if ((p == s) ? 0 : (pthread_rwlock_unlock (&(p->p_lock)) ? IER(1747) : 0) ? (p->gruntled = MUGGLE(78)) : 0)
+		if ((p == s) ? 0 : (pthread_rwlock_unlock (&(p->p_lock)) ? IER(1759) : 0) ? (p->gruntled = MUGGLE(78)) : 0)
 		  return 0;
 	 }
   return (*unvisitable ? 0 : visited);
@@ -308,13 +308,13 @@ visited (e, s, unvisitable, err)
 	  // have been visited. If so, enable the worker to resume at full
 	  // speed by resetting the backoff parameter.
 {
-  if ((! s) ? IER(1748) : (s->gruntled != PORT_MAGIC) ? IER(1749) : ! all_visited (e, s->local, s, unvisitable, err))
+  if ((! s) ? IER(1760) : (s->gruntled != PORT_MAGIC) ? IER(1761) : ! all_visited (e, s->local, s, unvisitable, err))
 	 return 0;
-  if ((pthread_mutex_lock (&(s->suspension)) ? IER(1750) : 0) ? (s->gruntled = MUGGLE(79)) : 0)
+  if ((pthread_mutex_lock (&(s->suspension)) ? IER(1762) : 0) ? (s->gruntled = MUGGLE(79)) : 0)
 	 return 1;
   if (s->backoff)
 	 s->backoff = 1;
-  if (pthread_mutex_unlock (&(s->suspension)) ? IER(1751) : 0)
+  if (pthread_mutex_unlock (&(s->suspension)) ? IER(1763) : 0)
 	 s->gruntled = MUGGLE(80);
   return 1;
 }
@@ -339,9 +339,9 @@ _cru_visitable (n, s, unvisitable, err)
   cru_plan w;
   router r;
 
-  if ((! s) ? IER(1752) : (s->gruntled != PORT_MAGIC) ? IER(1753) : 0)
+  if ((! s) ? IER(1764) : (s->gruntled != PORT_MAGIC) ? IER(1765) : 0)
 	 return 0;
-  if ((! n) ? IER(1754) : (! (r = s->local)) ? IER(1755) : (r->valid != ROUTER_MAGIC) ? IER(1756) : 0)
+  if ((! n) ? IER(1766) : (! (r = s->local)) ? IER(1767) : (r->valid != ROUTER_MAGIC) ? IER(1768) : 0)
 	 return 0;
   if (! ((w = &(r->ro_plan))->remote_first ? 1 : w->local_first))             // traversal order is unconstrained
 	 return 1;
@@ -363,5 +363,5 @@ _cru_retirable (n, s, unvisitable, err)
 	  // Return non-zero if all reachable nodes adjacent to the given
 	  // node via outgoing edges have been visited.
 {
-  return ((n ? 0 : IER(1757)) ? 0 : visited (n->edges_out, s, unvisitable, err));
+  return ((n ? 0 : IER(1769)) ? 0 : visited (n->edges_out, s, unvisitable, err));
 }

@@ -86,12 +86,12 @@ _cru_open_crew (err)
 
   if (! _cru_error_checking_mutex_type (&a, err))
 	 goto a;
-  if (pthread_mutex_init (&crew_lock, &a) ? IER(697) : 0)
+  if (pthread_mutex_init (&crew_lock, &a) ? IER(704) : 0)
 	 {
 		pthread_mutexattr_destroy (&a);
 		goto a;
 	 }
-  if (! (pthread_mutexattr_destroy (&a) ? IER(698) : 0))
+  if (! (pthread_mutexattr_destroy (&a) ? IER(705) : 0))
 	 return 1;
   pthread_mutex_destroy (&crew_lock);
  a: return 0;
@@ -115,14 +115,14 @@ _cru_close_crew ()
   err = 0;
   for (c = reserve_crews; (t = ((c == NULL_CREW) ? NULL : c)); _cru_free (t))
 	 {
-		if (crew_count-- ? 0 : (err = THE_IER(699)))
+		if (crew_count-- ? 0 : (err = THE_IER(706)))
 		  break;
 		c = c->c_held;
 	 }
   if (err ? 0 : crew_count)
-	 err = THE_IER(700);
+	 err = THE_IER(707);
   if (pthread_mutex_destroy (&crew_lock) ? (! err) : 0)
-	 err = THE_IER(701);
+	 err = THE_IER(708);
   _cru_globally_throw (err);
 }
 
@@ -144,9 +144,9 @@ _cru_crew_of (err)
 {
   crew c;
 
-  if ((c = crew_of (err)) ? 1 : pthread_mutex_lock (&(crew_lock)) ? IER(702) : 0)
+  if ((c = crew_of (err)) ? 1 : pthread_mutex_lock (&(crew_lock)) ? IER(709) : 0)
 	 goto a;
-  if ((reserve_crews == NULL_CREW) ? 1 : crew_count ? 0 : IER(703))
+  if ((reserve_crews == NULL_CREW) ? 1 : crew_count ? 0 : IER(710))
 	 goto b;
   c = reserve_crews;
   reserve_crews = reserve_crews->c_held;
@@ -154,7 +154,7 @@ _cru_crew_of (err)
   c->created = 0;
   crew_count--;
  b: if (pthread_mutex_unlock (&crew_lock))
-	 IER(704);
+	 IER(711);
  a: return c;
 }
 
@@ -176,17 +176,17 @@ free_crew (c, err)
 
   if (! c)
 	 return;
-  if ((! (c->c_held)) ? 1 : pthread_mutex_lock (&crew_lock) ? IER(705) : 0)
+  if ((! (c->c_held)) ? 1 : pthread_mutex_lock (&crew_lock) ? IER(712) : 0)
 	 goto a;
-  if ((crew_count < RESERVE_CREW_LIMIT) ? 0 : pthread_mutex_unlock (&crew_lock) ? IER(706) : 1)
+  if ((crew_count < RESERVE_CREW_LIMIT) ? 0 : pthread_mutex_unlock (&crew_lock) ? IER(713) : 1)
 	 goto a;
   for (r = &reserve_crews; *r != NULL_CREW; r = &((*r)->c_held))
-	 if ((c == *r) ? IER(707) : *r ? 0 : IER(708))                  // check for a double-free
+	 if ((c == *r) ? IER(714) : *r ? 0 : IER(715))                  // check for a double-free
 		goto b;
   crew_count++;
   *r = c;
  b: if (pthread_mutex_unlock (&crew_lock))
-	 IER(709);
+	 IER(716);
   return;
  a: _cru_free (c);
 }
@@ -206,11 +206,11 @@ _cru_reserved_crews (err)
 {
   uintptr_t result;
 
-  if (pthread_mutex_lock (&crew_lock) ? IER(710) : 0)
+  if (pthread_mutex_lock (&crew_lock) ? IER(717) : 0)
 	 return 0;
   result = crew_count;
   if (pthread_mutex_unlock (&crew_lock))
-	 IER(711);
+	 IER(718);
   return result;
 }
 
@@ -229,7 +229,7 @@ _cru_replenish_crews (err)
   crew c;
   int dblx;
 
-  if (pthread_mutex_lock (&crew_lock) ? IER(712) : 0)
+  if (pthread_mutex_lock (&crew_lock) ? IER(719) : 0)
 	 return;
   for (dblx = 0; (crew_count < RESERVE_CREW_LIMIT) ? ((c = crew_of (&dblx))) : NULL; ++crew_count)
 	 {
@@ -238,7 +238,7 @@ _cru_replenish_crews (err)
 	 }
   RAISE(dblx);
   if (pthread_mutex_unlock (&crew_lock))
-	 IER(713);
+	 IER(720);
 }
 
 
@@ -266,11 +266,11 @@ _cru_crewed (c, m, r, err)
   int dblx;
 
   dblx = 0;
-  if ((! r) ? IER(714) : (! c) ? IER(715) : (r->valid != ROUTER_MAGIC) ? IER(716) : (! (r->threads)) ? IER(717) : 0)
+  if ((! r) ? IER(721) : (! c) ? IER(722) : (r->valid != ROUTER_MAGIC) ? IER(723) : (! (r->threads)) ? IER(724) : 0)
 	 goto a;
-  if ((r->ports ? 0 : IER(718)) ? (r->valid = MUGGLE(10)) : (r->threads ? 0 : IER(719)) ? (r->valid = MUGGLE(11)) : 0)
+  if ((r->ports ? 0 : IER(725)) ? (r->valid = MUGGLE(10)) : (r->threads ? 0 : IER(726)) ? (r->valid = MUGGLE(11)) : 0)
 	 goto a;
-  if ((pthread_mutex_lock (&(r->lock)) ? IER(720) : 0) ? (r->valid = MUGGLE(12)) : 0)
+  if ((pthread_mutex_lock (&(r->lock)) ? IER(727) : 0) ? (r->valid = MUGGLE(12)) : 0)
 	 goto a;
   c->bays = r->lanes;
   c->ids = r->threads;
@@ -278,7 +278,7 @@ _cru_crewed (c, m, r, err)
 	 if (_cru_create (&(c->ids[c->created]), m, r->ports[c->created], &dblx))
 		break;
   r->running = c->created;
-  if ((pthread_mutex_unlock (&(r->lock)) ? IER(721) : 0) ? (r->valid = MUGGLE(13)) : ! (c->created))
+  if ((pthread_mutex_unlock (&(r->lock)) ? IER(728) : 0) ? (r->valid = MUGGLE(13)) : ! (c->created))
 	 goto a;
   _cru_wait_for_quiescence (UNKILLABLE, r, &dblx);  // let all workers block waiting for their first packet
   if (c->created == r->lanes)                       // if there's a full crew, don't finish the job before it starts
@@ -316,10 +316,10 @@ _cru_status_disjunction (c, err)
   int disjunction;
 
   disjunction = 0;
-  if ((! c) ? 1 : (c->bays < c->created) ? IER(722) : (! (c->ids)) ? IER(723) : 0)
+  if ((! c) ? 1 : (c->bays < c->created) ? IER(729) : (! (c->ids)) ? IER(730) : 0)
 	 return *err;
   for (i = 0; i < c->created; i++)
-	 if (pthread_join (c->ids[i], (void **) &status) ? (! IER(724)) : 1)
+	 if (pthread_join (c->ids[i], (void **) &status) ? (! IER(731)) : 1)
 		{
 		  disjunction = (status ? 1 : disjunction);
 		  RAISE((int) status);
@@ -346,10 +346,10 @@ _cru_summation (c, err)
 {
   uintptr_t sum, n, i;
 
-  if ((! c) ? 1 : (c->bays < c->created) ? IER(725) : (! (c->ids)) ? IER(726) : 0)
+  if ((! c) ? 1 : (c->bays < c->created) ? IER(732) : (! (c->ids)) ? IER(733) : 0)
 	 return 0;
   for (sum = i = 0; i < c->created; i++)
-	 if (pthread_join (c->ids[i], (void **) &n) ? (! IER(727)) : 1)
+	 if (pthread_join (c->ids[i], (void **) &n) ? (! IER(734)) : 1)
 		sum += n;
   free_crew (c, err);
   return sum;
@@ -382,15 +382,15 @@ _cru_node_union (c, base_bay, base, err)
   q = NULL;
   if (base)
 	 *base = NULL;
-  if ((! c) ? 1 : (c->bays < c->created) ? IER(728) : c->ids ? 0 : IER(729))
+  if ((! c) ? 1 : (c->bays < c->created) ? IER(735) : c->ids ? 0 : IER(736))
 	 goto a;
   hit = 0;
   for (i = 0; i < c->created; i++)
 	 {
-		if (pthread_join (c->ids[i], (void **) &r) ? IER(730) : ! r)
+		if (pthread_join (c->ids[i], (void **) &r) ? IER(737) : ! r)
 		  continue;
 		if (base ? (r->basic ? 1 : (i == base_bay)) : 0)
-		  if (hit ? IER(731) : ++hit)
+		  if (hit ? IER(738) : ++hit)
 			 *base = r->front;
 		_cru_append_nodes (&q, r, err);
  	 }
@@ -419,13 +419,13 @@ _cru_maybe_disjunction (c, result, err)
 
   if (result)
 	 *result = NULL;
-  if ((! c) ? 1 : (c->bays < c->created) ? IER(732) : (! (c->ids)) ? IER(733) : (any = 0))
+  if ((! c) ? 1 : (c->bays < c->created) ? IER(739) : (! (c->ids)) ? IER(740) : (any = 0))
 	 return;
   x = NULL;
   for (i = 0; i < c->created; i++)
-	 if (pthread_join (c->ids[i], (void **) &x) ? (! IER(734)) : ! ! x)
+	 if (pthread_join (c->ids[i], (void **) &x) ? (! IER(741)) : ! ! x)
 		{
-		  if (x->extant ? (result ? (any ? (! IER(735)) : ++any) : ! IER(736)) : 0)
+		  if (x->extant ? (result ? (any ? (! IER(742)) : ++any) : ! IER(743)) : 0)
 			 *result = x->value;
 		  RAISE(x->ma_status);
 		  _cru_free_maybe (x, NO_DESTRUCTOR, err);
@@ -462,9 +462,9 @@ _cru_maybe_reduction (c, m, result, err)
   next_worker = 0;
   if (result)
 	 *result = NULL;
-  if ((! m) ? IER(737) : (! c) ? 1 : (c->bays < c->created) ? IER(738) : c->ids ? 0 : IER(739))
+  if ((! m) ? IER(744) : (! c) ? 1 : (c->bays < c->created) ? IER(745) : c->ids ? 0 : IER(746))
 	 return;
-  if (((d = m->m_free) != m->r_free) ? IER(740) : 0)
+  if (((d = m->m_free) != m->r_free) ? IER(747) : 0)
 	 return;
   if ((! (c->created)) ? 1 : NOMEM ? 1 : ! nthm_enter_scope (err))
 	 goto a;
@@ -481,7 +481,7 @@ _cru_maybe_reduction (c, m, result, err)
 		  if (NOMEM ? 1 : ! nthm_open ((nthm_worker) _cru_maybe_fused, z, err))
 			 _cru_free_maybe_pair (z, err);
 	 }
-  if (*err ? 1 : (! (x ? x->extant : 0)) ? 1 : result ? 0 : IER(741))
+  if (*err ? 1 : (! (x ? x->extant : 0)) ? 1 : result ? 0 : IER(748))
 	 goto b;
   *err = x->ma_status;
   *result = x->value;

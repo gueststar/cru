@@ -65,11 +65,11 @@ new_node (i, a, q, d, z, err)
   void *v;
   int ux;
 
-  if ((! i) ? IER(902) : (! *i) ? IER(903) : 0)
+  if ((! i) ? IER(909) : (! *i) ? IER(910) : 0)
 	 return NULL;
-  if ((! (o = (node_list) (*i)->payload)) ? IER(904) : *err)
+  if ((! (o = (node_list) (*i)->payload)) ? IER(911) : *err)
 	 goto a;
-  if ( (! a) ? IER(905) : (! (a->v_fab)) ? IER(906) : (! (a->e_fab)) ? IER(907) : 0)
+  if ( (! a) ? IER(912) : (! (a->v_fab)) ? IER(913) : (! (a->e_fab)) ? IER(914) : 0)
 	 goto a;
   n = NULL;
   v = APPLIED(a->v_fab, o->vertex);
@@ -133,11 +133,11 @@ fabricating_task (s, err)
   killed = 0;
   sample = 0;
   collisions = NULL;
-  if ((! s) ? IER(908) : (s->gruntled != PORT_MAGIC) ? IER(909) : 0)
+  if ((! s) ? IER(915) : (s->gruntled != PORT_MAGIC) ? IER(916) : 0)
 	 return NULL;
-  if ((! (r = s->local)) ? IER(910) : (r->valid != ROUTER_MAGIC) ? IER(911) : 0)
+  if ((! (r = s->local)) ? IER(917) : (r->valid != ROUTER_MAGIC) ? IER(918) : 0)
 	 return NULL;
-  if ((! (d = s->peers)) ? IER(912) : (r->tag != FAB) ? IER(913) : 0)
+  if ((! (d = s->peers)) ? IER(919) : (r->tag != FAB) ? IER(920) : 0)
 	 return _cru_abort (s, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
@@ -153,7 +153,7 @@ fabricating_task (s, err)
 		p = (*c ? &((*c)->next_packet) : c);
 		_cru_push_packet (new_node (&incoming, &(r->fabricator), &q, d, &(r->ro_sig.destructors), err), p, err);
 		continue;
-	 b: if (incoming->carrier ? 1 : ! IER(914))
+	 b: if (incoming->carrier ? 1 : ! IER(921))
 		  incoming->carrier->remote.node = (*c)->receiver;
 		incoming->carrier = NULL;
 	 a: if (! (incoming->carrier))
@@ -191,7 +191,7 @@ _cru_fabricated (g, k, r, err)
 
   f = NULL;
   _cru_disable_killing (k, err);
-  if ((! r) ? 1 : (! g) ? IER(915) : 0)
+  if ((! r) ? 1 : (! g) ? IER(922) : 0)
 	 goto a;
   _cru_graph_launched (k, g->base_node, _cru_scalar_hash (g->base_node), _cru_reset (r, (task) fabricating_task, err), &f, err);
   if (*err)

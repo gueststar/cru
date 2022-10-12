@@ -60,23 +60,23 @@ _cru_node_counting_task (s, err)
   count = 0;
   sample = 0;
   seen = NULL;
-  if ((! s) ? IER(683) : (s->gruntled != PORT_MAGIC) ? IER(684) : 0)
+  if ((! s) ? IER(690) : (s->gruntled != PORT_MAGIC) ? IER(691) : 0)
 	 return NULL;
-  if ((! (r = s->local)) ? IER(685) : (r->valid != ROUTER_MAGIC) ? IER(686) : 0)
+  if ((! (r = s->local)) ? IER(692) : (r->valid != ROUTER_MAGIC) ? IER(693) : 0)
 	 return NULL;
-  if (((d = s->peers)) ? 0 : IER(687))
+  if (((d = s->peers)) ? 0 : IER(694))
 	 return _cru_abort (s, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
 		KILL_SITE(6);
 		killed = (killed ? 1 : KILLED);
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(688))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(695))
 		  goto a;
 		if (killed ? 1 : *err)
 		  goto a;
 		_cru_scatter_out (n, d, err);
 		if (! ++count)
-		  IER(689);
+		  IER(696);
 	 a: _cru_nack (_cru_popped_packet (&incoming, err), err);
 	 }
   _cru_forget_members (seen);
@@ -115,24 +115,24 @@ _cru_edge_counting_task (s, err)
   sample = 0;
   killed = 0;
   seen = NULL;
-  if ((! s) ? IER(690) : (s->gruntled != PORT_MAGIC) ? IER(691) : 0)
+  if ((! s) ? IER(697) : (s->gruntled != PORT_MAGIC) ? IER(698) : 0)
 	 return NULL;
-  if ((! (r = s->local)) ? IER(692) : (r->valid != ROUTER_MAGIC) ? IER(693) : 0)
+  if ((! (r = s->local)) ? IER(699) : (r->valid != ROUTER_MAGIC) ? IER(700) : 0)
 	 return NULL;
-  if (((d = s->peers)) ? 0 : IER(694))
+  if (((d = s->peers)) ? 0 : IER(701))
 	 return _cru_abort (s, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
 		KILL_SITE(7);
 		killed = (killed ? 1 : KILLED);
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(695))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(702))
 		  goto a;
 		if (killed ? 1 : *err)
 		  goto a;
 		_cru_scatter_out (n, d, err);
 		for (e = n->edges_out; e; e = e->next_edge)
 		  if (! ++count)
-			 IER(696);
+			 IER(703);
 	 a: _cru_nack (_cru_popped_packet (&incoming, err), err);
 	 }
   _cru_forget_members (seen);

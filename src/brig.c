@@ -78,6 +78,62 @@ _cru_popped_bucket (b, err)
 
 
 
+static brigade
+deleted_bucket (target, b, err)
+	  brigade target;
+	  brigade *b;
+	  int *err;
+
+	  // Remove and return a specific bucket from a
+	  // brigade. Cf. _cru_deleted_edge in edges.c.
+{
+  brigade *e;
+
+  if ((! b) ? IER(558) : 0)
+	 return NULL;
+  for (e = b; *e; e = &((*e)->other_buckets))
+	 if (*e == target)
+		return _cru_popped_bucket (e, err);
+  IER(559);
+  return NULL;
+}
+
+
+
+
+
+
+
+brigade
+_cru_minimum_bucket (t, b, err)
+	  cru_qpred t;
+	  brigade *b;
+	  int *err;
+
+	  // Remove and return the minimum bucket from a brigade based on a
+	  // relational predicate. Assume each member of each bucket is
+	  // equivalent to all other members of the same bucket with
+	  // respect to the predicate. Cf. _cru_minimum_edge in edges.c.
+{
+  brigade c, m;
+  edge_list e;
+  int ux, ut;
+
+  if ((! t) ? IER(560) : (! b) ? IER(561) : (! *b) ? IER(562) : 0)
+	 return NULL;
+  for (c = *b; *err ? NULL : c; c = c->other_buckets)
+	 if ((e = c->bucket) ? 1 : ! IER(563))
+		if (e->remote.node ? 1 : ! IER(564))
+		  if (m ? PASSED(t, e->label, e->remote.node->vertex, m->bucket->label, m->bucket->remote.node->vertex) : 1)
+			 m = c;
+  return (*err ? NULL : deleted_bucket (m, b, err));
+}
+
+
+
+
+
+
 
 
 
@@ -118,18 +174,18 @@ _cru_bucketed (e, by_class, err)
   node_list n, o;
 
   t = NULL;
-  if (e ? 0 : IER(558))
+  if (e ? 0 : IER(565))
 	 return NULL;
   o = NULL;
   for (f = &t; *e;)
 	 {
-		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(559))
+		if (((o = (by_class ? CLASS_OF((*e)->remote.node) : (*e)->remote.node))) ? 0 : IER(566))
 		  break;
 		if (! *f)
 		  _cru_push_bucket (NULL, f, NO_LABEL_DESTRUCTOR, err);
 		if (! *f)
 		  break;
-		if ((*f)->bucket ? ((n = (*f)->bucket->remote.node) ? (by_class ? (CLASS_OF(n) != o) : (n != o)) : IER(560)) : 0)
+		if ((*f)->bucket ? ((n = (*f)->bucket->remote.node) ? (by_class ? (CLASS_OF(n) != o) : (n != o)) : IER(567)) : 0)
 		  {
 			 f = &((*f)->other_buckets);
 			 continue;
@@ -167,13 +223,13 @@ _cru_bundled (r, e, err)
   int ux, ut;
 
   t = NULL;
-  if ((! e) ? IER(561) : ! *e)
+  if ((! e) ? IER(568) : ! *e)
 	 return NULL;
   if (! r)
 	 for (; *err ? NULL : *e; t->bucket = _cru_popped_edge (e, err))
 		{
 		  _cru_push_bucket (EMPTY_BUCKET, &t, NO_LABEL_DESTRUCTOR, err);
-		  if (*err ? 1 : t ? 0 : IER(562))
+		  if (*err ? 1 : t ? 0 : IER(569))
 			 break;
 		}
   else
@@ -181,7 +237,7 @@ _cru_bundled (r, e, err)
 		{
 		  if (! *f)
 			 _cru_push_bucket (EMPTY_BUCKET, f, NO_LABEL_DESTRUCTOR, err);
-		  if (*err ? 1 : *f ? 0 : IER(563))
+		  if (*err ? 1 : *f ? 0 : IER(570))
 			 break;
 		  if ((*f)->bucket ? PASSED(r, (*f)->bucket->label, (*e)->label) : 1)
 			 {
@@ -312,8 +368,8 @@ _cru_reduced_brigade (m, v, t, by_class, d, err)
   r.e_free = (m ? m->r_free : NULL);
   for (result = NULL; (o = t); _cru_free (o))
 	 {
-		if (t->bucket ? 1 : ! IER(564))
-		  if ((n = (by_class ? CLASS_OF(t->bucket->remote.node) : t->bucket->remote.node)) ? 1 : ! IER(565))
+		if (t->bucket ? 1 : ! IER(571))
+		  if ((n = (by_class ? CLASS_OF(t->bucket->remote.node) : t->bucket->remote.node)) ? 1 : ! IER(572))
 			 {
 				l = _cru_configurably_reduced_edges (m, v, t->bucket, by_class, WITHOUT_LOCKS, err);
 				_cru_push_edge (_cru_edge (&r, l, NO_VERTEX, n, NO_NEXT_EDGE, err), &result, err);

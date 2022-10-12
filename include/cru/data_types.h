@@ -17,7 +17,7 @@ typedef struct cru_kill_switch_s *cru_kill_switch;
 // opaque type representing a generally non-injective function from vertices to classes
 typedef struct cru_partition_s *cru_partition;
 
-// opaque type representing a value to which a vertex is mapped by a cru_classification
+// opaque type representing a value to which a vertex is mapped by a cru_partition
 typedef struct cru_class_s *cru_class;
 
 // --------------- conditional operators -------------------------------------------------------------------

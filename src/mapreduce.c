@@ -58,9 +58,9 @@ visit (n, p, result, err)
   void *right;
   cru_destructor d;
 
-  if (*err ? 1 : (! p) ? IER(1086) : (! result) ? IER(1087) : p->vertex.reduction ? 0 : IER(1088))
+  if (*err ? 1 : (! p) ? IER(1098) : (! result) ? IER(1099) : p->vertex.reduction ? 0 : IER(1100))
 	 return;
-  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1089) : 0)
+  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1101) : 0)
 	 return;
   if (*result)
 	 goto a;
@@ -106,11 +106,11 @@ _cru_mapreducing_task (source, err)
   killed = 0;
   seen = NULL;
   result = NULL;
-  if ((! source) ? IER(1090) : (source->gruntled != PORT_MAGIC) ? IER(1091) : 0)
+  if ((! source) ? IER(1102) : (source->gruntled != PORT_MAGIC) ? IER(1103) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1092) : (r->valid != ROUTER_MAGIC) ? IER(1093) : 0)
+  if ((! (r = source->local)) ? IER(1104) : (r->valid != ROUTER_MAGIC) ? IER(1105) : 0)
 	 return NULL;
-  if ((!(destinations = source->peers)) ? IER(1094) : (r->tag != MAP) ? IER(1095) : 0)
+  if ((!(destinations = source->peers)) ? IER(1106) : (r->tag != MAP) ? IER(1107) : 0)
 	 {
 		_cru_abort (source, destinations, err);
 		goto a;
@@ -121,7 +121,7 @@ _cru_mapreducing_task (source, err)
 		killed = (killed ? 1 : KILLED);
 		if (*err ? 1 : killed)
 		  goto b;
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1096))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1108))
 		  goto b;
 		_cru_scattered (r->mapreducer.ma_zone.backwards ? n->edges_in : n->edges_out, destinations, err);
 		visit (n, &(r->mapreducer.ma_prop), &result, err);
@@ -131,7 +131,7 @@ _cru_mapreducing_task (source, err)
 	 goto a;
   if (r->mapreducer.ma_prop.vertex.r_free == r->mapreducer.ma_prop.vertex.m_free)
 	 _cru_free_maybe (result, r->mapreducer.ma_prop.vertex.r_free, err);
-  else if (IER(1097))
+  else if (IER(1109))
 	 _cru_free_maybe (result, NO_DESTRUCTOR, err);
   result = NULL;
  a: if (*err)

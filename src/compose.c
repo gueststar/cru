@@ -55,7 +55,7 @@ guard_it (n, c, visited, err)
   void *a;
   int ux;
 
-  if (*err ? 1 : (! n) ? IER(631) : (! c) ? IER(632) : ! _cru_set_membership (n, visited, err))
+  if (*err ? 1 : (! n) ? IER(638) : (! c) ? IER(639) : ! _cru_set_membership (n, visited, err))
 	 return;
   if ((g = (mapex_pair) _cru_malloc (sizeof (*g))) ? 0 : RAISE(ENOMEM))
 	 return;
@@ -93,7 +93,7 @@ free_props (n, c, visited, err)
   mapex_pair g;
   int ux;
 
-  if ((! c) ? IER(633) : (! visited) ? IER(634) : (! n) ? IER(635) : ! _cru_member (n, *visited))
+  if ((! c) ? IER(640) : (! visited) ? IER(641) : (! n) ? IER(642) : ! _cru_member (n, *visited))
 	 return;
   if (! (g = n->props))
 	 return;
@@ -139,17 +139,17 @@ guarding_task (source, err)
   sample = 0;
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! source) ? IER(636) : (source->gruntled != PORT_MAGIC) ? IER(637) : 0)
+  if ((! source) ? IER(643) : (source->gruntled != PORT_MAGIC) ? IER(644) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(638) : (r->valid != ROUTER_MAGIC) ? IER(639) : 0)
+  if ((! (r = source->local)) ? IER(645) : (r->valid != ROUTER_MAGIC) ? IER(646) : 0)
 	 return NULL;
-  if ((! (d = source->peers)) ? IER(640) : (r->tag != COM) ? IER(641) : 0)
+  if ((! (d = source->peers)) ? IER(647) : (r->tag != COM) ? IER(648) : 0)
 	 return _cru_abort_status (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(3);
 		killed = (killed ? 1 : KILLED);
-		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(642))
+		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(649))
 		  goto a;
 		if (*err ? 0 : killed ? 0 : _cru_scattered (n->edges_out, d, err))
 		  goto b;
@@ -211,9 +211,9 @@ compose (l, n, c, g, f, b, z, err)
   edge_list e;
   mapex_pair r;
 
-  if ((! n) ? IER(643) : (! c) ? IER(644) : ! g)
+  if ((! n) ? IER(650) : (! c) ? IER(651) : ! g)
 	 return;
-  if ((! (c->labeler.qpred)) ? IER(645) : (! (c->labeler.qop)) ? IER(646) : 0)
+  if ((! (c->labeler.qpred)) ? IER(652) : (! (c->labeler.qop)) ? IER(653) : 0)
 	 return;
   for (e = n->edges_out; *err ? NULL : e; e = e->next_edge)
 	 if ((m = e->remote.node) ? (r = m->props) : NULL)
@@ -251,11 +251,11 @@ composing_task (s, err)
 
   sample = 0;
   killed = 0;
-  if ((! s) ? IER(647) : (s->gruntled != PORT_MAGIC) ? IER(648) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(654) : (s->gruntled != PORT_MAGIC) ? IER(655) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(649) : (r->valid != ROUTER_MAGIC) ? IER(650) : (! (r->ports)) ? IER(651) : 0)
+  if ((! (r = s->local)) ? IER(656) : (r->valid != ROUTER_MAGIC) ? IER(657) : (! (r->ports)) ? IER(658) : 0)
 	 return NULL;
-  if ((r->tag != COM) ? IER(652) : (! (r->lanes)) ? IER(653) : (s->own_index >= r->lanes) ? IER(654) : 0)
+  if ((r->tag != COM) ? IER(659) : (! (r->lanes)) ? IER(660) : (s->own_index >= r->lanes) ? IER(661) : 0)
 	 return _cru_abort (s, NO_POD, err);
   n = s->survivors;
   c = &(r->composer);
@@ -263,7 +263,7 @@ composing_task (s, err)
 	 {
 		KILL_SITE(4);
 		killed = (killed ? 1 : KILLED);
-		if (killed ? 1 : *err ? 1 : n->edges_by ? IER(655) : 0)
+		if (killed ? 1 : *err ? 1 : n->edges_by ? IER(662) : 0)
 		  continue;
 		b = NULL;
 		for (e = n->edges_out; *err ? NULL : e; e = e->next_edge)
@@ -293,7 +293,7 @@ bypassed (n, o, d, err)
   mapex_pair p;
   uintptr_t before, after;
 
-  if ((! n) ? IER(656) : (! o) ? IER(657) : ! (p = n->props))
+  if ((! n) ? IER(663) : (! o) ? IER(664) : ! (p = n->props))
 	 return 0;
   before = _cru_degree (n->edges_out);
   n->edges_out = _cru_cat_edges (n->edges_out, n->edges_by);
@@ -330,7 +330,7 @@ decompose (n, c, visited, z, err)
 {
   node_list t;
 
-  if ((! z) ? IER(658) : n ? 0 : IER(659))
+  if ((! z) ? IER(665) : n ? 0 : IER(666))
 	 return;
   for (t = *n; t; t = t->next_node)
 	 {
@@ -371,11 +371,11 @@ bypassing_task (s, err)
   sample = 0;
   killed = 0;
   changed = 0;
-  if ((! s) ? IER(660) : (s->gruntled != PORT_MAGIC) ? IER(661) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(667) : (s->gruntled != PORT_MAGIC) ? IER(668) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(662) : (r->valid != ROUTER_MAGIC) ? IER(663) : 0)
+  if ((! (r = s->local)) ? IER(669) : (r->valid != ROUTER_MAGIC) ? IER(670) : 0)
 	 return NULL;
-  if ((r->tag != COM) ? IER(664) : 0)
+  if ((r->tag != COM) ? IER(671) : 0)
 	 return NULL;
   for (n = s->survivors; n; n = n->next_node)
 	 {
@@ -421,7 +421,7 @@ _cru_composed (g, k, r, err)
   _cru_disable_killing (k, err);
   if (*err ? 1 : ! g)
 	 goto a;
-  if ((! r) ? IER(665) : (r->valid != ROUTER_MAGIC) ? IER(666) : (r->tag != COM) ? IER(667) : (! (r->ports)) ? IER(668) : 0)
+  if ((! r) ? IER(672) : (r->valid != ROUTER_MAGIC) ? IER(673) : (r->tag != COM) ? IER(674) : (! (r->ports)) ? IER(675) : 0)
 	 goto a;
   if (_cru_half_duplex (g, err))
 	 goto b;

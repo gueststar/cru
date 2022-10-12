@@ -129,11 +129,6 @@ The
 .BR in_fold.vacuous_case
 field is
 NULL.
-.SH NOTES
-A nullary operator is always required via the
-.BR in_fold.vacuous_case
-field because deadlock avoidance presupposes a vertex in the graph
-having no prerequisites.
 .SH FILES
 .I @INCDIR@/data_types.h
 .P

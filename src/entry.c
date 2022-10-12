@@ -79,7 +79,7 @@ static int initial_error = 0;
 #define TEST_ENTRY                                                         \
   CONTROL_ENTRY;                                                            \
   pthread_once (&once_control, initialization);                              \
-  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(890)))  \
+  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(897)))  \
 	 goto x;
 
 // done when any user code calls a published API routine
@@ -136,7 +136,7 @@ initialization ()
 	 goto f;
   if (! _cru_open_wrap (&initial_error))
 	 goto g;
-  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(891))) : 0)
+  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(898))) : 0)
 	 goto h;
   initialized = 1;
   return;
@@ -300,7 +300,7 @@ cru_connect (label, terminus, err)
   CONTROL_ENTRY;
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != BUILDING)) ? RAISE(CRU_INTOOC) : 0)
 	 return;
-  if ((e = _cru_get_edges ()) ? 0 : IER(892))
+  if ((e = _cru_get_edges ()) ? 0 : IER(899))
 	 return;
   *e = _cru_edge (_cru_get_destructors (), label, terminus, NO_NODE, *e, err);
 }
@@ -334,7 +334,7 @@ cru_stretch (label_in, new_vertex, label_out, err)
   z = _cru_get_destructors ();
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != STRETCHING)) ? RAISE(CRU_INTOOC) : 0)
 	 goto a;
-  if ((! z) ? IER(893) : (e = _cru_get_edge_maps ()) ? 0 : IER(894))
+  if ((! z) ? IER(900) : (e = _cru_get_edge_maps ()) ? 0 : IER(901))
 	 goto a;
   if (! (a = _cru_edge (z, label_in, new_vertex, NO_NODE, NO_NEXT_EDGE, err)))
 	 goto b;
@@ -674,7 +674,7 @@ cru_spread (g, b, k, lanes, err)
 
   API_ENTRY;
   _cru_disable_killing (k, err);
-  if (_cru_bad (g, err) ? 1 : *err ? 1 : (! g) ? 1 : (! (g->base_node)) ? IER(895) : 0)
+  if (_cru_bad (g, err) ? 1 : *err ? 1 : (! g) ? 1 : (! (g->base_node)) ? IER(902) : 0)
 	 goto x;
   if (! (b = _cru_inferred_builder (b, g->base_node->vertex, err)))
 	 goto x;

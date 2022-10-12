@@ -46,9 +46,13 @@ struct brigade_s
 extern void
 _cru_push_bucket (edge_list bucket, brigade *b, cru_destructor d, int *err);
 
-// Return the first bucket from a brigade.
+// return the first bucket from a brigade
 extern brigade
 _cru_popped_bucket (brigade *b, int *err);
+
+// remove and return the minimum bucket from a brigade based on a relational predicate
+extern brigade
+_cru_minimum_bucket (cru_qpred t, brigade *b, int *err);
 
 // free a brigade ignoring the buckets
 extern void
