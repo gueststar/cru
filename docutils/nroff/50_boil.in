@@ -48,7 +48,7 @@ is zero on entry and the operation does not succeed, then\
 .I *err\
 is assigned a non-zero number. Positive numbers are for POSIX or\
 user-defined error codes, and negative numbers down to\
-.BR -CRU_MAX_FAIL\
+.BR -CRU_MAX_ERR\
 are specific to\
 .BR cru.\
 .P\
@@ -79,7 +79,7 @@ number reported by the callback function is assigned to\
 .I *err.\
 Positive numbers are for POSIX or user-defined error codes,\
 negative numbers down to\
-.BR -CRU_MAX_FAIL\
+.BR -CRU_MAX_ERR\
 are specific to\
 .BR cru,\
 and other negative numbers are allowed as user-defined error codes.\

@@ -121,6 +121,7 @@ _cru_minimum_bucket (t, b, err)
 
   if ((! t) ? IER(560) : (! b) ? IER(561) : (! *b) ? IER(562) : 0)
 	 return NULL;
+  m = NULL;
   for (c = *b; *err ? NULL : c; c = c->other_buckets)
 	 if ((e = c->bucket) ? 1 : ! IER(563))
 		if (e->remote.node ? 1 : ! IER(564))

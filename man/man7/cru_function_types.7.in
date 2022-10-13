@@ -111,7 +111,7 @@ In addition reporting POSIX standard error codes such as those defined in
 .I <errno.h>,
 applications may use arbitrary non-clashing error codes for any
 purpose.  However, negative integers from -1 down to
-.BR -CRU_MAX_FAIL
+.BR -CRU_MAX_ERR
 inclusive are reserved. To avoid confusion, applications should avoid
 using them as error codes.
 .SH NOTES
