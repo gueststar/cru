@@ -508,9 +508,9 @@ edge_filtering_task (source, err)
 		m = _cru_member (n, source->deleted);
 		if (_cru_test_and_set_membership (n, &seen, err))
 		  goto c;
-		if ((! m) == ! (r->filter.thinner))
+		if (! m)
 		  filtered (n, &(r->filter), d, &(source->disconnections), err);
-		else if (m)
+		else
 		  {
 			 source->disconnections = _cru_cat_edges (n->edges_out, source->disconnections);
 			 n->edges_out = NULL;

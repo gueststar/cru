@@ -2,7 +2,7 @@
 // traverse backwards from the maximum vertex and filter out any edge
 // originating from a vertex whose bit count is half the dimension,
 // which retains the major diagonal hyperplane but eliminates anything
-// on the other side of it. Filter the edges the hard way by.fi_kerneling
+// on the other side of it. Filter the edges the hard way by filtering
 // equivalence classes of edges even though each class contains only a
 // single edge.
 

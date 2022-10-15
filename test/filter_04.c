@@ -2,7 +2,7 @@
 // edges, traverse backwards from the maximum vertex and filter out
 // any edge originating from a vertex whose bit count is half the
 // dimension and one vertex adjacent to the root. Filter the edges the
-// hard way by.fi_kerneling equivalence classes of edges even though each
+// hard way by filtering equivalence classes of edges even though each
 // class contains only a single edge.
 
 #include <stdio.h>
