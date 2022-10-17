@@ -109,6 +109,10 @@ _cru_identity_top (void *l, void *m, void *r, int *err);
 extern void *
 _cru_true_top (void *l, void *m, void *r, int *err);
 
+// return a null value
+extern void *
+_cru_false_top (void *l, void *m, void *r, int *err);
+
 // return the disjunction of the left and right operands
 extern void *
 _cru_disjoining_top (void *l, void *m, void *r, int *err);

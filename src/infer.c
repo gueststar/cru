@@ -532,7 +532,7 @@ _cru_inferred_filter (f, s, err)
   if ((! s) ? IER(1043) : ! (f_copy = _cru_filter_copy (f, err)))
 	 return NULL;
   if (f_copy->thinner ? _cru_empty_prop (&(f_copy->fi_kernel.v_op)) : 0)
-	 ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_true_top);
+	 ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_false_top);
   ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_disjoining_top);
   ALLOW (f_copy->fi_kernel.v_op.vertex.reduction, (cru_bop) _cru_undefined_bop);
   if (_cru_empty_prop (&(f_copy->fi_kernel.v_op)) ? 0 : ! _cru_filled_prop (&(f_copy->fi_kernel.v_op), err))

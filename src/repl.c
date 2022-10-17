@@ -336,6 +336,22 @@ _cru_true_top (l, m, r, err)
 
 
 
+void *
+_cru_false_top (l, m, r, err)
+	  void *l;
+	  void *m;
+	  void *r;
+	  int *err;
+
+	  // Return a null value.
+{
+  return NULL;
+}
+
+
+
+
+
 
 void *
 _cru_disjoining_top (l, m, r, err)

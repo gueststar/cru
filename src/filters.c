@@ -509,7 +509,10 @@ edge_filtering_task (source, err)
 		if (_cru_test_and_set_membership (n, &seen, err))
 		  goto c;
 		if (! m)
-		  filtered (n, &(r->filter), d, &(source->disconnections), err);
+		  {
+			 if ((! (r->filter.thinner)) ? 1 : is_deletable (&(r->filter.fi_kernel.v_op), n, err))
+				filtered (n, &(r->filter), d, &(source->disconnections), err);
+		  }
 		else
 		  {
 			 source->disconnections = _cru_cat_edges (n->edges_out, source->disconnections);
@@ -577,7 +580,7 @@ _cru_filtered (g, r, k, err)
   if ((r->tag != FIL) ? IER(971) : ! (i = _cru_initial_node (*g, k, r, err)))
 	 goto a;
   s = (r->ports[_cru_scalar_hash (b = (*g)->base_node) % r->lanes])->reachable;
-  if (! ((s ? _cru_member (b, s) : 1) ? is_deletable (&(r->filter.fi_kernel.v_op), b, err) : 0))
+  if (! ((s ? _cru_member (b, s) : 1) ? r->filter.thinner ? 0 : is_deletable (&(r->filter.fi_kernel.v_op), b, err) : 0))
 	 goto b;
   if (r->lanes == 1)
 	 goto c;
@@ -593,7 +596,7 @@ _cru_filtered (g, r, k, err)
   if (*err)
 	 goto c;
   i = (r->ro_plan.zone.backwards ? i : b);
-  if (_cru_empty_prop (&(r->filter.fi_kernel.v_op)))
+  if (r->filter.thinner ? 1 : _cru_empty_prop (&(r->filter.fi_kernel.v_op)))
 	 t = (task) edge_filtering_task;
   else
 	 t = (task) node_filtering_task;
