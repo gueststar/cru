@@ -327,7 +327,7 @@ jointly_filtered (test, n, b, c, err)
 		}
   _cru_free_brigade (o, err);
   n->edges_out = e;
- b: return ! *err;
+  return ! *err;
 }
 
 
@@ -372,7 +372,7 @@ jointly_thinned (test, t, n, b, c, err)
   for (b = passing; b; b = b->other_buckets)
 	 *c = _cru_cat_edges (b->bucket, *c);
   _cru_free_brigade (passing, err);
- b: return ! *err;
+  return ! *err;
 }
 
 

@@ -65,7 +65,7 @@ is required to point to a
 .BR cru_builder
 whose
 .BR bu_sig
-field is contains
+field contains
 .BR orders
 and
 .BR destructors
