@@ -49,13 +49,13 @@ error_consumed (r, status, err)
 {
   if (! status)
 	 return 1;
-  if ((! r) ? IER(1646) : (r->valid != ROUTER_MAGIC) ? IER(1647) : 0)
+  if ((! r) ? IER(1652) : (r->valid != ROUTER_MAGIC) ? IER(1653) : 0)
 	 return 0;
-  if ((pthread_mutex_lock (&(r->lock)) ? IER(1648) : 0) ? (r->valid = MUGGLE(57)) : 0)
+  if ((pthread_mutex_lock (&(r->lock)) ? IER(1654) : 0) ? (r->valid = MUGGLE(57)) : 0)
 	 return 0;
   if ((r->ro_status == status) ? 1 : r->ro_status ? 0 : (r->ro_status = status))
 	 status = 0;
-  if ((pthread_mutex_unlock (&(r->lock)) ? IER(1649) : 0) ? (r->valid = MUGGLE(58)) : 0)
+  if ((pthread_mutex_unlock (&(r->lock)) ? IER(1655) : 0) ? (r->valid = MUGGLE(58)) : 0)
 	 return 0;
   return ! status;
 }
@@ -94,7 +94,7 @@ _cru_catch (r, err)
 {
   int status;
 
-  if ((! r) ? IER(1650) : (r->valid != ROUTER_MAGIC) ? IER(1651) : 0)
+  if ((! r) ? IER(1656) : (r->valid != ROUTER_MAGIC) ? IER(1657) : 0)
 	 return *err;
   status = r->ro_status;
   r->ro_status = 0;
@@ -125,13 +125,13 @@ _cru_swell (r, err)
 {
   unsigned u;
 
-  if ((! r) ? IER(1652) : (r->valid != ROUTER_MAGIC) ? IER(1653) : 0)
+  if ((! r) ? IER(1658) : (r->valid != ROUTER_MAGIC) ? IER(1659) : 0)
 	 return;
-  if ((pthread_mutex_lock (&(r->lock)) ? IER(1654) : 0) ? (r->valid = MUGGLE(59)) : 0)
+  if ((pthread_mutex_lock (&(r->lock)) ? IER(1660) : 0) ? (r->valid = MUGGLE(59)) : 0)
 	 return;
-  if (! (((u = r->running + 1) ? 0 : IER(1655)) ? (r->valid = MUGGLE(60)) : 0))
+  if (! (((u = r->running + 1) ? 0 : IER(1661)) ? (r->valid = MUGGLE(60)) : 0))
 	 r->running = u;
-  if (pthread_mutex_unlock (&(r->lock)) ? IER(1656) : 0)
+  if (pthread_mutex_unlock (&(r->lock)) ? IER(1662) : 0)
 	 r->valid = MUGGLE(61);
 }
 
@@ -149,19 +149,19 @@ _cru_dwindled (r, err)
 	  // suspension, and if there are no workers left running then
 	  // signal a transition indicating quiescence.
 {
-  if ((! r) ? IER(1657) : (r->valid != ROUTER_MAGIC) ? IER(1658) : 0)
+  if ((! r) ? IER(1663) : (r->valid != ROUTER_MAGIC) ? IER(1664) : 0)
 	 return 0;
-  if ((pthread_mutex_lock (&(r->lock)) ? IER(1659) : 0) ? (r->valid = MUGGLE(62)) : 0)
+  if ((pthread_mutex_lock (&(r->lock)) ? IER(1665) : 0) ? (r->valid = MUGGLE(62)) : 0)
 	 return 0;
-  if ((r->running ? 0 : IER(1660)) ? (pthread_mutex_unlock (&(r->lock)) ? (r->valid = MUGGLE(63)) : 1) : 0)
+  if ((r->running ? 0 : IER(1666)) ? (pthread_mutex_unlock (&(r->lock)) ? (r->valid = MUGGLE(63)) : 1) : 0)
 	 return 0;
   if (--(r->running) ? 0 : (r->quiescent = 1))
-	 if ((pthread_cond_signal (&(r->transition)) ? IER(1661) : 0) ? (r->valid = MUGGLE(64)) : 0)
+	 if ((pthread_cond_signal (&(r->transition)) ? IER(1667) : 0) ? (r->valid = MUGGLE(64)) : 0)
 		{
 		  pthread_mutex_unlock (&(r->lock));
 		  return 0;
 		}
-  if ((pthread_mutex_unlock (&(r->lock)) ? IER(1662) : 0) ? (r->valid = MUGGLE(65)) : 0)
+  if ((pthread_mutex_unlock (&(r->lock)) ? IER(1668) : 0) ? (r->valid = MUGGLE(65)) : 0)
 	 return 0;
   return 1;
 }
@@ -188,21 +188,21 @@ _cru_undefer (r, err)
   port p;
   unsigned i;
 
-  if ((! r) ? IER(1663) : (r->valid != ROUTER_MAGIC) ? IER(1664) : r->ports ? 0 : IER(1665))
+  if ((! r) ? IER(1669) : (r->valid != ROUTER_MAGIC) ? IER(1670) : r->ports ? 0 : IER(1671))
 	 return;
   for (i = 0; i < r->lanes; i++)
 	 {
-		if ((!(p = r->ports[i])) ? IER(1666) : (p->gruntled != PORT_MAGIC) ? IER(1667) : 0)
+		if ((!(p = r->ports[i])) ? IER(1672) : (p->gruntled != PORT_MAGIC) ? IER(1673) : 0)
 		  continue;
-		if ((pthread_mutex_lock (&(p->suspension)) ? IER(1668) : 0) ? (p->gruntled = MUGGLE(66)) : 0)
+		if ((pthread_mutex_lock (&(p->suspension)) ? IER(1674) : 0) ? (p->gruntled = MUGGLE(66)) : 0)
 		  continue;
 		if (NEW_ASSIGNMENT(p) ? p->waiting : 0)
 		  {
 			 _cru_swell (r, err);
-			 if (pthread_cond_signal (&(p->resumable)) ? IER(1669) : 0)
+			 if (pthread_cond_signal (&(p->resumable)) ? IER(1675) : 0)
 				p->gruntled = MUGGLE(67);
 		  }
-		if (pthread_mutex_unlock (&(p->suspension)) ? IER(1670) : 0)
+		if (pthread_mutex_unlock (&(p->suspension)) ? IER(1676) : 0)
 		  p->gruntled = MUGGLE(68);
 	 }
 }
@@ -226,14 +226,14 @@ _cru_wait_for_quiescence (k, r, err)
 
 	  // Wait until all workers are suspended.
 {
-  if ((! r) ? IER(1671) : (r->valid != ROUTER_MAGIC) ? IER(1672) : 0)
+  if ((! r) ? IER(1677) : (r->valid != ROUTER_MAGIC) ? IER(1678) : 0)
 	 return;
-  if ((pthread_mutex_lock (&(r->lock)) ? IER(1673) : 0) ? (r->valid = MUGGLE(69)) : 0)
+  if ((pthread_mutex_lock (&(r->lock)) ? IER(1679) : 0) ? (r->valid = MUGGLE(69)) : 0)
 	 return;
   _cru_enable_killing (k, &(r->killed), err);
-  if (r->quiescent ? 0 : pthread_cond_wait (&(r->transition), &(r->lock)) ? IER(1674) : 0)
+  if (r->quiescent ? 0 : pthread_cond_wait (&(r->transition), &(r->lock)) ? IER(1680) : 0)
 	 r->valid = MUGGLE(70);
-  else if (pthread_mutex_unlock (&(r->lock)) ? IER(1675) : 0)
+  else if (pthread_mutex_unlock (&(r->lock)) ? IER(1681) : 0)
 	 r->valid = MUGGLE(71);
   _cru_disable_killing (k, err);
 }
@@ -257,21 +257,21 @@ _cru_dismiss (r, err)
   unsigned i;
   port source;
 
-  if ((! r) ? IER(1676) : (r->valid != ROUTER_MAGIC) ? IER(1677) : 0)
+  if ((! r) ? IER(1682) : (r->valid != ROUTER_MAGIC) ? IER(1683) : 0)
 	 return;
-  if ((!(r->lanes)) ? IER(1678) : (!(r->ports)) ? IER(1679) : 0)
+  if ((!(r->lanes)) ? IER(1684) : (!(r->ports)) ? IER(1685) : 0)
 	 return;
   for (i = 0; i < r->lanes; i++)
-	 if (!((!(source = r->ports[i])) ? IER(1680) : (source->gruntled == PORT_MAGIC) ? 0 : IER(1681)))
+	 if (!((!(source = r->ports[i])) ? IER(1686) : (source->gruntled == PORT_MAGIC) ? 0 : IER(1687)))
 		{
-		  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1682) : 0) ? (source->gruntled = MUGGLE(72)) : 0)
+		  if ((pthread_mutex_lock (&(source->suspension)) ? IER(1688) : 0) ? (source->gruntled = MUGGLE(72)) : 0)
 			 continue;
-		  if (source->assigned ? IER(1683) : 0)
+		  if (source->assigned ? IER(1689) : 0)
 			 _cru_nack (source->assigned, err);
 		  source->assigned = NULL;
-		  if (source->waiting ? (pthread_cond_signal (&(source->resumable)) ? IER(1684) : 0) : ! (source->dismissed = 1))
+		  if (source->waiting ? (pthread_cond_signal (&(source->resumable)) ? IER(1690) : 0) : ! (source->dismissed = 1))
 			 source->gruntled = MUGGLE(73);
-		  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1685) : 0)
+		  if (pthread_mutex_unlock (&(source->suspension)) ? IER(1691) : 0)
 			 source->gruntled = MUGGLE(74);
 		}
 }

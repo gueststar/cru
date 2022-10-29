@@ -54,7 +54,7 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // by the index of the bit in which its endpoints differ, and
 	  // NULL otherwise.
 {
-  if (((local_vertex ^ remote_vertex) == (1 << connecting_edge)) ? 1 : ! FAIL(2084))
+  if (((local_vertex ^ remote_vertex) == (1 << connecting_edge)) ? 1 : ! FAIL(2090))
 	 return cru_class_of (h, (cru_vertex) remote_vertex, err);
   return NULL;
 }
@@ -76,7 +76,7 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (! edges_in) ? FAIL(2085) : (! edges_out) ? FAIL(2086) : (edges_in != edges_out) ? FAIL(2087) : 0);
+  return ! (*err ? 1 : (! edges_in) ? FAIL(2091) : (! edges_out) ? FAIL(2092) : (edges_in != edges_out) ? FAIL(2093) : 0);
 }
 
 
@@ -95,7 +95,7 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(2088) : (s < r) ? FAIL(2089) : 0) ? 0 : s);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(2094) : (s < r) ? FAIL(2095) : 0) ? 0 : s);
 }
 
 
@@ -112,7 +112,7 @@ intersection (l, r, err)
 
 	  // Return one of two equal classes.
 {
-  if (*err ? 1 : (! l) ? FAIL(2090) : (! r) ? FAIL(2091) : (l != r) ? FAIL(2092) : 0)
+  if (*err ? 1 : (! l) ? FAIL(2096) : (! r) ? FAIL(2097) : (l != r) ? FAIL(2098) : 0)
 	 return NULL;
   return l;
 }
@@ -143,11 +143,11 @@ valid (g, err)
 		  .reduction = (cru_bop) intersection,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(2093))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(2099))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(2094))
+  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(2100))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2095))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2101))
 	 return 0;
   return 1;
 }
@@ -174,9 +174,9 @@ common_property (edges_in, given_vertex, edges_out, err)
 
   if (*err)
 	 return 0;
-  if (edges_in ? FAIL(2096) : 0)
+  if (edges_in ? FAIL(2102) : 0)
 	 return 0;
-  if ((edges_out != ((DIMENSION * (DIMENSION - 1)) >> 1)) ? FAIL(2097) : 0)
+  if ((edges_out != ((DIMENSION * (DIMENSION - 1)) >> 1)) ? FAIL(2103) : 0)
 	 return 0;
   for (bits = 0; given_vertex; given_vertex >>= 1)
 	 bits += (given_vertex & 1);
@@ -226,9 +226,9 @@ united (c, err)
 		xh = cru_class_of (c, x = (void *) (((uintptr_t) 1 << i) - 1), err);
 		yh = cru_class_of (c, y = (void *) (((uintptr_t) 1 << (i + 2)) - 1), err);
 		if (*err != ENOMEM)
-		  if (cru_united (c, xh, yh, err) ? 0 : FAIL(2098))
+		  if (cru_united (c, xh, yh, err) ? 0 : FAIL(2104))
 			 break;
-		if (((xh = cru_class_of (c, x, err)) == (yh = cru_class_of (c, y, err))) ? 0 : FAIL(2099))
+		if (((xh = cru_class_of (c, x, err)) == (yh = cru_class_of (c, y, err))) ? 0 : FAIL(2105))
 		  break;
 	 }
   return c;

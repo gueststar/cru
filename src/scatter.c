@@ -225,17 +225,17 @@ _cru_scattered_by_hashes (n, h, t, by_class, err)
   void *c;
   node_list m;
   uintptr_t q;
-  edge_list *e;
+  edge_list e;
   packet_list p;
 
   if ((! n) ? IER(1491) : (! t) ? IER(1492) : (!(t->pod)) ? IER(1493) : (! (t->arity)) ? IER(1494) : h ? 0 : IER(1495))
 	 return 0;
-  for (e = &(n->edges_out); *e; e = &((*e)->next_edge))
-	 if ((m = (*e)->remote.node) ? 0 : IER(1496))
+  for (e = n->edges_out; e; e = e->next_edge)
+	 if ((m = e->remote.node) ? 0 : IER(1496))
 		return 0;
 	 else if (((c = _cru_read (&(m->class_mark), err))) ? MARKED(c) : 0)
 		continue;
-	 else if (! (p = _cru_packet_of (NO_PAYLOAD, q = h (by_class ? m->vertex_property : m->vertex), NO_SENDER, *e, err)))
+	 else if (! (p = _cru_packet_of (NO_PAYLOAD, q = h (by_class ? m->vertex_property : m->vertex), NO_SENDER, e, err)))
 		return 0;
 	 else
 		_cru_push_packet (p, &(t->pod[q % t->arity]), err);

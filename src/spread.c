@@ -48,36 +48,64 @@
 
 
 
+static void
+push_severed (n, t, err)
+	  node_list n;
+	  node_list *t;
+	  int *err;
+
+	  // Sever and push n into t, and disconnect its incoming edges.
+{
+  if (n ? 0 : IER(1562))
+	 return;
+  _cru_pushed_node (_cru_half_severed (n), t, err);
+  _cru_free_edges (n->edges_in, err);
+  n->edges_in = NULL;
+}
+
+
+
+
+
+
 static int
-packed (i, s, p, d, err)
+packed (i, s, p, t, d, err)
 	  packet_list *i;
 	  cru_sig s;
 	  packet_table *p;
+	  node_list *t;
 	  packet_pod d;
 	  int *err;
 
 	  // Store an incoming packet carrying a previously unrecorded node
 	  // in the collision table and send adjacent nodes in packets to
-	  // other workers.
+	  // other workers. If successful, also sever and store the node
+	  // carried in the packet in a separate list t.
 {
   int ux, ut, unequal;
   packet_list *c;
+  edge_list e;
 
-  if (*err ? 1 : (! i) ? IER(1557) : (! *i) ? IER(1558) : (! s) ? IER(1559) : (! (s->orders.v_order.equal)) ? IER(1560) : 0)
-	 return 0;
-  if ((! ((*i)->receiver)) ? IER(1561) : ! (c = _cru_collision ((*i)->hash_value, p, err)))
-	 return 0;
+  if (*err ? 1 : (! i) ? IER(1563) : (! *i) ? IER(1564) : (! s) ? IER(1565) : (! (s->orders.v_order.equal)) ? IER(1566) : 0)
+	 goto a;
+  if ((! ((*i)->receiver)) ? IER(1567) : ! (c = _cru_collision ((*i)->hash_value, p, err)))
+	 goto a;
   if (*c)
 	 while (*err ? 0 : (unequal = UNEQUAL((*i)->receiver->vertex, (*c)->receiver)) ? (*c)->next_packet : NULL)
 		c = &((*c)->next_packet);
-  if (*err ? 1 : *c ? (! unequal) : 0)
-	 return 0;
+  if (*err)
+	 goto a;
+  if (*c ? (! unequal) : 0)
+	 goto c;
   if (! _cru_scattered_by_hashes ((*i)->receiver, s->orders.v_order.hash, d, BY_TERMINUS, err))
-	 return 0;
+	 goto a;
+  push_severed ((*i)->receiver, t, err);
   _cru_push_packet (_cru_popped_packet (i, err), *c ? &((*c)->next_packet) : c, err);
-  return 1;
+  goto b;
+ c: _cru_nack (_cru_popped_packet (i, err), err);
+ b: return 1;
+ a: return 0;
 }
-
 
 
 
@@ -117,28 +145,28 @@ _cru_prespreading_task (source, err)
   killed = 0;
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! source) ? IER(1562) : (source->gruntled != PORT_MAGIC) ? IER(1563) : 0)
+  if ((! source) ? IER(1568) : (source->gruntled != PORT_MAGIC) ? IER(1569) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(1564) : (r->valid != ROUTER_MAGIC) ? IER(1565) : 0)
+  if ((!(r = source->local)) ? IER(1570) : (r->valid != ROUTER_MAGIC) ? IER(1571) : 0)
 	 return NULL;
-  if ((r->tag == BUI) ? 0 : IER(1566))
+  if ((r->tag == BUI) ? 0 : IER(1572))
 	 goto d;
   s = &(r->builder.bu_sig);
-  if ((!(d = source->peers)) ? IER(1567) : 0)
+  if ((!(d = source->peers)) ? IER(1573) : 0)
 	 goto d;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(28);
 		if (killed ? 0 : (killed = (*err ? 1 : KILLED)))
 		  _cru_kill_internally (&(r->killed), err);
-		if (((n = incoming->receiver)) ? RECORDED(n) : IER(1568))
+		if (((n = incoming->receiver)) ? RECORDED(n) : IER(1574))
 		  goto a;
 		if (incoming->payload)
 		  {
 			 _cru_forget_collisions (source->collided, err);
 			 source->collided = NULL;
 		  }
-		else if (killed ? 0 : *err ? 0 : packed (&incoming, s, &(source->collided), d, err))
+		else if (killed ? 0 : *err ? 0 : packed (&incoming, s, &(source->collided), &(source->deletions), d, err))
 		  continue;
 		if (killed ? 0 : *err ? 0 : _cru_scattered_by_hashes (n, s->orders.v_order.hash, d, BY_TERMINUS, err))
 		  goto b;
@@ -153,9 +181,7 @@ _cru_prespreading_task (source, err)
 		continue;
 	 b: if ((incoming != &buffer) ? (n == buffer.receiver) : 0)
 		  goto c;
-		_cru_pushed_node (_cru_half_severed (n), &(source->deletions), err);
-		_cru_free_edges (n->edges_in, err);
-		n->edges_in = NULL;
+		push_severed (n, &(source->deletions), err);
 		_cru_set_membership (n, &seen, err);
 	 a: if (_cru_unbuffered (&buffer, &incoming, err))
 		  continue;
@@ -193,7 +219,7 @@ start (s, q, h, d, err)
 {
   node_list n;
 
-  if ((! s) ? IER(1569) : (! q) ? IER(1570) : ! (*q = _cru_queue_of (*s, err)))
+  if ((! s) ? IER(1575) : (! q) ? IER(1576) : ! (*q = _cru_queue_of (*s, err)))
 	 return;
   *s = NULL;
   for (n = (*q)->front; n; n = n->next_node)
@@ -221,9 +247,9 @@ cancel_spreading (s, err)
   node_list n;
   router r;
 
-  if ((! s) ? IER(1571) : (s->gruntled != PORT_MAGIC) ? IER(1572) : 0)
+  if ((! s) ? IER(1577) : (s->gruntled != PORT_MAGIC) ? IER(1578) : 0)
 	 return;
-  if ((!(r = s->local)) ? IER(1573) : (r->valid != ROUTER_MAGIC) ? IER(1574) : 0)
+  if ((!(r = s->local)) ? IER(1579) : (r->valid != ROUTER_MAGIC) ? IER(1580) : 0)
 	 return;
   _cru_forget_collisions (s->collided, err);
   s->collided = NULL;
@@ -259,8 +285,7 @@ canceling_task (s, err)
 
 
 
-
-static void
+static int
 break_out (i, b, d, err)
 	  packet_list *i;
 	  cru_builder b;
@@ -279,17 +304,17 @@ break_out (i, b, d, err)
   void *l;                // incident edge label
   int ux;
 
-  if ((! i) ? IER(1575) : (! *i) ? IER(1576) : (! b) ? IER(1577) : (! (n = (*i)->receiver)) ? IER(1578) : ! ! (n->edges_out))
+  if ((! i) ? IER(1581) : (! *i) ? IER(1582) : (! b) ? IER(1583) : (! (n = (*i)->receiver)) ? IER(1584) : ! ! (n->edges_out))
 	 goto a;
-  if (((! (b->connector)) == ! (b->subconnector)) ? IER(1579) : *err)
+  if (((! (b->connector)) == ! (b->subconnector)) ? IER(1585) : *err)
 	 goto a;
-  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(1580)) : 0)
+  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(1586)) : 0)
 	 goto a;
-  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(1581))
+  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(1587))
 	 goto a;
   if (b->connector)
 	 APPLY(b->connector, n->vertex);
-  else if ((*i)->initial ? IER(1582) : (*i)->carrier ? 0 : IER(1583))
+  else if ((*i)->initial ? IER(1588) : (*i)->carrier ? 0 : IER(1589))
 	 goto a;
   else
 	 {
@@ -302,6 +327,7 @@ break_out (i, b, d, err)
 	 n->edges_out = _cru_deduplicated_edges (n->edges_out, &(b->bu_sig.orders.e_order), b->bu_sig.destructors.e_free, err);
   _cru_scatter_out_or_consume (n, b->bu_sig.orders.v_order.hash, &(b->bu_sig.destructors), d, err);
  a: _cru_nack (_cru_popped_packet (i, err), err);
+  return ! *err;
 }
 
 
@@ -345,15 +371,15 @@ spreading_task (source, err)
   started = 0;
   x = BUILDING;
   new_edges_out = NULL;
-  if ((! source) ? IER(1584) : (source->gruntled != PORT_MAGIC) ? IER(1585) : 0)
+  if ((! source) ? IER(1590) : (source->gruntled != PORT_MAGIC) ? IER(1591) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(1586) : (r->valid != ROUTER_MAGIC) ? IER(1587) : 0)
+  if ((!(r = source->local)) ? IER(1592) : (r->valid != ROUTER_MAGIC) ? IER(1593) : 0)
 	 return NULL;
   b = &(r->builder);
   s = &(b->bu_sig);
-  if ((!(d = source->peers)) ? IER(1588) : (r->tag != BUI) ? IER(1589) : 0)
+  if ((!(d = source->peers)) ? IER(1594) : (r->tag != BUI) ? IER(1595) : 0)
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(1590))
+  if ((s->orders.v_order.equal) ? 0 : IER(1596))
 	 goto a;
   if (_cru_set_destructors (&(b->bu_sig.destructors), err) ? 1 : _cru_set_kill_switch (&(r->killed), err))
 	 goto a;
@@ -367,11 +393,8 @@ spreading_task (source, err)
 		killed = (killed ? 1 : KILLED);
 		if (started ? 0 : ++started)
 		  start (&(source->deletions), &q, b->bu_sig.orders.v_order.hash, d, err);
-		if (incoming->receiver)
-		  {
-			 break_out (&incoming, b, d, err);
-			 continue;
-		  }
+		if (incoming->receiver ? break_out (&incoming, b, d, err) : 0)
+		  continue;
 		if (*err ? 1 : killed ? 1 : ! (c = _cru_collision (incoming->hash_value, &(source->collided), err)))
 		  goto b;
 		if (*c)
@@ -427,9 +450,9 @@ _cru_spread (g, k, r, err)
   uintptr_t h;
 
   _cru_disable_killing (k, err);
-  if ((! r) ? IER(1591) : (r->valid != ROUTER_MAGIC) ? IER(1592) : (! (r->ro_sig.orders.v_order.hash)) ? IER(1593) : 0)
+  if ((! r) ? IER(1597) : (r->valid != ROUTER_MAGIC) ? IER(1598) : (! (r->ro_sig.orders.v_order.hash)) ? IER(1599) : 0)
 	 goto a;
-  if ((! g) ? 1 : (! (g->base_node)) ? IER(1594) : 0)
+  if ((! g) ? 1 : (! (g->base_node)) ? IER(1600) : 0)
 	 goto a;
   if (! _cru_status_launched (k, g->base_node, h = (r->ro_sig.orders.v_order.hash) (g->base_node->vertex), r, err))
 	 goto a;

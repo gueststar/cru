@@ -415,6 +415,7 @@ filtered (n, f, d, c, err)
 	 return (f->thinner ? jointly_thinned (test, f->thinner, n, b, c, err) : jointly_filtered (test, n, b, c, err));
   *c = _cru_cat_edges (*c, n->edges_out);
   n->edges_out = NULL;
+  return 0;
 }
 
 
