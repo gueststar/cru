@@ -97,9 +97,13 @@ _cru_minimizing_bop (void *x, void *y, int *err);
 
 // --------------- replacement ternary operators -----------------------------------------------------------
 
-// unconditionally raise an error and return NULL
+// unconditionally raise an internal error and return NULL
 extern void *
 _cru_undefined_top (void *l, void *m, void *r, int *err);
+
+// unconditionally raise an undefined map error and return NULL
+extern void *
+_cru_undefined_map (void *l, void *m, void *r, int *err);
 
 // return the middle argument
 extern void *

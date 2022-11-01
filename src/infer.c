@@ -150,10 +150,14 @@ _cru_inferred_inducer (i, err)
 	 return NULL;
   if (i_copy->boundary_value ? 0 : ! (i_copy->in_fold.vacuous_case))
 	 RAISE(CRU_UNDVAC);
-  else if (! (i_copy->in_fold.map))
-	 RAISE(CRU_UNDMAP);
-  else if (_cru_filled_fold (&(i_copy->in_fold), err))
-	 return i_copy;
+  else
+	 {
+		if (! (i_copy->in_fold.map))
+		  ALLOW (i_copy->in_fold.reduction, (cru_bop) _cru_undefined_bop);
+		ALLOW (i_copy->in_fold.map, (cru_top) _cru_undefined_map);
+		if (_cru_filled_fold (&(i_copy->in_fold), err))
+		  return i_copy;
+	 }
   _cru_free_inducer (i_copy);
   return NULL;
 }

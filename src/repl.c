@@ -308,9 +308,26 @@ _cru_undefined_top (l, m, r, err)
 	  void *r;
 	  int *err;
 
-	  // Unconditionally raise an error and return NULL.
+	  // Unconditionally raise an internal error and return NULL.
 {
   IER(1418);
+  return NULL;
+}
+
+
+
+
+
+void *
+_cru_undefined_map (l, m, r, err)
+	  void *l;
+	  void *m;
+	  void *r;
+	  int *err;
+
+	  // Unconditionally raise an undefined map error and return NULL.
+{
+  RAISE(CRU_UNDMAP);
   return NULL;
 }
 

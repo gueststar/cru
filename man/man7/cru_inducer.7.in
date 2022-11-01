@@ -93,19 +93,34 @@ ternary operator is passed the same vertex as its left operand for
 each of its prerequisites' results on the right, and that this calling
 convention is independent of the edge's direction.
 .P
-The
+Ordinarily, the
 .BR in_fold.map
 and at least one of the
 .BR in_fold.vacuous_case
 or
 .BR boundary_value
-fields must be defined to point to appropriate operators, but if
+fields must be defined to point to appropriate operators. The
+.BR in_fold.map
+field may be left unspecified when the
+.BR boundary_value
+field is defined and the
+.BR in_zone
+field specifies an initial vertex and traversal direction such
+that the initial vertex has no prerequisites. The map is not
+needed in this case because only the initial vertex is visited
+and the result is given by the boundary value. Where the map is not
+needed, neither is the 
+.BR in_fold.reduction
+required.
+.P
+If
 all three of the fields
 .BR in_fold.m_free,
 .BR in_fold.r_free
 and
 .BR in_fold.reduction
-are NULL, then a binary operator is inferred for the reduction
+are NULL, then a binary operator is inferred for the 
+.BR in_fold.reduction
 that returns the lesser of its two operands interpreted as
 unsigned integers.
 .BR 
@@ -116,7 +131,7 @@ unsigned integers.
 The
 .BR in_fold.map
 field is
-NULL.
+NULL but needed to be specified.
 .TP
 .BR CRU_UNDRED
 The
@@ -129,6 +144,39 @@ The
 .BR in_fold.vacuous_case
 field is
 NULL.
+.SH EXAMPLE
+An example of a situation in which the
+.BR in_fold.map
+field need not be specified is an inducton over a graph
+.I g
+built with no edges terminating on the initial vertex. Specifying the structure
+.nf
+   struct cru_inducer_s i = {
+      .boundary_value = (cru_uop) my_root_evaluator,
+      .in_zone = {
+         .backwards = 1}};
+.fi
+causes
+.I my_root_evaluator
+to be passed the initial vertex of
+.I g
+in the invocation
+.nf
+   result = cru_induced (g, &i, UNKILLABLE, SEQUENTIALLY, err);
+.fi
+and its return value to be assigned to the
+.I result.
+No other vertices are visited, so in this example no performance
+penalty accrues to sequential operation. If an inital vertex
+were specified explicitly in the
+.BR in_zone
+field differing from the initial vertex used to build the graph, then
+.I g
+would have be searched for it and performance might be affected.
+For this operation to be useful, typically the graph
+.I g
+will have been mutated since being built with the effect of storing or
+encoding some worthwhile result in the initial vertex.
 .SH FILES
 .I @INCDIR@/data_types.h
 .P
