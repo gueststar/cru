@@ -77,7 +77,7 @@ product_of (l, r, err)
 {
   product result;
 
-  if (*err ? 1 : (! l) ? IER(749) : (! r) ? IER(750) : 0)
+  if (*err ? 1 : (! l) ? IER(756) : (! r) ? IER(757) : 0)
 	 return NULL;
   if ((result = (product) _cru_malloc (sizeof (*result))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
@@ -147,7 +147,7 @@ free_productive_packets (p, z, err)
 {
   packet_list o;
 
-  if (z ? 0 : IER(751))
+  if (z ? 0 : IER(758))
 	 return;
   for (o = p; o; o = o->next_packet)
 	 {
@@ -184,9 +184,9 @@ productive_packets_of (i, x, err)
   void *ua;
 
   result = NULL;
-  if ((! i) ? IER(752) : (! x) ? IER(753) : (! (x->e_prod.bop)) ? IER(754) : 0)
+  if ((! i) ? IER(759) : (! x) ? IER(760) : (! (x->e_prod.bop)) ? IER(761) : 0)
 	 return NULL;
-  if ((! (x->e_prod.bpred)) ? IER(755) : (! (i->multiplicand)) ? IER(756) : (! (i->multiplier)) ? IER(757) :  0)
+  if ((! (x->e_prod.bpred)) ? IER(762) : (! (i->multiplicand)) ? IER(763) : (! (i->multiplier)) ? IER(764) :  0)
 	 return NULL;
   for (l = i->multiplicand->edges_out; *err ? NULL : l; l = l->next_edge)
 	 for (r = i->multiplier->edges_out; *err ? NULL : r; r = r->next_edge)
@@ -239,10 +239,10 @@ reach_extant_node (i, c, d, err)
 	  // the graph recorded in a packet c, and connect its sender to
 	  // the latter.
 {
-  if ((! i) ? IER(758) : (! *i) ? IER(759) : (! ((*i)->payload)) ? IER(760) : 0)
+  if ((! i) ? IER(765) : (! *i) ? IER(766) : (! ((*i)->payload)) ? IER(767) : 0)
 	 goto a;
   _cru_free ((product) (*i)->payload);
-  if ((! c) ? IER(761) : (!((*i)->carrier)) ? IER(762) : 0)
+  if ((! c) ? IER(768) : (!((*i)->carrier)) ? IER(769) : 0)
 	 goto a;
   (*i)->carrier->remote.node = c->receiver;                           // overwrite a vertex field with a node field
  a: _cru_nack (_cru_popped_packet (i, err), err);
@@ -278,11 +278,11 @@ reached_new_node (i, x, q, d, err)
   int ux;
   void *ua;
 
-  if ((! i) ? IER(763) : (! *i) ? IER(764) : (! (l = (product) (*i)->payload)) ? IER(765) : 0)
+  if ((! i) ? IER(770) : (! *i) ? IER(771) : (! (l = (product) (*i)->payload)) ? IER(772) : 0)
 	 goto a;
-  if ((! (l->multiplicand)) ? IER(766) : (! (l->multiplier)) ? IER(767) : 0)
+  if ((! (l->multiplicand)) ? IER(773) : (! (l->multiplier)) ? IER(774) : 0)
 	 goto a;
-  if ((! x) ? IER(768) : (! (x->v_prod)) ? IER(769) : 0)
+  if ((! x) ? IER(775) : (! (x->v_prod)) ? IER(776) : 0)
 	 goto a;
   p = productive_packets_of (l, x, err);
   if (*err)
@@ -323,7 +323,7 @@ _cru_crossing_task (source, err)
 	  // and send them to other workers.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! (a)) ? (! IER(770)) : (! (b)) ? (! IER(771)) : \
+(*err ? 0 : (! (a)) ? (! IER(777)) : (! (b)) ? (! IER(778)) : \
 ((a)->multiplicand != (b)->multiplicand) ? 1 : ((a)->multiplier != (b)->multiplier))
 
   packet_table collisions;    // previous incoming packets
@@ -346,22 +346,22 @@ _cru_crossing_task (source, err)
   sample = 0;
   killed = 0;
   collisions = NULL;
-  if ((! source) ? IER(772) : (source->gruntled != PORT_MAGIC) ? IER(773) : 0)
+  if ((! source) ? IER(779) : (source->gruntled != PORT_MAGIC) ? IER(780) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(774) : (r->valid != ROUTER_MAGIC) ? IER(775) : 0)
+  if ((!(r = source->local)) ? IER(781) : (r->valid != ROUTER_MAGIC) ? IER(782) : 0)
 	 return NULL;
   x = &(r->crosser);
-  if ((!(d = source->peers)) ? IER(776) : (r->tag != CRO) ? IER(777) : ! (s = &(x->cr_sig)))
+  if ((!(d = source->peers)) ? IER(783) : (r->tag != CRO) ? IER(784) : ! (s = &(x->cr_sig)))
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(778))
+  if ((s->orders.v_order.equal) ? 0 : IER(785))
 	 goto a;
   limit = x->cr_sig.vertex_limit / r->lanes;
   limit = (limit ? limit : x->cr_sig.vertex_limit ? 1 : 0);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
-		KILL_SITE(8);
+		KILL_SITE(9);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(779))
+		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(786))
 		  goto b;
 		if (! (c = _cru_collision (incoming->hash_value, &collisions, err)))
 		  goto b;

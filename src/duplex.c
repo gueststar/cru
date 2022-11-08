@@ -68,17 +68,17 @@ _cru_full_duplexing_task (source, err)
   seen = NULL;
   killed = 0;
   sample = 0;
-  if ((! source) ? IER(818) : (source->gruntled != PORT_MAGIC) ? IER(819) : 0)
+  if ((! source) ? IER(825) : (source->gruntled != PORT_MAGIC) ? IER(826) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(820) : (r->valid != ROUTER_MAGIC) ? IER(821) : 0)
+  if ((! (r = source->local)) ? IER(827) : (r->valid != ROUTER_MAGIC) ? IER(828) : 0)
 	 return NULL;
-  if (((destinations = source->peers)) ? 0 : IER(822))
+  if (((destinations = source->peers)) ? 0 : IER(829))
 	 return _cru_abort_status (source, destinations, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, destinations, err));)
 	 {
-		KILL_SITE(9);
+		KILL_SITE(10);
 		killed = (killed ? 1 : KILLED);
-		if (killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(823))
+		if (killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(830))
 		  goto a;
 		if (_cru_test_and_set_membership (n, &seen, err))
 		  goto b;
@@ -87,7 +87,7 @@ _cru_full_duplexing_task (source, err)
 		_cru_scatter_out (n, destinations, err);
 		_cru_free_edges (n->edges_in, err);
 		n->edges_in = NULL;
-	 b: if (*err ? 0 : ((!(incoming->carrier)) == !(incoming->sender)) ? (! ! (incoming->carrier)) : ! IER(824))
+	 b: if (*err ? 0 : ((!(incoming->carrier)) == !(incoming->sender)) ? (! ! (incoming->carrier)) : ! IER(831))
 		  if ((e = _cru_edge (NO_SIG, incoming->carrier->label, NO_VERTEX, incoming->sender, NO_NEXT_EDGE, err)))
 			 _cru_push_edge (e, &(n->edges_in), err);
 	 a: _cru_nack (_cru_popped_packet (&incoming, err), err);
@@ -124,17 +124,17 @@ _cru_half_duplexing_task (source, err)
   router r;
 
   seen = NULL;
-  if ((! source) ? IER(825) : (source->gruntled != PORT_MAGIC) ? IER(826) : (killed = 0))
+  if ((! source) ? IER(832) : (source->gruntled != PORT_MAGIC) ? IER(833) : (killed = 0))
 	 return NULL;
-  if ((! (r = source->local)) ? IER(827) : (r->valid != ROUTER_MAGIC) ? IER(828) : (int) (sample = 0))
+  if ((! (r = source->local)) ? IER(834) : (r->valid != ROUTER_MAGIC) ? IER(835) : (int) (sample = 0))
 	 return NULL;
-  if (((destinations = source->peers)) ? 0 : IER(829))
+  if (((destinations = source->peers)) ? 0 : IER(836))
 	 return _cru_abort_status (source, destinations, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, destinations, err));)
 	 {
-		KILL_SITE(10);
+		KILL_SITE(11);
 		killed = (killed ? 1 : KILLED);
-		if ((! (n = (node_list) incoming->payload)) ? IER(830) : _cru_test_and_set_membership (n, &seen, err))
+		if ((! (n = (node_list) incoming->payload)) ? IER(837) : _cru_test_and_set_membership (n, &seen, err))
 		  goto a;
 		if (killed ? 0 : ! *err)
 		  _cru_scatter_out (n, destinations, err);
@@ -185,16 +185,16 @@ populating_task (source, err)
   d = NULL;
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! source) ? IER(831) : (source->gruntled != PORT_MAGIC) ? IER(832) : 0)
+  if ((! source) ? IER(838) : (source->gruntled != PORT_MAGIC) ? IER(839) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(833) : (r->valid != ROUTER_MAGIC) ? IER(834) : 0)
+  if ((! (r = source->local)) ? IER(840) : (r->valid != ROUTER_MAGIC) ? IER(841) : 0)
 	 return NULL;
-  if ((! (d = source->peers)) ? IER(835) : 0)
+  if ((! (d = source->peers)) ? IER(842) : 0)
 	 return _cru_abort_status (source, d, err);
   h = r->ro_sig.orders.v_order.hash;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
-		if ((n = incoming->receiver) ? RECORDED(n) : IER(836))
+		if ((n = incoming->receiver) ? RECORDED(n) : IER(843))
 		  goto a;
 		if (*err ? 0 : _cru_scattered_by_hashes (n, h, d, BY_TERMINUS, err))
 		  goto b;
@@ -243,9 +243,9 @@ graft (i, c, s, d, e, err)
 	  // and point the outgoing edges from its predecessor nodes to the
 	  // previously stored node.
 {
-  if ((! i) ? IER(837) : (! (i->carrier)) ? IER(838) : (! (i->receiver)) ? IER(839) : (! e) ? IER(840) : 0)
+  if ((! i) ? IER(844) : (! (i->carrier)) ? IER(845) : (! (i->receiver)) ? IER(846) : (! e) ? IER(847) : 0)
 	 return;
-  if ((! c) ? IER(841) : (! (c->receiver)) ? IER(842) : (i == c) ? IER(843) : s ? 0 : IER(844))
+  if ((! c) ? IER(848) : (! (c->receiver)) ? IER(849) : (i == c) ? IER(850) : s ? 0 : IER(851))
 	 return;
   _cru_record_edge (_cru_scalar_hash (i->carrier), EQUAL_CARRIERS, (void *) i->carrier, &(c->seen_carriers), err);
   if (c->receiver == i->receiver)
@@ -281,7 +281,7 @@ deduplicating_task (source, err)
 	  // stored in the hash table.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! b) ? (! IER(845)) : (a == b->vertex) ? 0 : FAILED(s->orders.v_order.equal, a, b->vertex))
+(*err ? 0 : (! b) ? (! IER(852)) : (a == b->vertex) ? 0 : FAILED(s->orders.v_order.equal, a, b->vertex))
 
   packet_table collisions;    // previous incoming packets
   packet_list incoming;
@@ -298,18 +298,18 @@ deduplicating_task (source, err)
 
   sample = 0;
   collisions = NULL;
-  if ((! source) ? IER(846) : (source->gruntled != PORT_MAGIC) ? IER(847) : 0)
+  if ((! source) ? IER(853) : (source->gruntled != PORT_MAGIC) ? IER(854) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(848) : (r->valid != ROUTER_MAGIC) ? IER(849) : (killed = 0))
+  if ((!(r = source->local)) ? IER(855) : (r->valid != ROUTER_MAGIC) ? IER(856) : (killed = 0))
 	 goto a;
-  if (((d = source->peers)) ? ((r->ro_sig.orders.v_order.equal) ? 0 : IER(850)) : IER(851))
+  if (((d = source->peers)) ? ((r->ro_sig.orders.v_order.equal) ? 0 : IER(857)) : IER(858))
 	 return _cru_abort_status (source, d, err);
   s = &(r->ro_sig);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
-		KILL_SITE(11);
+		KILL_SITE(12);
 		killed = (killed ? 1 : KILLED);
-		if (killed ? 1 : *err ? 1 : (! (n = incoming->receiver)) ? IER(852) : 0)
+		if (killed ? 1 : *err ? 1 : (! (n = incoming->receiver)) ? IER(859) : 0)
 		  goto b;
 		if (! (c = _cru_collision (incoming->hash_value, &collisions, err)))
 		  goto b;
@@ -328,8 +328,8 @@ deduplicating_task (source, err)
 			 graft (incoming, *c, s, &(source->deletions), &(source->disconnections), err);
 			 goto c;
 		  }
-		if (_cru_push_packet (_cru_popped_packet (&incoming, err), p = (*c ? &((*c)->next_packet) : c), err) ? 1 : ! IER(853))
-		  if (*p ? 1 : ! IER(854))
+		if (_cru_push_packet (_cru_popped_packet (&incoming, err), p = (*c ? &((*c)->next_packet) : c), err) ? 1 : ! IER(860))
+		  if (*p ? 1 : ! IER(861))
 			 {
 				_cru_record_edge (_cru_scalar_hash ((*p)->carrier), EQUAL_CARRIERS, (*p)->carrier, &((*p)->seen_carriers), err);
 				continue;
@@ -369,11 +369,11 @@ _cru_deduplicated (g, k, r, err)
   packet_list p;
 
   _cru_disable_killing (k, err);
-  if (*err ? 1 : (! g) ? 1 : (! (b = g->base_node)) ? IER(855) : 0)
+  if (*err ? 1 : (! g) ? 1 : (! (b = g->base_node)) ? IER(862) : 0)
 	 goto a;
-  if ((! r) ? IER(856) : (r->valid != ROUTER_MAGIC) ? IER(857) : 0)
+  if ((! r) ? IER(863) : (r->valid != ROUTER_MAGIC) ? IER(864) : 0)
 	 goto a;
-  if ((! (r->ports)) ? IER(858) : ((h = r->ro_sig.orders.v_order.hash)) ? 0 : IER(859))
+  if ((! (r->ports)) ? IER(865) : ((h = r->ro_sig.orders.v_order.hash)) ? 0 : IER(866))
 	 goto a;
   if (_cru_half_duplex (g, err))
 	 goto b;

@@ -42,10 +42,10 @@ _cru_pod_of (a, err)
   packet_list *d;
   size_t pod_size;
 
-  if (a ? 0 : IER(1285))
+  if (a ? 0 : IER(1292))
 	 return NULL;
   pod_size = a * sizeof (*d);
-  if ((pod_size < a) ? IER(1286) : (pod_size < sizeof (*d)) ? IER(1287) : 0)
+  if ((pod_size < a) ? IER(1293) : (pod_size < sizeof (*d)) ? IER(1294) : 0)
 	 return NULL;
   if ((d = (packet_list *) _cru_malloc (pod_size)) ? 0 : RAISE(ENOMEM))
 	 return NULL;
@@ -79,7 +79,7 @@ _cru_free_pod (p, err)
 {
   unsigned i;
 
-  if ((! p) ? 1 : (! (p->pod)) ? IER(1288) : 0)
+  if ((! p) ? 1 : (! (p->pod)) ? IER(1295) : 0)
 	 return;
   for (i = 0; i < p->arity; i++)
 	 _cru_free_packets (p->pod[i], NO_VERTEX_DESTRUCTOR, err);
@@ -116,7 +116,7 @@ _cru_recycled (s, i, err)
 {
   packet_list r;
 
-  if ((! s) ? 1 : (! (s->pod)) ? IER(1289) : (i >= s->arity))
+  if ((! s) ? 1 : (! (s->pod)) ? IER(1296) : (i >= s->arity))
 	 return NULL;
   r = s->pod[i];
   s->pod[i] = NULL;

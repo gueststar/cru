@@ -52,15 +52,15 @@ _cru_open_getset (err)
 
 	  // Initialize static storage.
 {
-  if (pthread_key_create (&edge_storage, NULL) ? IER(983) : 0)
+  if (pthread_key_create (&edge_storage, NULL) ? IER(990) : 0)
 	 return 0;
-  if (pthread_key_create (&killed_storage, NULL) ? IER(984) : 0)
+  if (pthread_key_create (&killed_storage, NULL) ? IER(991) : 0)
 	 goto a;
-  if (pthread_key_create (&destructors_storage, NULL) ? IER(985) : 0)
+  if (pthread_key_create (&destructors_storage, NULL) ? IER(992) : 0)
 	 goto b;
-  if (pthread_key_create (&edge_map_storage, NULL) ? IER(986) : 0)
+  if (pthread_key_create (&edge_map_storage, NULL) ? IER(993) : 0)
 	 goto c;
-  if (pthread_key_create (&context_storage, NULL) ? IER(987) : 0)
+  if (pthread_key_create (&context_storage, NULL) ? IER(994) : 0)
 	 goto d;
   return 1;
  d: pthread_key_delete (edge_map_storage);
@@ -83,15 +83,15 @@ release_pthread_resources (err)
 	  // Release pthread related resources.
 {
   if (pthread_key_delete (context_storage))
-	 IER(988);
+	 IER(995);
   if (pthread_key_delete (edge_map_storage))
-	 IER(989);
+	 IER(996);
   if (pthread_key_delete (edge_storage))
-	 IER(990);
+	 IER(997);
   if (pthread_key_delete (killed_storage))
-	 IER(991);
+	 IER(998);
   if (pthread_key_delete (destructors_storage))
-	 IER(992);
+	 IER(999);
 }
 
 
@@ -130,7 +130,7 @@ _cru_set_context (c, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (context_storage, (void *) c) ? IER(993) : 0);
+  return (pthread_setspecific (context_storage, (void *) c) ? IER(1000) : 0);
 }
 
 
@@ -146,7 +146,7 @@ _cru_set_edges (edge, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(994) : 0);
+  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(1001) : 0);
 }
 
 
@@ -163,7 +163,7 @@ _cru_set_edge_maps (pair, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(995) : 0);
+  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(1002) : 0);
 }
 
 
@@ -183,7 +183,7 @@ _cru_set_destructors (destructors, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(996) : 0);
+  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(1003) : 0);
 }
 
 
@@ -203,7 +203,7 @@ _cru_set_kill_switch (killed, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(997) : 0);
+  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(1004) : 0);
 }
 
 

@@ -31,6 +31,10 @@ extern "C"
 extern void *
 _cru_node_counting_task (port s, int *err);
 
+// count the terminal vertices in a graph co-operatively with other workers
+extern void *
+_cru_terminus_counting_task (port s, int *err);
+
 // count the edges in a graph co-operatively with other workers
 extern void *
 _cru_edge_counting_task (port s, int *err);

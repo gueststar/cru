@@ -60,7 +60,7 @@ _cru_inferred_builder (b, v, err)
   if (! _cru_full_order (&(b_copy->bu_sig.orders.e_order), err))
 	 goto a;
   _cru_allow_undefined_order (&(b_copy->bu_sig.orders.e_order), err);
-  if (b_copy->bu_sig.orders.v_order.equal ? 0 : IER(1036))
+  if (b_copy->bu_sig.orders.v_order.equal ? 0 : IER(1043))
 	 goto a;
   if (FAILED(b_copy->bu_sig.orders.v_order.equal, v, v) ? RAISE(CRU_INCVEL) : 0)
 	 goto a;
@@ -246,7 +246,7 @@ _cru_inferred_splitter (x, s, err)
 {
   cru_splitter x_copy;
 
-  if ((! _cru_filled_sig (s, err)) ? 1 : (! s) ? IER(1037) : ! (x_copy = _cru_splitter_copy (x, err)))
+  if ((! _cru_filled_sig (s, err)) ? 1 : (! s) ? IER(1044) : ! (x_copy = _cru_splitter_copy (x, err)))
 	 return NULL;
   ALLOW (x_copy->fissile, (cru_bpred) _cru_true_bpred);
   if (! (_cru_filled_map (&(x_copy->sp_prop.vertex), err) ? _cru_filled_prop (&(x_copy->sp_prop), err) : 0))
@@ -316,7 +316,7 @@ inferred_merger (c, s, err)
 {
   cru_merger c_copy;
 
-  if ((! s) ? IER(1038) : ! (c_copy = _cru_merger_copy (c, err)))
+  if ((! s) ? IER(1045) : ! (c_copy = _cru_merger_copy (c, err)))
 	 return NULL;
   if (_cru_empty_prop (&(c_copy->me_kernel.v_op)))                                // if vertices are not to be fused
 	 {
@@ -376,7 +376,7 @@ _cru_inferred_merger (c, s, err)
 	  // as above but with extra validation not applicable to
 	  // deduplicators
 {
-  if ((! c) ? IER(1039) : 0)
+  if ((! c) ? IER(1046) : 0)
 	 return NULL;
   if ((_cru_empty_prop (&(c->me_kernel.v_op)) == _cru_empty_classifier (&(c->me_classifier))) ? 0 : RAISE(CRU_INCMRG))
 	 return NULL;
@@ -403,7 +403,7 @@ inferred_sig (s, o, k, err)
 {
   struct cru_sig_s n;
 
-  if ((! s) ? IER(1040) : (! o) ? IER(1041) : (! k) ? IER(1042) : 0)
+  if ((! s) ? IER(1047) : (! o) ? IER(1048) : (! k) ? IER(1049) : 0)
 	 return 0;
   memset (&n, 0, sizeof (n));
   memcpy (&(n.destructors), &(s->destructors), sizeof (n.destructors));
@@ -533,7 +533,7 @@ _cru_inferred_filter (f, s, err)
 {
   cru_filter f_copy;
 
-  if ((! s) ? IER(1043) : ! (f_copy = _cru_filter_copy (f, err)))
+  if ((! s) ? IER(1050) : ! (f_copy = _cru_filter_copy (f, err)))
 	 return NULL;
   if (f_copy->thinner ? _cru_empty_prop (&(f_copy->fi_kernel.v_op)) : 0)
 	 ALLOW (f_copy->fi_kernel.v_op.vertex.map, (cru_top) _cru_false_top);
@@ -583,7 +583,7 @@ _cru_deduplicator (s, err)
 {
   struct cru_merger_s c;
 
-  if (*err ? 1 : s ? 0 : IER(1044))
+  if (*err ? 1 : s ? 0 : IER(1051))
 	 goto a;
   memset (&c, 0, sizeof (c));
   memcpy (&(c.me_orders), &(s->orders), sizeof (c.me_orders));
@@ -623,7 +623,7 @@ _cru_inferred_postponer (p, s, err)
 {
   cru_postponer p_copy;
 
-  if ((! s) ? IER(1045) : ! (p_copy = _cru_postponer_copy (p, err)))
+  if ((! s) ? IER(1052) : ! (p_copy = _cru_postponer_copy (p, err)))
 	 return NULL;
   if (! (s->destructors.e_free))
 	 ALLOW (p_copy->postponement.bop, (cru_bop) _cru_identity_bop);
@@ -664,7 +664,7 @@ _cru_inferred_fabricator (a, s, err)
 {
   cru_fabricator a_copy;
 
-  if ((! s) ? IER(1046) : (! a) ? IER(1047) : ! (a_copy = _cru_fabricator_copy (a, err)))
+  if ((! s) ? IER(1053) : (! a) ? IER(1054) : ! (a_copy = _cru_fabricator_copy (a, err)))
 	 return NULL;
   if (a_copy->e_fab ? (! (a_copy->fa_sig.destructors.e_free)) : 0)
 	 {

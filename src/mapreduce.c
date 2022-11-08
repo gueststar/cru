@@ -58,9 +58,9 @@ visit (n, p, result, err)
   void *right;
   cru_destructor d;
 
-  if (*err ? 1 : (! p) ? IER(1098) : (! result) ? IER(1099) : p->vertex.reduction ? 0 : IER(1100))
+  if (*err ? 1 : (! p) ? IER(1105) : (! result) ? IER(1106) : p->vertex.reduction ? 0 : IER(1107))
 	 return;
-  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1101) : 0)
+  if (((d = p->vertex.m_free) != p->vertex.r_free) ? IER(1108) : 0)
 	 return;
   if (*result)
 	 goto a;
@@ -106,22 +106,22 @@ _cru_mapreducing_task (source, err)
   killed = 0;
   seen = NULL;
   result = NULL;
-  if ((! source) ? IER(1102) : (source->gruntled != PORT_MAGIC) ? IER(1103) : 0)
+  if ((! source) ? IER(1109) : (source->gruntled != PORT_MAGIC) ? IER(1110) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1104) : (r->valid != ROUTER_MAGIC) ? IER(1105) : 0)
+  if ((! (r = source->local)) ? IER(1111) : (r->valid != ROUTER_MAGIC) ? IER(1112) : 0)
 	 return NULL;
-  if ((!(destinations = source->peers)) ? IER(1106) : (r->tag != MAP) ? IER(1107) : 0)
+  if ((!(destinations = source->peers)) ? IER(1113) : (r->tag != MAP) ? IER(1114) : 0)
 	 {
 		_cru_abort (source, destinations, err);
 		goto a;
 	 }
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, destinations, err));)
 	 {
-		KILL_SITE(18);
+		KILL_SITE(19);
 		killed = (killed ? 1 : KILLED);
 		if (*err ? 1 : killed)
 		  goto b;
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1108))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1115))
 		  goto b;
 		_cru_scattered (r->mapreducer.ma_zone.backwards ? n->edges_in : n->edges_out, destinations, err);
 		visit (n, &(r->mapreducer.ma_prop), &result, err);
@@ -131,7 +131,7 @@ _cru_mapreducing_task (source, err)
 	 goto a;
   if (r->mapreducer.ma_prop.vertex.r_free == r->mapreducer.ma_prop.vertex.m_free)
 	 _cru_free_maybe (result, r->mapreducer.ma_prop.vertex.r_free, err);
-  else if (IER(1109))
+  else if (IER(1116))
 	 _cru_free_maybe (result, NO_DESTRUCTOR, err);
   result = NULL;
  a: if (*err)

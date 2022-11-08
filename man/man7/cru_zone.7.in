@@ -45,7 +45,7 @@ field is ignored.
 Zones can be oriented backwards or forward. If the
 .BR backwards
 field is non-zero, then the zone is oriented backwards.  Otherwise, it
-is oriented forwards.  A backwards oriented zone consists of all
+is oriented forward.  A backwards oriented zone consists of all
 vertices from which the initial vertex is reachable, whereas a forward
 oriented zone consists of all vertices reachable from the initial
 vertex.

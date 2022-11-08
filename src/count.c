@@ -91,6 +91,57 @@ _cru_node_counting_task (s, err)
 
 
 
+void *
+_cru_terminus_counting_task (s, err)
+	  port s;
+	  int *err;
+
+	  // Count the terminal vertices in a graph co-operatively with other workers.
+{
+  packet_list incoming;       // incoming packets
+  uintptr_t count;
+  unsigned sample;
+  node_set seen;              // previously received packet payloads
+  packet_pod d;               // outgoing packets
+  node_list n;
+  int killed;
+  router r;
+
+  killed = 0;
+  count = 0;
+  sample = 0;
+  seen = NULL;
+  if ((! s) ? IER(697) : (s->gruntled != PORT_MAGIC) ? IER(698) : 0)
+	 return NULL;
+  if ((! (r = s->local)) ? IER(699) : (r->valid != ROUTER_MAGIC) ? IER(700) : 0)
+	 return NULL;
+  if (((d = s->peers)) ? 0 : IER(701))
+	 return _cru_abort (s, d, err);
+  for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
+	 {
+		KILL_SITE(7);
+		killed = (killed ? 1 : KILLED);
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(702))
+		  goto a;
+		if (killed ? 1 : *err)
+		  goto a;
+		_cru_scatter_out (n, d, err);
+		if (n->edges_out ? 0 : ! ++count)
+		  IER(703);
+	 a: _cru_nack (_cru_popped_packet (&incoming, err), err);
+	 }
+  _cru_forget_members (seen);
+  _cru_nack (incoming, err);
+  return (*err ? NULL : (void *) count);
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -115,24 +166,24 @@ _cru_edge_counting_task (s, err)
   sample = 0;
   killed = 0;
   seen = NULL;
-  if ((! s) ? IER(697) : (s->gruntled != PORT_MAGIC) ? IER(698) : 0)
+  if ((! s) ? IER(704) : (s->gruntled != PORT_MAGIC) ? IER(705) : 0)
 	 return NULL;
-  if ((! (r = s->local)) ? IER(699) : (r->valid != ROUTER_MAGIC) ? IER(700) : 0)
+  if ((! (r = s->local)) ? IER(706) : (r->valid != ROUTER_MAGIC) ? IER(707) : 0)
 	 return NULL;
-  if (((d = s->peers)) ? 0 : IER(701))
+  if (((d = s->peers)) ? 0 : IER(708))
 	 return _cru_abort (s, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
-		KILL_SITE(7);
+		KILL_SITE(8);
 		killed = (killed ? 1 : KILLED);
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(702))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(709))
 		  goto a;
 		if (killed ? 1 : *err)
 		  goto a;
 		_cru_scatter_out (n, d, err);
 		for (e = n->edges_out; e; e = e->next_edge)
 		  if (! ++count)
-			 IER(703);
+			 IER(710);
 	 a: _cru_nack (_cru_popped_packet (&incoming, err), err);
 	 }
   _cru_forget_members (seen);

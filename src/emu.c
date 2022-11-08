@@ -43,7 +43,7 @@ _cru_multirecord (e, l, t, err)
   multiset_table_bin *p;
   int ux, ut;
 
-  if ((! t) ? IER(886) : e ? 0 : IER(887))
+  if ((! t) ? IER(893) : e ? 0 : IER(894))
 	 return;
   for (p = t; (! *p) ? 0 : FAILED(e, l, (*p)->edge_label); p = &((*p)->other_edges));
   if (*err ? 1 : *p ? 1 : (*p = (multiset_table_bin) _cru_malloc (sizeof (**p))) ? 0 : RAISE(ENOMEM))
@@ -77,7 +77,7 @@ _cru_multimerge (t, q, e, err)
   uintptr_t m;
   int ux, ut;
 
-  if ((! t) ? 1 : (! q) ? IER(888) : e ? 0 : IER(889))
+  if ((! t) ? 1 : (! q) ? IER(895) : e ? 0 : IER(896))
 	 return;
   while (*q ? (! *err) : 0)
 	 {
@@ -87,7 +87,7 @@ _cru_multimerge (t, q, e, err)
 		if (*p)
 		  {
 			 m = (*p)->multiplicity + (*q)->multiplicity + 1;
-			 if ((m <= (*p)->multiplicity) ? IER(890) : (m <= (*q)->multiplicity) ? IER(891) : 0)
+			 if ((m <= (*p)->multiplicity) ? IER(897) : (m <= (*q)->multiplicity) ? IER(898) : 0)
 				break;
 			 (*p)->multiplicity = m;
 			 *q = (o = *q)->other_edges;
@@ -118,7 +118,7 @@ _cru_multipoint (t, n, err)
 	  // Point the edges in a multiset table bin to a node n.
 {
   for (; t; t = t->other_edges)
-	 if (t->edge ? 1 : ! IER(892))
+	 if (t->edge ? 1 : ! IER(899))
 		t->edge->remote.node = n;
 }
 
@@ -180,7 +180,7 @@ _cru_set_membership_nj (node, seen, err)
 {
   node_set_nj p;
 
-  if ((! seen) ? IER(893) : (p = (node_set_nj) _cru_malloc (sizeof (*p))) ? 0 : RAISE(ENOMEM))
+  if ((! seen) ? IER(900) : (p = (node_set_nj) _cru_malloc (sizeof (*p))) ? 0 : RAISE(ENOMEM))
 	 return 0;
   memset (p, 0, sizeof (*p));
   p->element = node;
@@ -234,7 +234,7 @@ _cru_test_and_set_membership_nj (node, seen, err)
 {
   node_set_nj p;
 
-  if (seen ? 0 : IER(894))
+  if (seen ? 0 : IER(901))
 	 return 0;
   for (p = *seen; p; p = p->subset)
 	 if (p->element == node)
@@ -336,7 +336,7 @@ _cru_associate_nj (m, v, h, err)
 {
   vertex_map_nj *o;
 
-  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(895) : m ? 0 : IER(896))
+  if ((! h) ? 1 : (h->classed != CLASS_MAGIC) ? IER(902) : m ? 0 : IER(903))
 	 goto a;
   for (o = m; *o; o = &((*o)->antirefinement))
 	 if ((*o)->preimage == v)
