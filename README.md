@@ -231,6 +231,9 @@ values derived from the vertices.
 * [`cru_vertex_count`](https://gueststar.github.io/cru_docs/cru_vertex_count.html)
   -- return the number of vertices in a graph
 
+* [`cru_terminus_count`](https://gueststar.github.io/cru_docs/cru_terminus_count.html)
+  -- return the number of terminal vertices in a graph
+
 * [`cru_edge_count`](https://gueststar.github.io/cru_docs/cru_edge_count.html)
   -- return the number of edges in a graph
 
