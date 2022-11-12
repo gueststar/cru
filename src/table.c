@@ -300,7 +300,7 @@ _cru_rallied (h, r, e, err)
 void
 _cru_record_edge (h, e, l, t, err)
 	  uintptr_t h;                       // hash value
-	  cru_bpred e;                    // edge label equality
+	  cru_bpred e;                       // edge label equality
 	  void *l;                           // edge label
 	  multiset_table *t;
 	  int *err;

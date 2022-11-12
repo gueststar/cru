@@ -147,7 +147,7 @@ NULL.
 .SH EXAMPLE
 An example of a situation in which the
 .BR in_fold.map
-field need not be specified is an inducton over a graph
+field need not be specified is an induction over a graph
 .I g
 built with no edges terminating on the initial vertex. Specifying the structure
 .nf

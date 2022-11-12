@@ -42,7 +42,7 @@ On successful completion, the function returns a
 .BR cru_partition
 representing a partition on the vertices in the graph
 .I g,
-which is set of classes of vertices such that each vertex
+which is a set of classes of vertices such that each vertex
 belongs to exactly one class. The partition is represented as a
 pointer that may be used as a parameter to other
 .BR cru

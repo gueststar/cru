@@ -72,7 +72,7 @@ and the previous
 result as its right, both of which are discarded.
 The result overall is that of the
 .BR vacuous_case
-if the set of operands is empty, or last
+if the set of operands is empty, or the last
 .BR reduction
 evaluated otherwise.
 .P
