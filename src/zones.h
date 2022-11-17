@@ -37,10 +37,6 @@ _cru_initial_node (cru_graph g, cru_kill_switch k, router r, int *err);
 extern int
 _cru_visitable (node_list n, port s, int *unvisitable, int *err);
 
-// return non-zero if all nodes adjacent to a node via outgoing edges have been visited.
-extern int
-_cru_retirable (node_list n, port s, int *unvisitable, int *err);
-
 #ifdef __cplusplus
 }
 #endif

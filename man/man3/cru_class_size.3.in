@@ -45,7 +45,7 @@ NULL
 pointer, hence not a valid class.
 .SH NOTES
 This function is a very fast constant time operation. Invoking it
-repeatedly may as efficient as storing and retrieving its
+repeatedly may be as efficient as storing and retrieving its
 past results.
 .SH FILES
 .I @INCDIR@/cru.h

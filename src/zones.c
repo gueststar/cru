@@ -347,21 +347,3 @@ _cru_visitable (n, s, unvisitable, err)
 	 return 1;
   return visited (((! (w->remote_first)) == ! (w->zone.backwards)) ? n->edges_in : n->edges_out, s, unvisitable, err);
 }
-
-
-
-
-
-
-int
-_cru_retirable (n, s, unvisitable, err)
-	  node_list n;
-	  port s;
-	  int *unvisitable;
-	  int *err;
-
-	  // Return non-zero if all reachable nodes adjacent to the given
-	  // node via outgoing edges have been visited.
-{
-  return ((n ? 0 : IER(1777)) ? 0 : visited (n->edges_out, s, unvisitable, err));
-}
