@@ -571,7 +571,7 @@ fearful odds*. If you're waiting to learn it in school or from a
 mentor you'll be waiting a long time. Your teachers and managers, now
 younger than the last generation of students to cut their teeth on C,
 will only repeat the same simple story of C's obsolescence or niche
-status that was told to them. That being said, don't send me any code
+status that was told to them.[^2] That being said, don't send me any code
 changes that make any of the tests fail unless you think you've found
 a pre-existing bug. I'll be most attentive to well written, well
 tested, and well documented contributions. If writing documentation
@@ -605,3 +605,8 @@ things most people's favorite languages can't.
   large-scale distributed graph processing. ACM Comput. Surv. 48, 2,
   Article 25 (October 2015), 39 pages. DOI:
   http://dx.doi.org/10.1145/2818185
+[^2]: Stephen Kell Some were meant for C. Onward! 2017:
+  Proceedings of the 2017 ACM SIGPLAN International Symposium on New
+  Ideas, New Paradigms, and Reflections on Programming and Software
+  (October 2017), Pages 229–245. DOI:
+  https://doi.org/10.1145/3133850.3133867
