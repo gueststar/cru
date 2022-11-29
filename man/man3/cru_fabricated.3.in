@@ -36,7 +36,10 @@ specification
 .I f
 \~following the usual
 .BR cru_fabricator
-calling conventions.
+calling conventions. If
+.I f
+is NULL, then a zero-filled fabricator is inferred, causing the graph
+to be copied. See the NOTES section for details.
 .\"killsw
 In this case, no graph is fabricated.
 .\"lanes
@@ -119,7 +122,7 @@ whose vertices or edge labels are dynamically allocated. The copy
 shares vertices and edge labels with the original but does not cause
 them to be reclaimed when the copy is reclaimed. This method of
 operation is valid but requires the application to reclaim the copy
-prior to reclaiming the original.
+prior to reclaiming or destructively modifying the original.
 .SH FILES
 .I @INCDIR@/cru.h
 .P

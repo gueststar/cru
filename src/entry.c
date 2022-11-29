@@ -257,12 +257,15 @@ cru_fabricated (g, f, k, lanes, err)
 
 	  // Form an isomorphic graph to a given graph.
 {
+  struct cru_fabricator_s a = {0};
   cru_graph h;
   int ignored;
 
   h = NULL;
   API_ENTRY;
-  if ((! f) ? 1 : (! g) ? 1 : _cru_bad (g, err) ? 1 : ! (f = _cru_inferred_fabricator (f, &(g->g_sig), err)))
+  if (! f)
+	 f = &a;
+  if ((! g) ? 1 : _cru_bad (g, err) ? 1 : ! (f = _cru_inferred_fabricator (f, &(g->g_sig), err)))
 	 goto x;
   h = _cru_fabricated (g, k, _cru_fabricating_router (f, lanes ? lanes : NPROC ? NPROC : 1, err), err);
   _cru_free_fabricator (f);
