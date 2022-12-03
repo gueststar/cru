@@ -365,6 +365,28 @@ cru_stretch (label_in, new_vertex, label_out, err)
 
 
 
+int
+cru_singleton (g, err)
+	  cru_graph g;
+	  int *err;
+
+	  // Return non-zero if the graph g contains exactly one vertex.
+{
+  int ignored;
+
+  CONTROL_ENTRY;
+  if ((! g) ? 1 : _cru_bad (g, err))
+	 goto x;
+  if (g->nodes ? (! (g->nodes->next_node)) : 0)
+	 return 1;
+ x: return 0;
+}
+
+
+
+
+
+
 
 uintptr_t
 cru_vertex_count (g, lanes, err)

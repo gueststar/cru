@@ -1,0 +1,72 @@
+.TH CRU_SINGLETON 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_singleton \- detect a graph of exactly one vertex
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+int
+.BR cru_singleton
+(
+.BR cru_graph
+.I g
+,
+int *
+.I err
+)
+.SH DESCRIPTION
+This function detects whether the graph
+.I g
+has exactly one vertex.
+For memory management purposes, the graph is not consumed or
+modified.
+.SH RETURN VALUE
+On successful completion, this function returns
+zero if the graph
+.I g
+has no vertices or more than one vertex. If
+.I g
+has exactly one vertex, a non-zero value is returned.
+.SH ERRORS
+.\"errs
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.SH EXAMPLE
+For a graph
+.I g,
+and integers
+.I s,
+.I t,
+and
+.I err,
+this code fragment demonstrates equivalent ways of
+detecting singleton graphs.
+.nf
+   s = cru_singleton (g, &err);
+   t = (cru_vertex_count (g, CONCURRENTLY, &err) == 1);
+   if ((! s) == ! t)
+      printf ("results are as expected\n");
+   else
+      printf ("an error occurred\n");
+.fi
+The
+.BR cru_singleton
+function is faster and more efficient for this purpose than counting
+the vertices.
+.SH FILES
+.I @INCDIR@/cru.h
+.P
+.I @INCDIR@/data_types.h
+.P
+.I @INCDIR@/error_codes.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

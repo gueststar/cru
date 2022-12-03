@@ -228,6 +228,9 @@ results is applied repeatedly to boil them down to a single value. A
 mapreduce might be used for example to compute a summation of numeric
 values derived from the vertices.
 
+* [`cru_singleton`](https://gueststar.github.io/cru_docs/cru_singleton.html)
+  -- detect whether a graph has exactly one vertex
+
 * [`cru_vertex_count`](https://gueststar.github.io/cru_docs/cru_vertex_count.html)
   -- return the number of vertices in a graph
 

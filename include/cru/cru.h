@@ -8,17 +8,20 @@
 #include "data_types.h"
 
 // valid values for the now argument to cru_free_partition
-#define NOW 1
-#define LATER 0
+#define NOW ((int) 1)
+#define LATER ((int) 0)
 
 // passed as the lanes parameter requests multi-threaded operation with one thread per core
-#define CONCURRENTLY 0
+#define CONCURRENTLY ((unsigned) 0)
 
 // passed as the lanes parameter requests single-threaded operation
-#define SEQUENTIALLY 1
+#define SEQUENTIALLY ((unsigned) 1)
 
 // passed as the kill switch parameter disables killing the job
-#define UNKILLABLE NULL
+#define UNKILLABLE ((cru_kill_switch) NULL)
+
+// passed to cru_fabricated requests a shallow copy of a graph
+#define COPYING_FABRICATOR ((cru_fabricator) NULL)
 
 #ifdef __cplusplus
 extern "C"
@@ -58,6 +61,10 @@ extern void
 cru_stretch (cru_edge label_in, cru_vertex new_vertex, cru_edge label_out, int *err);
 
 // --------------- analysis --------------------------------------------------------------------------------
+
+// return non-zero if the graph g contains exactly one vertex
+extern int
+cru_singleton (cru_graph g, int *err);
 
 // return the number of vertices in a graph
 extern uintptr_t
