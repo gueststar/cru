@@ -259,7 +259,7 @@ quadruples. Fields of types not listed above have descriptive
 identifiers following no standard convention.
 .P
 Each top level data type corresponds to a similarly named API function
-having a parameter of that type. They can categorized as pertaining to
+having a parameter of that type. They can be categorized as pertaining to
 graph building, analysis, classification, contraction, and surgery.
 For building, these three data types specify ways of building a graph
 from scratch, creating a modified copy of an existing graph, and
