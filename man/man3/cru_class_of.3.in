@@ -35,7 +35,7 @@ a representation of the class containing the vertex
 as a
 .BR cru_class.
 The return value is a pointer to an opaque type, but applications can
-rely on the condition that any two vertices belong to the same
+rely on the condition that any two vertices belong to the same class
 whenever the results obtained for them by this function are equal, and
 only then. Although the return value is a pointer, the application
 must not attempt to free it.
