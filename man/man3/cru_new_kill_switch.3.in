@@ -1,6 +1,6 @@
 .TH CRU_NEW_KILL_SWITCH 3 @DATE_VERSION_TITLE@
 .SH NAME
-cru_free_kill_switch \- free the memory used by a kill switch
+cru_new_kill_switch \- allocate memory for a kill switch
 .SH SYNOPSIS
 #include <cru/cru.h>
 .sp
