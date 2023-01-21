@@ -39,7 +39,7 @@ _cru_open_cthread (int *err);
 
 // release pthread resources
 extern void
-_cru_close_cthread ();
+_cru_close_cthread (void);
 
 // --------------- pthread wrappers with specialized attributes and error codes ----------------------------
 

@@ -60,6 +60,20 @@ cru_connect (cru_edge label, cru_vertex terminus, int *err);
 extern void
 cru_stretch (cru_edge label_in, cru_vertex new_vertex, cru_edge label_out, int *err);
 
+// --------------- attribution -----------------------------------------------------------------------------
+
+// associate an arbitrary attribute with a graph
+extern void
+cru_set (cru_graph g, void *s, int *err);
+
+// retrieve an attribute previously associated with the current graph
+extern void *
+cru_get (void);
+
+// return non-zero if the current job has been killed
+extern int
+cru_killed (void);
+
 // --------------- analysis --------------------------------------------------------------------------------
 
 // return non-zero if the graph g contains exactly one vertex

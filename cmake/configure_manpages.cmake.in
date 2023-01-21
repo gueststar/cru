@@ -198,3 +198,9 @@ foreach(MAN_FILE IN LISTS MAN_FILE_LIST)
 	 endforeach ()
   endif ()
 endforeach ()
+
+if (@HTML_DOCS_ON@)
+  execute_process(
+	 WORKING_DIRECTORY @CMAKE_CURRENT_BINARY_DIR@
+	 COMMAND ${CMAKE_COMMAND} -E copy html/${CMAKE_PROJECT_NAME}.html html/index.html)
+endif ()

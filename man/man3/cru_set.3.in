@@ -1,0 +1,82 @@
+.TH CRU_SET 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_set \- associated a retrievable attribute with a graph
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+void
+.BR cru_set
+(
+.br
+.BR cru_graph
+.I g
+,
+.br
+void *
+.I s
+,
+.br
+int *
+.I err
+)
+.SH DESCRIPTION
+Given a non-empty graph
+.I g
+and pointer-sized value
+.I s,
+this function stores
+.I s
+in such a way that it can be retrieved by any callback function
+invoking
+.BR cru_get
+during any subsequent operation on
+.I g
+by other
+.BR cru
+library functions. This capability serves as a way of passing
+additional parameters to user-defined predicates and operators called
+by
+.BR cru
+library functions so that they need not depend entirely on their
+operands in the graph. The attribute
+.I s
+may be a scalar value or a pointer to data of any user-defined
+type.
+.P
+If
+.I s
+is a pointer to the heap, its memory is not reclaimed by freeing the
+graph
+.I g.
+The application must manage the memory itself.
+.SH RETURN VALUE
+none
+.SH ERRORS
+.\"errs
+.TP
+.BR CRU_NULGPH
+The parameter
+.I g
+refers to an empty graph.
+.TP
+.BR CRU_BADGPH
+The parameter
+.I g
+refers to an invalid or corrupted graph.
+.SH EXAMPLE
+See
+.BR cru_get.
+.SH NOTES
+See
+.BR cru_get.
+.SH FILES
+.I @INCDIR@/cru.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

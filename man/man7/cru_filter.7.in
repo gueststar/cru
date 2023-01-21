@@ -248,6 +248,35 @@ comparison of arbitrarily selected members of the classes. This
 condition is not enforceable by
 .BR cru
 but failure to meet it may lead to non-deterministic results.
+.SH EXAMPLES
+This function
+.nf
+   uintptr_t
+   even (void *l, uintptr_t vertex, void *r, int *err)
+   {
+      return ! (vertex & 1);
+   }
+.fi
+in this
+.BR cru_filter
+.nf
+   struct cru_filter_s f = {
+      .fi_kernel = {
+         .v_op = {
+            .vertex = {
+               .map = (cru_top) even}}}};
+.fi
+calls for the retention of even numbered vertices in a graph of
+numerical vertices and the removal of all others, whereas this
+.BR cru_filter
+.nf
+   struct cru_filter_s f = {
+      .fi_kernel = {
+         .e_op = {
+            .map = (cru_top) even}}};
+.fi
+specifies the remove of odd-numbered edges in a graph whose
+edges are numerically labeled.
 .SH NOTES
 It is not impossible for vertices outside of a zone of the graph
 restricted by the

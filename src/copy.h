@@ -36,7 +36,7 @@ extern int
 _cru_open_copy (int *err);
 
 extern void
-_cru_close_copy ();
+_cru_close_copy (void);
 
 // --------------- memory management -----------------------------------------------------------------------
 

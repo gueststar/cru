@@ -42,6 +42,7 @@ struct router_s
   int killed;                            // set to non-zero when a job should be stopped prematurely
   int ro_status;                         // set to an error status returned by user code or an internal error if detected
   int quiescent;                         // non-zero when no progress is possible
+  void *ro_store;                        // user defined storage
   router_tag tag;                        // discriminates the union
   union
   {
@@ -145,7 +146,11 @@ _cru_building_router (cru_builder b, task t, unsigned lanes, int *err);
 extern router
 _cru_crossing_router (cru_crosser c, task t, unsigned lanes, int *err);
 
-// --------------- reclamation -----------------------------------------------------------------------------
+// --------------- memory management -----------------------------------------------------------------------
+
+// store the user-defined storage of a graph in a router
+extern router
+_cru_stored (cru_graph g, router r, int *err);
 
 // make a shared copy of a router
 extern router

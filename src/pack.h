@@ -65,7 +65,7 @@ _cru_open_packets (int *err);
 
 // release pthread resources
 extern void
-_cru_close_packets ();
+_cru_close_packets (void);
 
 // --------------- memory management -----------------------------------------------------------------------
 

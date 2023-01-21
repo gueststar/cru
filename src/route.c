@@ -23,6 +23,7 @@
 #include "cthread.h"
 #include "edges.h"
 #include "errs.h"
+#include "graph.h"
 #include "nodes.h"
 #include "launch.h"
 #include "pack.h"
@@ -63,7 +64,7 @@ pointer_array_size (l, err)
   size_t size;
   void *pointer;
 
-  if (((size = (l * sizeof (pointer))) < l) ? IER(1426) : (size < sizeof (pointer)) ? IER(1427) : 0)
+  if (((size = (l * sizeof (pointer))) < l) ? IER(1440) : (size < sizeof (pointer)) ? IER(1441) : 0)
 	 return 0;
   return size;
 }
@@ -82,7 +83,7 @@ thread_id_array_size (l, err)
   size_t size;
   pthread_t thread;
 
-  if (((size = (l * sizeof (thread))) < l) ? IER(1428) : (size < sizeof (thread)) ? IER(1429) : 0)
+  if (((size = (l * sizeof (thread))) < l) ? IER(1442) : (size < sizeof (thread)) ? IER(1443) : 0)
 	 return 0;
   return size;
 }
@@ -127,7 +128,7 @@ router_of (b, w, m, c, f, y, i, x, n, p, e, a, t, s, lanes, err)
 	 lanes = THREAD_LIMIT;
   port_size = pointer_array_size (lanes, err);
   thread_size = thread_id_array_size (lanes, err);
-  if (*err ? 1 : (! lanes) ? IER(1430) : 0)
+  if (*err ? 1 : (! lanes) ? IER(1444) : 0)
 	 goto a;
   if ((r = (router) _cru_malloc (sizeof (*r))) ? 0 : RAISE(ENOMEM))
 	 goto a;
@@ -145,29 +146,29 @@ router_of (b, w, m, c, f, y, i, x, n, p, e, a, t, s, lanes, err)
   if ((u = ((r->ports = (port *) _cru_malloc (port_size)) ? 0 : RAISE(ENOMEM))))
 	 goto d;
   memset (r->ports, 0, port_size);
-  if ((f ? (r->tag = FIL) : 0) ? (u++ ? IER(1431) : ! memcpy (&(r->filter), f, sizeof (r->filter))) : 0)
+  if ((f ? (r->tag = FIL) : 0) ? (u++ ? IER(1445) : ! memcpy (&(r->filter), f, sizeof (r->filter))) : 0)
 	 goto d;
-  if ((w ? (r->tag = MUT) : 0) ? (u++ ? IER(1432) : ! memcpy (&(r->mutator), w, sizeof (r->mutator))) : 0)
+  if ((w ? (r->tag = MUT) : 0) ? (u++ ? IER(1446) : ! memcpy (&(r->mutator), w, sizeof (r->mutator))) : 0)
 	 goto d;
-  if ((i ? (r->tag = IND) : 0) ? (u++ ? IER(1433) : ! memcpy (&(r->inducer), i, sizeof (r->inducer))) : 0)
+  if ((i ? (r->tag = IND) : 0) ? (u++ ? IER(1447) : ! memcpy (&(r->inducer), i, sizeof (r->inducer))) : 0)
 	 goto d;
-  if ((b ? (r->tag = BUI) : 0) ? (u++ ? IER(1434) : ! memcpy (&(r->builder), b, sizeof (r->builder))) : 0)
+  if ((b ? (r->tag = BUI) : 0) ? (u++ ? IER(1448) : ! memcpy (&(r->builder), b, sizeof (r->builder))) : 0)
 	 goto d;
-  if ((e ? (r->tag = CRO) : 0) ? (u++ ? IER(1435) : ! memcpy (&(r->crosser), e, sizeof (r->crosser))) : 0)
+  if ((e ? (r->tag = CRO) : 0) ? (u++ ? IER(1449) : ! memcpy (&(r->crosser), e, sizeof (r->crosser))) : 0)
 	 goto d;
-  if ((x ? (r->tag = EXT) : 0) ? (u++ ? IER(1436) : ! memcpy (&(r->stretcher), x, sizeof (r->stretcher))) : 0)
+  if ((x ? (r->tag = EXT) : 0) ? (u++ ? IER(1450) : ! memcpy (&(r->stretcher), x, sizeof (r->stretcher))) : 0)
 	 goto d;
-  if ((n ? (r->tag = SPL) : 0) ? (u++ ? IER(1437) : ! memcpy (&(r->splitter), n, sizeof (r->splitter))) : 0)
+  if ((n ? (r->tag = SPL) : 0) ? (u++ ? IER(1451) : ! memcpy (&(r->splitter), n, sizeof (r->splitter))) : 0)
 	 goto d;
-  if ((y ? (r->tag = COM) : 0) ? (u++ ? IER(1438) : ! memcpy (&(r->composer), y, sizeof (r->composer))) : 0)
+  if ((y ? (r->tag = COM) : 0) ? (u++ ? IER(1452) : ! memcpy (&(r->composer), y, sizeof (r->composer))) : 0)
 	 goto d;
-  if ((p ? (r->tag = POS) : 0) ? (u++ ? IER(1439) : ! memcpy (&(r->postponer), p, sizeof (r->postponer))) : 0)
+  if ((p ? (r->tag = POS) : 0) ? (u++ ? IER(1453) : ! memcpy (&(r->postponer), p, sizeof (r->postponer))) : 0)
 	 goto d;
-  if ((c ? (r->tag = CLU) : 0) ? (u++ ? IER(1440) : ! memcpy (&(r->merger), c, sizeof (r->merger))) : 0)
+  if ((c ? (r->tag = CLU) : 0) ? (u++ ? IER(1454) : ! memcpy (&(r->merger), c, sizeof (r->merger))) : 0)
 	 goto d;
-  if ((m ? (r->tag = MAP) : 0) ? (u++ ? IER(1441) : ! memcpy (&(r->mapreducer), m, sizeof (r->mapreducer))) : 0)
+  if ((m ? (r->tag = MAP) : 0) ? (u++ ? IER(1455) : ! memcpy (&(r->mapreducer), m, sizeof (r->mapreducer))) : 0)
 	 goto d;
-  if ((a ? (r->tag = FAB) : 0) ? (u++ ? IER(1442) : ! memcpy (&(r->fabricator), a, sizeof (r->fabricator))) : 0)
+  if ((a ? (r->tag = FAB) : 0) ? (u++ ? IER(1456) : ! memcpy (&(r->fabricator), a, sizeof (r->fabricator))) : 0)
 	 goto d;
   r->work = t;
   r->valid = ROUTER_MAGIC;
@@ -201,14 +202,14 @@ plan (p, r, err)
 {
   uintptr_t i;
 
-  if ((! p) ? IER(1443) : (! r) ? IER(1444) : (r->ports ? 0 : IER(1445)) ? (r->valid = MUGGLE(53)) : 0)
+  if ((! p) ? IER(1457) : (! r) ? IER(1458) : (r->ports ? 0 : IER(1459)) ? (r->valid = MUGGLE(53)) : 0)
 	 return;
   memcpy (&(r->ro_plan), p, sizeof (r->ro_plan));
   if (! (p->remote_first ? 1 : p->local_first))
 	 return;
   for (i = 0; i < r->lanes; i++)
 	 {
-		if ((r->ports[i] ? 0 : IER(1446)) ? (r->valid = MUGGLE(54)) : 0)
+		if ((r->ports[i] ? 0 : IER(1460)) ? (r->valid = MUGGLE(54)) : 0)
 		  return;
 		(r->ports[i])->backoff = 1;
 	 }
@@ -417,7 +418,7 @@ _cru_classifying_router (c, b, s, lanes, err)
   cru_partition h;
   router r;
 
-  if ((! c) ? IER(1447) : (! s) ? IER(1448) : 0)
+  if ((! c) ? IER(1461) : (! s) ? IER(1462) : 0)
 	 return NULL;
   if (! (h = _cru_partition (lanes, err)))
 	 return NULL;
@@ -495,10 +496,10 @@ _cru_reset (r, t, err)
   uintptr_t i;
   port s;
 
-  if ((! r) ? IER(1449) : (r->valid != ROUTER_MAGIC) ? IER(1450) : r->ports ? 0 : IER(1451))
+  if ((! r) ? IER(1463) : (r->valid != ROUTER_MAGIC) ? IER(1464) : r->ports ? 0 : IER(1465))
 	 return NULL;
   for (i = 0; i < r->lanes; i++)
-	 if ((s = r->ports[i]) ? ((s->gruntled == PORT_MAGIC) ? 0 : IER(1452)) : IER(1453))
+	 if ((s = r->ports[i]) ? ((s->gruntled == PORT_MAGIC) ? 0 : IER(1466)) : IER(1467))
 		r->valid = MUGGLE(55);
 	 else
 		{
@@ -606,7 +607,28 @@ _cru_crossing_router (c, t, lanes, err)
 
 
 
-// --------------- reclamation -----------------------------------------------------------------------------
+// --------------- memory management -----------------------------------------------------------------------
+
+
+
+
+
+extern router
+_cru_stored (g, r, err)
+	  cru_graph g;
+	  router r;
+	  int *err;
+
+	  // Store the user-defined storage of a graph in a router.
+{
+  if ((! g) ? IER(1468) : (g->glad != GRAPH_MAGIC) ? IER(1469) : (! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1470) : 0)
+	 return NULL;
+  r->ro_store = g->g_store;
+  return r;
+}
+
+
+
 
 
 
@@ -656,13 +678,13 @@ _cru_free_router (r, err)
   free (r->ports);
 #endif
  a: if (pthread_mutex_destroy (&(r->lock)))
-	 IER(1454);
+	 IER(1471);
   if (pthread_cond_destroy (&(r->transition)))
-	 IER(1455);
+	 IER(1472);
   RAISE(r->ro_status);
   if (*err ? 0 : r->killed)
 	 RAISE(CRU_INTKIL);
-  r->ro_status = THE_IER(1456);
+  r->ro_status = THE_IER(1473);
   r->valid = MUGGLE(56);
   _cru_free (r);
 }
@@ -681,7 +703,7 @@ sweep (s, z, err)
 
 	  // Free the deleted nodes in the port.
 {
-  if ((! s) ? IER(1457) : (s->gruntled != PORT_MAGIC) ? IER(1458) : (! z) ? IER(1459) : 0)
+  if ((! s) ? IER(1474) : (s->gruntled != PORT_MAGIC) ? IER(1475) : (! z) ? IER(1476) : 0)
 	 return;
   _cru_free_edges_and_labels (z->e_free, s->disconnections, err);
   _cru_free_nodes (s->survivors, z, err);
@@ -707,9 +729,9 @@ sweeping_task (source, err)
   intptr_t status;
   router r;
 
-  if ((! source) ? IER(1460) : (source->gruntled != PORT_MAGIC) ? IER(1461) : ! _cru_pingback (source, err))
+  if ((! source) ? IER(1477) : (source->gruntled != PORT_MAGIC) ? IER(1478) : ! _cru_pingback (source, err))
 	 goto a;
-  if ((! (r = source->local)) ? IER(1462) : (r->valid != ROUTER_MAGIC) ? IER(1463) : 0)
+  if ((! (r = source->local)) ? IER(1479) : (r->valid != ROUTER_MAGIC) ? IER(1480) : 0)
 	 goto a;
   sweep (source, &(r->ro_sig.destructors), err);
  a: status = *err;
@@ -737,11 +759,11 @@ _cru_sweep (r, err)
 
   if (r ? r->shared : 0)
 	 goto a;
-  if ((! r) ? IER(1464) : (r->valid != ROUTER_MAGIC) ? IER(1465) : r->ports ? 0 : IER(1466))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1481) : r->ports ? 0 : IER(1482))
 	 goto a;
   sweepable = 0;
   for (i = 0; sweepable ? 0 : (i < r->lanes); i++)
-	 if (((s = r->ports[i])) ? 1 : ! IER(1467))
+	 if (((s = r->ports[i])) ? 1 : ! IER(1483))
 		sweepable = (s->survivors ? 1 : s->deletions ? 1 : ! ! (s->disconnections));
   if (! sweepable)
 	 goto a;

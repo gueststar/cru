@@ -79,8 +79,8 @@ static int initial_error = 0;
 #define TEST_ENTRY                                                         \
   CONTROL_ENTRY;                                                            \
   pthread_once (&once_control, initialization);                              \
-  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(904)))  \
-	 goto x;
+  if (initialized ? 0 : RAISE(initial_error ? initial_error : THE_IER(905)))  \
+	 goto x
 
 // done when any user code calls a published API routine
 
@@ -108,6 +108,7 @@ teardown ()
   _cru_close_packets ();
   _cru_close_crew ();
   _cru_close_wrap ();
+  _cru_close_graph ();
   _cru_close_copy ();
   _cru_close_errs ();         // errs should always be closed last
 }
@@ -134,13 +135,16 @@ initialization ()
 	 goto e;
   if (! _cru_open_copy (&initial_error))
 	 goto f;
-  if (! _cru_open_wrap (&initial_error))
+  if (! _cru_open_graph (&initial_error))
 	 goto g;
-  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(905))) : 0)
+  if (! _cru_open_wrap (&initial_error))
 	 goto h;
+  if (atexit (teardown) ? (initial_error = (initial_error ? initial_error : THE_IER(906))) : 0)
+	 goto i;
   initialized = 1;
   return;
- h: _cru_close_wrap ();
+ i: _cru_close_wrap ();
+ h: _cru_close_graph ();
  g: _cru_close_copy ();
  f: _cru_close_packets ();
  e: _cru_close_crew ();
@@ -236,7 +240,8 @@ cru_crossed (g, h, c, k, lanes, err)
   API_ENTRY;
   if (! (c ? (c = _cru_inferred_crosser (c, err)) : NULL))
 	 goto x;
-  x = _cru_cross (g, h, k, _cru_crossing_router (c, (task) _cru_crossing_task, lanes ? lanes : NPROC ? NPROC : 1, err), err);
+  lanes = (lanes ? lanes : NPROC ? NPROC : 1);
+  x = _cru_cross (g, h, k, _cru_stored (g, _cru_crossing_router (c, (task) _cru_crossing_task, lanes, err), err), err);
   _cru_free_crosser (c);
  x: return x;
 }
@@ -267,7 +272,8 @@ cru_fabricated (g, f, k, lanes, err)
 	 f = &a;
   if ((! g) ? 1 : _cru_bad (g, err) ? 1 : ! (f = _cru_inferred_fabricator (f, &(g->g_sig), err)))
 	 goto x;
-  h = _cru_fabricated (g, k, _cru_fabricating_router (f, lanes ? lanes : NPROC ? NPROC : 1, err), err);
+  lanes = (lanes ? lanes : NPROC ? NPROC : 1);
+  h = _cru_fabricated (g, k, _cru_stored (g, _cru_fabricating_router (f, lanes, err), err), err);
   _cru_free_fabricator (f);
  x: return h;
 }
@@ -303,7 +309,7 @@ cru_connect (label, terminus, err)
   CONTROL_ENTRY;
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != BUILDING)) ? RAISE(CRU_INTOOC) : 0)
 	 return;
-  if ((e = _cru_get_edges ()) ? 0 : IER(906))
+  if ((e = _cru_get_edges ()) ? 0 : IER(907))
 	 return;
   *e = _cru_edge (_cru_get_destructors (), label, terminus, NO_NODE, *e, err);
 }
@@ -337,7 +343,7 @@ cru_stretch (label_in, new_vertex, label_out, err)
   z = _cru_get_destructors ();
   if (((! initialized) ? 1 : (! (x = _cru_get_context ())) ? 1 : (*x != STRETCHING)) ? RAISE(CRU_INTOOC) : 0)
 	 goto a;
-  if ((! z) ? IER(907) : (e = _cru_get_edge_maps ()) ? 0 : IER(908))
+  if ((! z) ? IER(908) : (e = _cru_get_edge_maps ()) ? 0 : IER(909))
 	 goto a;
   if (! (a = _cru_edge (z, label_in, new_vertex, NO_NODE, NO_NEXT_EDGE, err)))
 	 goto b;
@@ -352,6 +358,70 @@ cru_stretch (label_in, new_vertex, label_out, err)
 	 APPLY(z->v_free, new_vertex);
  b: if ((! z) ? NULL : label_out ? z->e_free : NULL)
 	 APPLY(z->e_free, label_out);
+}
+
+
+
+
+// --------------- attribution -----------------------------------------------------------------------------
+
+
+
+
+void
+cru_set (g, s, err)
+	  cru_graph g;
+	  void *s;
+	  int *err;
+
+	  // Associate an arbitrary user-defined attribute with a graph.
+{
+  int ignored;
+
+  TEST_ENTRY;
+  if ((! g) ? RAISE(CRU_NULGPH) : (g->glad != GRAPH_MAGIC) ? RAISE(CRU_BADGPH) : 0)
+	 goto x;
+  _cru_store (g, s, err);
+ x: return;
+}
+
+
+
+
+
+void *
+cru_get (void)
+
+	  // Retrieve a user-defined attribute previously associated with a
+	  // graph.
+{
+  int *err;
+  int ignored;
+
+  err = &ignored;
+  TEST_ENTRY;
+  return _cru_get_storage ();
+ x: return NULL;
+}
+
+
+
+
+
+int
+cru_killed (void)
+
+	  // Return non-zero if the current job has been killed.
+{
+  int *err;
+  int ignored;
+  int *k;
+
+  err = &ignored;
+  TEST_ENTRY;
+  if ((k = _cru_get_kill_switch ()))
+	 return ! ! *k;
+ x: return 0;
 }
 
 
@@ -503,12 +573,12 @@ cru_mapreduced (g, m, k, lanes, err)
 	 goto x;
   if (! g)
 	 result = ((m->ma_prop.vertex.vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(m->ma_prop.vertex.vacuous_case));
-  else if ((r = _cru_mapreducing_router (m, &(g->g_sig), lanes, err)))
+  else if ((r = _cru_stored (g, _cru_mapreducing_router (m, &(g->g_sig), lanes, err), err)))
 	 {
 		initial = _cru_initial_node (g, k, r, err);
 		if (*err)
 		  goto a;
-		if ((lanes != 1) ? 1 : (initial != g->nodes))
+		if ((lanes != 1) ? 1 : g->g_store ? 1 : (initial != g->nodes))
 		  result = _cru_mapreduce (k, initial, _cru_shared(_cru_reset (r, (task) _cru_mapreducing_task, err)), err);
 		else
 		  result = _cru_reduced_nodes (&(m->ma_prop), g->nodes, err);
@@ -553,7 +623,7 @@ cru_induced (g, i, k, lanes, err)
   if (! g)
 	 result = ((new_i->in_fold.vacuous_case ? 0 : RAISE(CRU_UNDVAC)) ? NULL : CALLED(new_i->in_fold.vacuous_case));
   else if ((initial = _cru_initial_node (g, k, r = _cru_inducing_router (new_i, &(g->g_sig), lanes, err), err)))
-	 result = _cru_induce (k, initial, g->nodes, _cru_reset (r, (task) _cru_inducing_task, err), err);
+	 result = _cru_induce (k, initial, g->nodes, _cru_stored (g, _cru_reset (r, (task) _cru_inducing_task, err), err), err);
   else
 	 _cru_free_router (r, err);
   if (! *err)
@@ -594,7 +664,7 @@ cru_partition_of (g, c, k, lanes, err)
   if (*err ? 1  : (! g) ? 1 : ! (c = _cru_inferred_classifier (c, err)))
 	 goto x;
   lanes = (lanes ? lanes : NPROC ? NPROC : 1);
-  h = _cru_partition_of (g, k, _cru_classifying_router (c, g->base_node, &(g->g_sig), lanes, err), err);
+  h = _cru_partition_of (g, k, _cru_stored (g, _cru_classifying_router (c, g->base_node, &(g->g_sig), lanes, err), err), err);
   _cru_free_classifier (c);
  x: return h;
 }
@@ -629,7 +699,8 @@ cru_stretched (g, s, k, lanes, err)
 	 goto x;
   if (*err ? 1 : (! g) ? 1 : (! s) ? 1 : ((s = _cru_inferred_stretcher (s, &(g->g_sig), err))) ? *err : 1)
 	 goto x;
-  if (((r = _cru_stretching_router (s, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err))) ? (! *err) : 0)
+  lanes = (lanes ? lanes : NPROC ? NPROC : 1);
+  if (((r = _cru_stored (g, _cru_stretching_router (s, &(g->g_sig), lanes, err), err))) ? (! *err) : 0)
 	 g = _cru_stretched (g, k, r, err);
   _cru_free_stretcher (s);
  x: if (*err)
@@ -661,7 +732,7 @@ cru_split (g, s, k, lanes, err)
   _cru_disable_killing (k, err);
   if (*err ? 1 : _cru_bad (g, err) ? 1 : (! g) ? 1 : (! s) ? 1 : ! (s = _cru_inferred_splitter (s, &(g->g_sig), err)))
 	 goto x;
-  if ((r = _cru_splitting_router (s, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err)))
+  if ((r = _cru_stored (g, _cru_splitting_router (s, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err), err)))
 	 _cru_split (&g, k, r, err);
   _cru_free_splitter (s);
  x: if (*err)
@@ -696,7 +767,7 @@ cru_composed (g, c, k, lanes, err)
   memcpy (&new_sig, &(g->g_sig), sizeof (new_sig));
   if (! (c = _cru_inferred_composer (c, &new_sig, err)))
 	 goto x;
-  if ((r = _cru_composing_router (c, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err)))
+  if ((r = _cru_stored (g, _cru_composing_router (c, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err), err)))
 	 g = _cru_composed (g, k, r, err);
   _cru_free_composer (c);
  x: if (*err)
@@ -728,13 +799,14 @@ cru_spread (g, b, k, lanes, err)
 
   API_ENTRY;
   _cru_disable_killing (k, err);
-  if (_cru_bad (g, err) ? 1 : *err ? 1 : (! g) ? 1 : (! (g->base_node)) ? IER(909) : 0)
+  if (_cru_bad (g, err) ? 1 : *err ? 1 : (! g) ? 1 : (! (g->base_node)) ? IER(910) : 0)
 	 goto x;
   if (! (b = _cru_inferred_builder (b, g->base_node->vertex, err)))
 	 goto x;
   if (! _cru_identical (&(b->bu_sig), &(g->g_sig), err))
 	 goto a;
-  if ((r = _cru_building_router (b, (task) _cru_prespreading_task, lanes ? lanes : NPROC ? NPROC : 1, err)))
+  lanes = (lanes ? lanes : NPROC ? NPROC : 1);
+  if ((r = _cru_stored (g, _cru_building_router (b, (task) _cru_prespreading_task, lanes, err), err)))
 	 g = _cru_spread (g, k, r, err);
  a: _cru_free_builder (b);
  x: if (*err)
@@ -779,7 +851,7 @@ cru_merged (g, c, k, lanes, err)
   memcpy (&new_sig, &(g->g_sig), sizeof (new_sig));
   if ((! c) ? 1 : ! (c = _cru_inferred_merger (c, &new_sig, err)))
 	 goto x;
-  if (! (r = _cru_merging_router (c, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err)))
+  if (! (r = _cru_stored (g, _cru_merging_router (c, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err), err)))
 	 goto x;
   g = _cru_merged (g, k, r, &new_sig, err);
   _cru_free_merger (c);
@@ -814,15 +886,13 @@ cru_filtered (g, f, k, lanes, err)
   if (*err ? 1 : (! g) ? 1 : _cru_bad (g, err) ? 1 : (! f) ? 1 : ! (f = _cru_inferred_filter (f, &(g->g_sig), err)))
 	 goto x;
   if (! (_cru_empty_prop (&(f->fi_kernel.v_op)) ? _cru_empty_fold (&(f->fi_kernel.e_op)) : 0))
-	 if ((r = _cru_filtered (&g, _cru_filtering_router (f, &(g->g_sig), lanes, err), k, err)))
+	 if ((r = _cru_filtered (&g, _cru_stored (g, _cru_filtering_router (f, &(g->g_sig), lanes, err), err), k, err), err))
 		_cru_pruned (g, r, k, err);
   _cru_free_filter (f);
  x: if (*err)
 	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
-
-
 
 
 
@@ -849,7 +919,7 @@ cru_deduplicated (g, k, lanes, err)
   lanes = (lanes ? lanes : NPROC ? NPROC : 1);
   if (_cru_bad (g, err) ? 1 : (! g) ? 1 : ! (c = _cru_deduplicator (&(g->g_sig), err)))
 	 goto x;
-  if (! (r = _cru_merging_router (c, &(g->g_sig), lanes, err)))
+  if (! (r = _cru_stored (g, _cru_merging_router (c, &(g->g_sig), lanes, err), err)))
 	 goto a;
   r->tag = DED;
   g = _cru_deduplicated (g, k, r, err);
@@ -894,14 +964,13 @@ cru_mutated (g, m, k, lanes, err)
   memcpy (&new_sig, &(g->g_sig), sizeof (new_sig));
   if (! (m = _cru_inferred_mutator (m, &new_sig, err)))
 	 goto x;
-  if ((r = _cru_mutating_router (m, &(g->g_sig), lanes = (lanes ? lanes: NPROC ? NPROC : 1), err)))
+  if ((r = _cru_stored (g, _cru_mutating_router (m, &(g->g_sig), lanes = (lanes ? lanes: NPROC ? NPROC : 1), err), err)))
 	 g = _cru_mutated (g, k, r, &new_sig, err);
   _cru_free_mutator (m);
  x: if (*err)
 	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
-
 
 
 
@@ -931,15 +1000,13 @@ cru_postponed (g, p, k, lanes, err)
   memcpy (&new_sig, &(g->g_sig), sizeof (new_sig));
   if (! (p = _cru_inferred_postponer (p, &new_sig, err)))
 	 goto x;
-  if ((r = _cru_postponing_router (p, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err)))
+  if ((r = _cru_stored (g, _cru_postponing_router (p, &new_sig, lanes ? lanes : NPROC ? NPROC : 1, err), err)))
 	 _cru_postpone (&g, k, r, err);
   _cru_free_postponer (p);
  x: if (*err)
 	 cru_free_now (g, lanes, err);
   return (*err ? NULL : g);
 }
-
-
 
 
 
@@ -969,8 +1036,6 @@ cru_free_now (g, lanes, err)
 			 g->nodes = g->base_node = NULL;
  x: _cru_free_now (g, err);
 }
-
-
 
 
 

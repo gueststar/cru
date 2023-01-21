@@ -76,7 +76,7 @@ _cru_globally_throw (int err);
 
 // release pthread resources and report errors to stderr
 extern void
-_cru_close_errs ();
+_cru_close_errs (void);
 
 #ifdef __cplusplus
 }

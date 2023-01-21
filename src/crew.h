@@ -48,7 +48,7 @@ _cru_open_crew (int *err);
 
 // release pthread resources
 extern void
-_cru_close_crew ();
+_cru_close_crew (void);
 
 // --------------- memory management -----------------------------------------------------------------------
 

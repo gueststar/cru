@@ -54,7 +54,7 @@ _cru_launched (k, i, r, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1072) : r->ports ? 0 : IER(1073))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1086) : r->ports ? 0 : IER(1087))
 	 goto a;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto b;
@@ -98,9 +98,9 @@ _cru_status_launched (k, i, h, r, err)
   packet_list p;
 
   started = dblx = 0;
-  if ((! r) ? IER(1074) : (r->valid != ROUTER_MAGIC) ? IER(1075) : 0)
+  if ((! r) ? IER(1088) : (r->valid != ROUTER_MAGIC) ? IER(1089) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1076) : (! (r->lanes)) ? IER(1077) : 0) ? (r->valid = MUGGLE(27)) : 0)
+  if (((! (r->ports)) ? IER(1090) : (! (r->lanes)) ? IER(1091) : 0) ? (r->valid = MUGGLE(27)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto a;
@@ -144,9 +144,9 @@ _cru_count_launched (k, i, a, q, r, count, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1078) : count ? 0 : IER(1079))
+  if ((! r) ? 1 : (r->valid != ROUTER_MAGIC) ? IER(1092) : count ? 0 : IER(1093))
 	 goto a;
-  if (((! (r->ports)) ? IER(1080) : (! (r->lanes)) ? IER(1081) : 0) ? (r->valid = MUGGLE(28)) : 0)
+  if (((! (r->ports)) ? IER(1094) : (! (r->lanes)) ? IER(1095) : 0) ? (r->valid = MUGGLE(28)) : 0)
 	 goto a;
   *count = 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_count_runner, r, &dblx))
@@ -192,11 +192,11 @@ _cru_queue_launched (k, i, q, r, u, err)
   crew c;
 
   started = dblx = 0;
-  if ((! r) ? IER(1082) : (r->valid != ROUTER_MAGIC) ? IER(1083) : 0)
+  if ((! r) ? IER(1096) : (r->valid != ROUTER_MAGIC) ? IER(1097) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1084) : (! (r->lanes)) ? IER(1085) : 0) ? (r->valid = MUGGLE(29)) : 0)
+  if (((! (r->ports)) ? IER(1098) : (! (r->lanes)) ? IER(1099) : 0) ? (r->valid = MUGGLE(29)) : 0)
 	 return 0;
-  if ((! i) ? IER(1086) : (! u) ? IER(1087) : *u ? IER(1088) : 0)
+  if ((! i) ? IER(1100) : (! u) ? IER(1101) : *u ? IER(1102) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_queue_runner, r, &dblx))
 	 goto a;
@@ -238,12 +238,12 @@ _cru_maybe_disjunction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1089) : 0)
+  if ((! result) ? IER(1103) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1090) : (r->valid != ROUTER_MAGIC) ? IER(1091) : 0)
+  if ((! r) ? IER(1104) : (r->valid != ROUTER_MAGIC) ? IER(1105) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1092) : (! (r->lanes)) ? IER(1093) : 0) ? (r->valid = MUGGLE(30)) : 0)
+  if (((! (r->ports)) ? IER(1106) : (! (r->lanes)) ? IER(1107) : 0) ? (r->valid = MUGGLE(30)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -282,12 +282,12 @@ _cru_maybe_reduction_launched (k, i, r, result, err)
   crew c;
 
   dblx = started = 0;
-  if ((! result) ? IER(1094) : 0)
+  if ((! result) ? IER(1108) : 0)
 	 goto a;
   *result = NULL;
-  if ((! r) ? IER(1095) : (r->valid != ROUTER_MAGIC) ? IER(1096) : (r->tag != MAP) ? IER(1097) : 0)
+  if ((! r) ? IER(1109) : (r->valid != ROUTER_MAGIC) ? IER(1110) : (r->tag != MAP) ? IER(1111) : 0)
 	 goto a;
-  if (((! (r->ports)) ? IER(1098) : (! (r->lanes)) ? IER(1099) : 0) ? (r->valid = MUGGLE(31)) : 0)
+  if (((! (r->ports)) ? IER(1112) : (! (r->lanes)) ? IER(1113) : 0) ? (r->valid = MUGGLE(31)) : 0)
 	 return 0;
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
@@ -333,9 +333,9 @@ _cru_graph_launched (k, v, q, r, g, err)
 
   b = NULL;
   started = 0;
-  if ((! r) ? IER(1100) : (r->valid != ROUTER_MAGIC) ? IER(1101) : 0)
+  if ((! r) ? IER(1114) : (r->valid != ROUTER_MAGIC) ? IER(1115) : 0)
 	 return 0;
-  if (((! (r->ports)) ? IER(1102) : (! (r->lanes)) ? IER(1103) : 0) ? (r->valid = MUGGLE(32)) : (! g) ? IER(1104) : 0)
+  if (((! (r->ports)) ? IER(1116) : (! (r->lanes)) ? IER(1117) : 0) ? (r->valid = MUGGLE(32)) : (! g) ? IER(1118) : 0)
 	 return 0;
   if (*err)
 	 goto a;

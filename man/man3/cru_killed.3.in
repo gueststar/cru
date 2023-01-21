@@ -1,0 +1,63 @@
+.TH CRU_KILLED 3 @DATE_VERSION_TITLE@
+.SH NAME
+cru_killed \- poll the killed state of a graph transformation job
+.SH SYNOPSIS
+#include <cru/cru.h>
+.sp
+int
+.BR cru_killed
+(void)
+.SH DESCRIPTION
+When called from within any user-written callback function such as an
+operator or predicate invoked by a
+.BR cru
+library function, this function tests whether the job that
+called the callback function has been killed by
+.BR cru_kill
+since the callback function was called. The relevant job is
+determined automatically provided that
+.BR cru_killed
+runs in the same thread as the callback function.
+.SH RETURN VALUE
+If the job is found to be killed, this function returns a non-zero
+value. If the job has not been killed or if this function is called
+outside the thread context of a callback function, it returns zero.
+.SH ERRORS
+none
+.SH NOTES
+Ordinarily this function is not needed because no special action is
+required in user code to make a killed job terminate early. Using this
+function is appropriate only when immediate responses to killing
+events are important and callback functions are long-running. Because
+.BR cru_kill
+does not pre-empt user-written code, the callback function should be
+designed to poll
+.BR cru_killed
+and behave accordingly.
+.P
+Killable operations compatible with this function include
+.BR cru_built,
+.BR cru_composed,
+.BR cru_crossed,
+.BR cru_fabricated,
+.BR cru_filtered,
+.BR cru_induced,
+.BR cru_mapreduced,
+.BR cru_merged,
+.BR cru_mutated,
+.BR cru_partition_of,
+.BR cru_postponed,
+.BR cru_split,
+and
+.BR cru_stretched.
+.SH FILES
+.I @INCDIR@/cru.h
+.SH SEE ALSO
+@SEE_ALSO@
+.SH AUTHOR
+Dennis Furey 
+.MT @MAINTAINER_EMAIL@
+.ME
+.SH PROJECT PAGE
+.UR @CMAKE_PROJECT_HOMEPAGE_URL@
+.UE

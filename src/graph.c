@@ -33,6 +33,39 @@
 #include "wrap.h"
 
 
+// for exclusive access to routers' killed fields; the same one locks all of them
+static pthread_rwlock_t graph_lock;
+
+
+// --------------- initialization and teardown -------------------------------------------------------------
+
+
+
+
+int
+_cru_open_graph (err)
+	  int *err;
+
+	  // Initialize pthread resources.
+{
+  return ! (pthread_rwlock_init (&graph_lock, NULL) ? IER(1009) : 0);
+}
+
+
+
+
+
+void
+_cru_close_graph (void)
+
+	  // Do this when the process exits.
+{
+  if (pthread_rwlock_destroy (&graph_lock))
+	 _cru_globally_throw (THE_IER(1010));
+}
+
+
+
 
 
 // --------------- allocation ------------------------------------------------------------------------------
@@ -52,9 +85,9 @@ _cru_graph_of (s, base, n, err)
 {
   cru_graph g;
 
-  if (*err ? 1 : (! base) ? IER(1005) : (! *base) ? 1 : (! n) ? 0 : n->previous ? IER(1006) : 0)
+  if (*err ? 1 : (! base) ? IER(1011) : (! *base) ? 1 : (! n) ? 0 : n->previous ? IER(1012) : 0)
 	 goto a;
-  if ((! s) ? IER(1007) : (g = (cru_graph) _cru_malloc (sizeof (*g))) ? 0 : RAISE(ENOMEM))
+  if ((! s) ? IER(1013) : (g = (cru_graph) _cru_malloc (sizeof (*g))) ? 0 : RAISE(ENOMEM))
 	 goto a;
   memset (g, 0, sizeof (*g));
   memcpy (&(g->g_sig), s, sizeof (g->g_sig));
@@ -88,7 +121,7 @@ _cru_free_now (g, err)
 
   if ((! g) ? 1 : (*err == CRU_BADGPH))
 	 return;
- if ((g->glad == GRAPH_MAGIC) ? 1 : ! IER(1008))
+ if ((g->glad == GRAPH_MAGIC) ? 1 : ! IER(1014))
 	_cru_free_nodes (g->nodes, &(g->g_sig.destructors), err);
   g->glad = MUGGLE(16);
   _cru_free (g);
@@ -162,16 +195,16 @@ _cru_freeing_task (s, err)
 
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! s) ? IER(1009) : (s->gruntled != PORT_MAGIC) ? IER(1010) : 0)
+  if ((! s) ? IER(1015) : (s->gruntled != PORT_MAGIC) ? IER(1016) : 0)
 	 goto a;
-  if ((! (r = s->local)) ? IER(1011) : (r->valid != ROUTER_MAGIC) ? IER(1012) : 0)
+  if ((! (r = s->local)) ? IER(1017) : (r->valid != ROUTER_MAGIC) ? IER(1018) : 0)
 	 goto a;
-  if (((destinations = s->peers)) ? 0 : IER(1013))
+  if (((destinations = s->peers)) ? 0 : IER(1019))
 	 goto b;
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, destinations, err));)
 	 {
 		_cru_free_edges_and_labels (r->ro_sig.destructors.e_free, incoming->carrier, err);
-		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(1014))
+		if ((n = (node_list) incoming->payload) ? RECORDED(n) : IER(1020))
 		  goto c;
 		if (! _cru_unscatterable (&(n->edges_out), n, r->ro_sig.destructors.e_free, destinations, err))
 		  goto d;
@@ -253,13 +286,13 @@ _cru_half_duplex (g, err)
 
   if (! g)
 	 return 1;
-  if ((g->glad != GRAPH_MAGIC) ? IER(1015) : 0)
+  if ((g->glad != GRAPH_MAGIC) ? IER(1021) : 0)
 	 return 1;
-  if (((n = g->base_node) ? 0 : IER(1016)) ? (g->glad = MUGGLE(18)) : 0)
+  if (((n = g->base_node) ? 0 : IER(1022)) ? (g->glad = MUGGLE(18)) : 0)
 	 return 0;
   if (! (e = n->edges_out))
-	 return (n->edges_in ? IER(1017) : 1);
-  if ((m = e->remote.node) ? 0 : IER(1018))
+	 return (n->edges_in ? IER(1023) : 1);
+  if ((m = e->remote.node) ? 0 : IER(1024))
 	 return 0;
   return (! (m->edges_in));
 }
@@ -280,7 +313,7 @@ _cru_compatible (g, b, err)
 {
   if (! b)
 	 return 1;
-  if (g ? 0 : IER(1019))
+  if (g ? 0 : IER(1025))
 	 return 0;
   if (g->g_sig.destructors.v_free != b->v_op.vertex.m_free)
 	 return 0;
@@ -306,7 +339,7 @@ _cru_identical (l, r, err)
 {
   if (l == r)
 	 return 1;
-  if ((! l) ? IER(1020) : (! r) ? IER(1021) : 0)
+  if ((! l) ? IER(1026) : (! r) ? IER(1027) : 0)
 	 return 0;
   if ((l->orders.v_order.hash == r->orders.v_order.hash) ? 0 : RAISE(CRU_INCSPB))
 	 return 0;
@@ -326,6 +359,57 @@ _cru_identical (l, r, err)
 	 return 0;
   return 1;
 }
+
+
+
+
+// --------------- storage ---------------------------------------------------------------------------------
+
+
+
+
+
+void
+_cru_store (g, s, err)
+	  cru_graph g;
+	  void *s;
+	  int *err;
+
+	  // Associate arbitrary user-defined data with a graph.
+{
+  if ((! g) ? IER(1028) : (g->glad != GRAPH_MAGIC) ? IER(1029) : 0)
+	 return;
+  if (pthread_rwlock_wrlock (&graph_lock) ? IER(1030) : 0)
+	 return;
+  g->g_store = s;
+  if (pthread_rwlock_unlock (&graph_lock))
+	 IER(1031);
+}
+
+
+
+
+
+
+void *
+_cru_retrieval (g, err)
+	  cru_graph g;
+	  int *err;
+
+	  // Retrieve user-defined data previously associated with a graph.
+{
+  void *s;
+
+  if ((! g) ? IER(1032) : (g->glad != GRAPH_MAGIC) ? IER(1033) : 0)
+	 return NULL;
+  if (pthread_rwlock_rdlock (&graph_lock) ? IER(1034) : 0)
+	 return NULL;
+  s = g->g_store;
+  if (pthread_rwlock_unlock (&graph_lock))
+	 IER(1035);
+  return s;
+}
+
 
 
 

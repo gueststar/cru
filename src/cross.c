@@ -22,6 +22,7 @@
 #include "cross.h"
 #include "edges.h"
 #include "errs.h"
+#include "getset.h"
 #include "graph.h"
 #include "killers.h"
 #include "launch.h"
@@ -77,7 +78,7 @@ product_of (l, r, err)
 {
   product result;
 
-  if (*err ? 1 : (! l) ? IER(756) : (! r) ? IER(757) : 0)
+  if (*err ? 1 : (! l) ? IER(757) : (! r) ? IER(758) : 0)
 	 return NULL;
   if ((result = (product) _cru_malloc (sizeof (*result))) ? 0 : RAISE(ENOMEM))
 	 return NULL;
@@ -147,7 +148,7 @@ free_productive_packets (p, z, err)
 {
   packet_list o;
 
-  if (z ? 0 : IER(758))
+  if (z ? 0 : IER(759))
 	 return;
   for (o = p; o; o = o->next_packet)
 	 {
@@ -184,9 +185,9 @@ productive_packets_of (i, x, err)
   void *ua;
 
   result = NULL;
-  if ((! i) ? IER(759) : (! x) ? IER(760) : (! (x->e_prod.bop)) ? IER(761) : 0)
+  if ((! i) ? IER(760) : (! x) ? IER(761) : (! (x->e_prod.bop)) ? IER(762) : 0)
 	 return NULL;
-  if ((! (x->e_prod.bpred)) ? IER(762) : (! (i->multiplicand)) ? IER(763) : (! (i->multiplier)) ? IER(764) :  0)
+  if ((! (x->e_prod.bpred)) ? IER(763) : (! (i->multiplicand)) ? IER(764) : (! (i->multiplier)) ? IER(765) :  0)
 	 return NULL;
   for (l = i->multiplicand->edges_out; *err ? NULL : l; l = l->next_edge)
 	 for (r = i->multiplier->edges_out; *err ? NULL : r; r = r->next_edge)
@@ -239,10 +240,10 @@ reach_extant_node (i, c, d, err)
 	  // the graph recorded in a packet c, and connect its sender to
 	  // the latter.
 {
-  if ((! i) ? IER(765) : (! *i) ? IER(766) : (! ((*i)->payload)) ? IER(767) : 0)
+  if ((! i) ? IER(766) : (! *i) ? IER(767) : (! ((*i)->payload)) ? IER(768) : 0)
 	 goto a;
   _cru_free ((product) (*i)->payload);
-  if ((! c) ? IER(768) : (!((*i)->carrier)) ? IER(769) : 0)
+  if ((! c) ? IER(769) : (!((*i)->carrier)) ? IER(770) : 0)
 	 goto a;
   (*i)->carrier->remote.node = c->receiver;                           // overwrite a vertex field with a node field
  a: _cru_nack (_cru_popped_packet (i, err), err);
@@ -278,11 +279,11 @@ reached_new_node (i, x, q, d, err)
   int ux;
   void *ua;
 
-  if ((! i) ? IER(770) : (! *i) ? IER(771) : (! (l = (product) (*i)->payload)) ? IER(772) : 0)
+  if ((! i) ? IER(771) : (! *i) ? IER(772) : (! (l = (product) (*i)->payload)) ? IER(773) : 0)
 	 goto a;
-  if ((! (l->multiplicand)) ? IER(773) : (! (l->multiplier)) ? IER(774) : 0)
+  if ((! (l->multiplicand)) ? IER(774) : (! (l->multiplier)) ? IER(775) : 0)
 	 goto a;
-  if ((! x) ? IER(775) : (! (x->v_prod)) ? IER(776) : 0)
+  if ((! x) ? IER(776) : (! (x->v_prod)) ? IER(777) : 0)
 	 goto a;
   p = productive_packets_of (l, x, err);
   if (*err)
@@ -323,7 +324,7 @@ _cru_crossing_task (source, err)
 	  // and send them to other workers.
 {
 #define UNEQUAL(a,b) \
-(*err ? 0 : (! (a)) ? (! IER(777)) : (! (b)) ? (! IER(778)) : \
+(*err ? 0 : (! (a)) ? (! IER(778)) : (! (b)) ? (! IER(779)) : \
 ((a)->multiplicand != (b)->multiplicand) ? 1 : ((a)->multiplier != (b)->multiplier))
 
   packet_table collisions;    // previous incoming packets
@@ -346,22 +347,24 @@ _cru_crossing_task (source, err)
   sample = 0;
   killed = 0;
   collisions = NULL;
-  if ((! source) ? IER(779) : (source->gruntled != PORT_MAGIC) ? IER(780) : 0)
+  if ((! source) ? IER(780) : (source->gruntled != PORT_MAGIC) ? IER(781) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(781) : (r->valid != ROUTER_MAGIC) ? IER(782) : 0)
+  if ((!(r = source->local)) ? IER(782) : (r->valid != ROUTER_MAGIC) ? IER(783) : 0)
 	 return NULL;
   x = &(r->crosser);
-  if ((!(d = source->peers)) ? IER(783) : (r->tag != CRO) ? IER(784) : ! (s = &(x->cr_sig)))
+  if ((!(d = source->peers)) ? IER(784) : (r->tag != CRO) ? IER(785) : ! (s = &(x->cr_sig)))
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(785))
+  if ((s->orders.v_order.equal) ? 0 : IER(786))
 	 goto a;
+  _cru_set_storage (r->ro_store, err);
+  _cru_set_kill_switch (&(r->killed), err);
   limit = x->cr_sig.vertex_limit / r->lanes;
   limit = (limit ? limit : x->cr_sig.vertex_limit ? 1 : 0);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(9);
 		killed = (killed ? 1 : KILLED);
-		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(786))
+		if (*err ? 1 : killed ? 1 : incoming->payload ? 0 : IER(787))
 		  goto b;
 		if (! (c = _cru_collision (incoming->hash_value, &collisions, err)))
 		  goto b;

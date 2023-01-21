@@ -30,6 +30,9 @@ static pthread_key_t destructors_storage;
 // used to retrieve thread-local kill switch storage so that it's not needed as a parameter to cru_connect
 static pthread_key_t killed_storage;
 
+// used to retrieve thread-local graph specific storage
+static pthread_key_t graph_specific_storage;
+
 // used to retrieve thread-local edge map storage so that it's not needed as a parameter to cru_stretch
 static pthread_key_t edge_map_storage;
 
@@ -52,19 +55,22 @@ _cru_open_getset (err)
 
 	  // Initialize static storage.
 {
-  if (pthread_key_create (&edge_storage, NULL) ? IER(990) : 0)
+  if (pthread_key_create (&edge_storage, NULL) ? IER(991) : 0)
 	 return 0;
-  if (pthread_key_create (&killed_storage, NULL) ? IER(991) : 0)
+  if (pthread_key_create (&killed_storage, NULL) ? IER(992) : 0)
 	 goto a;
-  if (pthread_key_create (&destructors_storage, NULL) ? IER(992) : 0)
+  if (pthread_key_create (&graph_specific_storage, NULL) ? IER(993) : 0)
 	 goto b;
-  if (pthread_key_create (&edge_map_storage, NULL) ? IER(993) : 0)
+  if (pthread_key_create (&destructors_storage, NULL) ? IER(994) : 0)
 	 goto c;
-  if (pthread_key_create (&context_storage, NULL) ? IER(994) : 0)
+  if (pthread_key_create (&edge_map_storage, NULL) ? IER(995) : 0)
 	 goto d;
+  if (pthread_key_create (&context_storage, NULL) ? IER(996) : 0)
+	 goto e;
   return 1;
- d: pthread_key_delete (edge_map_storage);
- c: pthread_key_delete (destructors_storage);
+ e: pthread_key_delete (edge_map_storage);
+ d: pthread_key_delete (destructors_storage);
+ c: pthread_key_delete (graph_specific_storage);
  b: pthread_key_delete (killed_storage);
  a: pthread_key_delete (edge_storage);
   return 0;
@@ -83,15 +89,17 @@ release_pthread_resources (err)
 	  // Release pthread related resources.
 {
   if (pthread_key_delete (context_storage))
-	 IER(995);
-  if (pthread_key_delete (edge_map_storage))
-	 IER(996);
-  if (pthread_key_delete (edge_storage))
 	 IER(997);
-  if (pthread_key_delete (killed_storage))
+  if (pthread_key_delete (edge_map_storage))
 	 IER(998);
-  if (pthread_key_delete (destructors_storage))
+  if (pthread_key_delete (edge_storage))
 	 IER(999);
+  if (pthread_key_delete (graph_specific_storage))
+	 IER(1000);
+  if (pthread_key_delete (killed_storage))
+	 IER(1001);
+  if (pthread_key_delete (destructors_storage))
+	 IER(1002);
 }
 
 
@@ -100,7 +108,7 @@ release_pthread_resources (err)
 
 
 void
-_cru_close_getset ()
+_cru_close_getset (void)
 
 	  // Do this when the process exits.
 {
@@ -130,7 +138,7 @@ _cru_set_context (c, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (context_storage, (void *) c) ? IER(1000) : 0);
+  return (pthread_setspecific (context_storage, (void *) c) ? IER(1003) : 0);
 }
 
 
@@ -146,7 +154,7 @@ _cru_set_edges (edge, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(1001) : 0);
+  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(1004) : 0);
 }
 
 
@@ -163,10 +171,8 @@ _cru_set_edge_maps (pair, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(1002) : 0);
+  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(1005) : 0);
 }
-
-
 
 
 
@@ -183,9 +189,8 @@ _cru_set_destructors (destructors, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(1003) : 0);
+  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(1006) : 0);
 }
-
 
 
 
@@ -195,15 +200,33 @@ _cru_set_destructors (destructors, err)
 
 int
 _cru_set_kill_switch (killed, err)
-	  int *killed;
+          int *killed;
+          int *err;
+
+          // Store a kill switch in the thread specific storage area for
+          // kill switches.
+{
+  if (NOMEM)
+         return *err;
+  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(1007) : 0);
+}
+
+
+
+
+
+
+
+int
+_cru_set_storage (t, err)
+	  void *t;
 	  int *err;
 
-	  // Store a kill switch in the thread specific storage area for
-	  // kill switches.
+	  // Store user defined data in the thread specific storage area for them.
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(1004) : 0);
+  return (pthread_setspecific (graph_specific_storage, t) ? IER(1008) : 0);
 }
 
 
@@ -213,7 +236,7 @@ _cru_set_kill_switch (killed, err)
 
 
 context *
-_cru_get_context ()
+_cru_get_context (void)
 
 	  // Retrieve the edge list from thread specific storage.
 {
@@ -229,7 +252,7 @@ _cru_get_context ()
 
 
 edge_list *
-_cru_get_edges ()
+_cru_get_edges (void)
 
 	  // Retrieve the edge list from thread specific storage.
 {
@@ -242,9 +265,8 @@ _cru_get_edges ()
 
 
 
-
 edge_map *
-_cru_get_edge_maps ()
+_cru_get_edge_maps (void)
 
 	  // Retrieve the edge map from thread specific storage.
 {
@@ -257,11 +279,8 @@ _cru_get_edge_maps ()
 
 
 
-
-
-
 cru_destructor_pair
-_cru_get_destructors ()
+_cru_get_destructors (void)
 
 	  // Retrieve the destructors from thread specific storage.
 {
@@ -273,13 +292,24 @@ _cru_get_destructors ()
 
 
 
-
 int *
-_cru_get_kill_switch ()
+_cru_get_kill_switch (void)
 
-	  // Retrieve the kill switch from thread specific storage. This
-	  // function isn't currently used but is included for the sake of
-	  // completeness.
+	  // Retrieve the kill switch from thread specific storage.
 {
   return (int *) pthread_getspecific (killed_storage);
+}
+
+
+
+
+
+
+
+void *
+_cru_get_storage (void)
+
+	  // Retrieve the user defined data from thread specific storage.
+{
+  return (void *) pthread_getspecific (graph_specific_storage);
 }

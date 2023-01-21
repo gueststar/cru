@@ -49,7 +49,7 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // Return 1 if an edge is labeled by the index of the bit in
 	  // which its endpoints differ, and 0 otherwise.
 {
-  return (*err ? 0 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? (! FAIL(4171)) : 1);
+  return (*err ? 0 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? (! FAIL(4187)) : 1);
 }
 
 
@@ -69,7 +69,7 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(4172) : (edges_out != DIMENSION) ? FAIL(4173) : 0);
+  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(4188) : (edges_out != DIMENSION) ? FAIL(4189) : 0);
 }
 
 
@@ -88,7 +88,7 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4174) : (s < r) ? FAIL(4175) : 0) ? 0 : s);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(4190) : (s < r) ? FAIL(4191) : 0) ? 0 : s);
 }
 
 
@@ -115,11 +115,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4176))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(4192))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(4177))
+  if ((cru_edge_count (g, LANES, err) == DIMENSION * NUMBER_OF_VERTICES) ? 0 : FAIL(4193))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4178))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(4194))
 	 return 0;
   return 1;
 }

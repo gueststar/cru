@@ -60,7 +60,7 @@ _cru_open_packets (err)
 
 	  // Initialize pthread resources.
 {
-  return ! (pthread_rwlock_init (&packet_lock, NULL) ? IER(1267) : 0);
+  return ! (pthread_rwlock_init (&packet_lock, NULL) ? IER(1281) : 0);
 }
 
 
@@ -81,12 +81,12 @@ _cru_close_packets ()
 	 {
 		_cru_discount (t->seen_carriers);
 		reserve_packets = t->next_packet;
-		err = (packet_count-- ? err : THE_IER(1268));
+		err = (packet_count-- ? err : THE_IER(1282));
 	 }
   if (packet_count ? (! err) : 0)
-	 err = THE_IER(1269);
+	 err = THE_IER(1283);
   if (pthread_rwlock_destroy (&packet_lock) ? (! err) : 0)
-	 err = THE_IER(1270);
+	 err = THE_IER(1284);
   _cru_globally_throw (err);
 }
 
@@ -115,10 +115,10 @@ new_packet (err)
 {
   packet_list l;
 
-  if ((l = (packet_list) _cru_malloc (sizeof (*l))) ? 1 : pthread_rwlock_wrlock (&packet_lock) ? IER(1271) : 0)
+  if ((l = (packet_list) _cru_malloc (sizeof (*l))) ? 1 : pthread_rwlock_wrlock (&packet_lock) ? IER(1285) : 0)
 	 goto a;
-  l = (((! reserve_packets) ? 1 : packet_count-- ? 0 : IER(1272)) ? NULL : _cru_popped_packet (&reserve_packets, err));
-  if (pthread_rwlock_unlock (&packet_lock) ? IER(1273) : 1)
+  l = (((! reserve_packets) ? 1 : packet_count-- ? 0 : IER(1286)) ? NULL : _cru_popped_packet (&reserve_packets, err));
+  if (pthread_rwlock_unlock (&packet_lock) ? IER(1287) : 1)
 	 RAISE(ENOMEM);
  a: return l;
 }
@@ -223,16 +223,16 @@ _cru_free_packets (p, v, err)
 		  APPLY(v, p->payload);
 		_cru_discount (p->seen_carriers);
 		p = p->next_packet;
-		if (pthread_rwlock_rdlock (&packet_lock) ? IER(1274) : 0)
+		if (pthread_rwlock_rdlock (&packet_lock) ? IER(1288) : 0)
 		  goto a;
 		ok = (packet_count >= RESERVE_PACKET_LIMIT);
-		if (pthread_rwlock_unlock (&packet_lock) ? IER(1275) : ok ? 1 : pthread_rwlock_wrlock (&packet_lock) ? IER(1276) : 0)
+		if (pthread_rwlock_unlock (&packet_lock) ? IER(1289) : ok ? 1 : pthread_rwlock_wrlock (&packet_lock) ? IER(1290) : 0)
 		  goto a;
 		memset (t, 0, sizeof (*t));
 		t->next_packet = reserve_packets;
 		reserve_packets = t;
 		packet_count++;
-		if (pthread_rwlock_unlock (&packet_lock) ? IER(1277) : 1)
+		if (pthread_rwlock_unlock (&packet_lock) ? IER(1291) : 1)
 		  continue;
 	 a: _cru_free (t);
 	 }
@@ -252,11 +252,11 @@ _cru_reserved_packets (err)
 {
   uintptr_t result;
 
-  if (pthread_rwlock_rdlock (&packet_lock) ? IER(1278) : 0)
+  if (pthread_rwlock_rdlock (&packet_lock) ? IER(1292) : 0)
 	 return 0;
   result = packet_count;
   if (pthread_rwlock_unlock (&packet_lock))
-	 IER(1279);
+	 IER(1293);
   return result;
 }
 
@@ -274,7 +274,7 @@ _cru_replenish_packets (err)
   packet_list l;
   int dblx;
 
-  if (pthread_rwlock_wrlock (&packet_lock) ? IER(1280) : 0)
+  if (pthread_rwlock_wrlock (&packet_lock) ? IER(1294) : 0)
 	 return;
   for (dblx = 0; dblx ? 0 : (packet_count < RESERVE_PACKET_LIMIT);)
 	 if ((l = (packet_list) _cru_malloc (sizeof (*l))) ? 1 : ! (dblx = ENOMEM))
@@ -285,7 +285,7 @@ _cru_replenish_packets (err)
 		}
   RAISE(dblx);
   if (pthread_rwlock_unlock (&packet_lock))
-	 IER(1281);
+	 IER(1295);
 }
 
 
@@ -354,7 +354,7 @@ _cru_push_packet (h, t, err)
 
 	  // Concatenate a unit packet list with another packet list.
 {
-  if ((! h) ? 1 : h->next_packet ? IER(1282) : (! t) ? IER(1283) : 0)
+  if ((! h) ? 1 : h->next_packet ? IER(1296) : (! t) ? IER(1297) : 0)
 	 return 0;
   h->next_packet = *t;
   *t = h;
@@ -376,7 +376,7 @@ _cru_popped_packet (p, err)
 {
   packet_list t;
 
-  if ((! p) ? IER(1284) : (! *p) ? IER(1285) : 0)
+  if ((! p) ? IER(1298) : (! *p) ? IER(1299) : 0)
 	 return NULL;
   t = *p;
   *p = (*p)->next_packet;
@@ -403,7 +403,7 @@ _cru_buffered (b, i, d, err)
 	  // in their direction because there isn't enough memory to
 	  // allocate a packet for each one.
 {
-  if ((! b) ? IER(1286) : (! i) ? IER(1287) : b->payload ? 1 : ! ! (b->receiver))
+  if ((! b) ? IER(1300) : (! i) ? IER(1301) : b->payload ? 1 : ! ! (b->receiver))
 	 return 0;
   b->payload = i->payload;
   b->receiver = i->receiver;
@@ -435,7 +435,7 @@ _cru_spun (b, i, d, err)
 	  // payload transplanted because they already are, so the packet
 	  // has to be deferred until after others are freed.
 {
-  if ((! i) ? IER(1288) : (*i != b))
+  if ((! i) ? IER(1302) : (*i != b))
 	 return 0;
   _cru_push_packet (_cru_popped_packet (i, err), d, err);
   return 1;
@@ -458,7 +458,7 @@ _cru_unbuffered (b, i, err)
 	  // messages have been successfully scattered along all outgoing
 	  // edges associated with a previously buffered packet.
 {
-  if ((! i) ? IER(1289) : (! b) ? IER(1290) : (b != *i) ? 1 : _cru_popped_packet (i, err) ? 0 : IER(1291))
+  if ((! i) ? IER(1303) : (! b) ? IER(1304) : (b != *i) ? 1 : _cru_popped_packet (i, err) ? 0 : IER(1305))
 	 return 0;
   memset (b, 0, sizeof (*b));
   return 1;

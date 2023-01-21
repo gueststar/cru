@@ -64,7 +64,7 @@ unique (e, s, err)
   edge_list r;            // cumulative unique edges
   int ux, ut;
 
-  if (s ? 0 : IER(573))
+  if (s ? 0 : IER(574))
 	 return NULL;
   t = _cru_rallied (s->orders.e_order.hash, s->orders.e_order.equal, &e, err);
   _cru_free_edges_and_termini (&(s->destructors), e, err);
@@ -113,21 +113,21 @@ _cru_reach_extant_node (i, c, b, d, err)
   edge_list *new_edges_out;
   edge_list extant_edges_out;
 
-  if ((! i) ? IER(574) : (! *i) ? IER(575) : (! ((*i)->carrier)) ? IER(576) : c ? 0 : IER(577))
+  if ((! i) ? IER(575) : (! *i) ? IER(576) : (! ((*i)->carrier)) ? IER(577) : c ? 0 : IER(578))
 	 goto a;
-  if ((! b) ? IER(578) : (new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(579))
+  if ((! b) ? IER(579) : (new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(580))
 	 goto b;
   if (b->bu_sig.destructors.v_free ? (*i)->payload : NULL)           // get rid of the extra copy of the vertex
 	 APPLY(b->bu_sig.destructors.v_free, (*i)->payload);
   (*i)->payload = NULL;
-  if (((n = c->receiver)) ? 0 : IER(580))
+  if (((n = c->receiver)) ? 0 : IER(581))
 	 goto b;
-  if (b->connector ? (b->subconnector ? IER(581) : 1) : 0)
+  if (b->connector ? (b->subconnector ? IER(582) : 1) : 0)
 	 goto b;
-  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(582)) : IER(583))
+  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(583)) : IER(584))
 	 goto b;
   h = (b->bu_sig.orders.e_order.hash) (l = (*i)->carrier->label);
-  if ((*i)->initial ? IER(584) : _cru_already_recorded (h, b->bu_sig.orders.e_order.equal, l, c->seen_carriers, err))
+  if ((*i)->initial ? IER(585) : _cru_already_recorded (h, b->bu_sig.orders.e_order.equal, l, c->seen_carriers, err))
 	 goto b;
   _cru_record_edge (h, b->bu_sig.orders.e_order.equal, l, &(c->seen_carriers), err);
   APPLY(b->subconnector, NOT_INITIAL, l, c->receiver->vertex);                                  // make new edges
@@ -172,19 +172,19 @@ _cru_reached_new_node (i, b, q, d, err)
   void *l;                // incident edge label
   int ux;
 
-  if ((! i) ? IER(585) : (! *i) ? IER(586) : (! b) ? IER(587) : 0)
+  if ((! i) ? IER(586) : (! *i) ? IER(587) : (! b) ? IER(588) : 0)
 	 goto a;
-  if (((! (b->connector)) == ! (b->subconnector)) ? IER(588) : 0)
+  if (((! (b->connector)) == ! (b->subconnector)) ? IER(589) : 0)
 	 goto a;
-  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(589)) : 0)
+  if (b->subconnector ? (b->bu_sig.orders.e_order.hash ? 0 : IER(590)) : 0)
 	 goto a;
-  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(590))
+  if ((new_edges_out = _cru_get_edges ()) ? (! ! (*new_edges_out = NULL)) : IER(591))
 	 goto a;
   if (b->connector)
 	 APPLY(b->connector, (*i)->payload);
   else if ((*i)->initial)
 	 APPLY(b->subconnector, INITIAL, NO_INCIDENT_EDGE_LABEL, (*i)->payload);
-  else if ((*i)->carrier ? 0 : IER(591))
+  else if ((*i)->carrier ? 0 : IER(592))
 	 goto a;
   else
 	 {
@@ -251,18 +251,20 @@ _cru_building_task (source, err)
   x = BUILDING;
   collisions = NULL;
   new_edges_out = NULL;
-  if ((! source) ? IER(592) : (source->gruntled != PORT_MAGIC) ? IER(593) : 0)
+  if ((! source) ? IER(593) : (source->gruntled != PORT_MAGIC) ? IER(594) : 0)
 	 return NULL;
-  if ((!(r = source->local)) ? IER(594) : (r->valid != ROUTER_MAGIC) ? IER(595) : 0)
+  if ((!(r = source->local)) ? IER(595) : (r->valid != ROUTER_MAGIC) ? IER(596) : 0)
 	 return NULL;
   b = &(r->builder);
-  if ((!(d = source->peers)) ? IER(596) : (r->tag != BUI) ? IER(597) : ! (s = &(b->bu_sig)))
+  if ((!(d = source->peers)) ? IER(597) : (r->tag != BUI) ? IER(598) : ! (s = &(b->bu_sig)))
 	 goto a;
-  if ((s->orders.v_order.equal) ? 0 : IER(598))
+  if ((s->orders.v_order.equal) ? 0 : IER(599))
 	 goto a;
-  if (_cru_set_destructors (&(b->bu_sig.destructors), err) ? 1 : _cru_set_kill_switch (&(r->killed), err) ? 1 : 0)
+  if (_cru_set_destructors (&(b->bu_sig.destructors), err))
 	 goto a;
-  if (_cru_set_context (&x, err) ? 1 : _cru_set_edges (&new_edges_out, err) ? 1 : 0)
+  if (_cru_set_context (&x, err) ? 1 : _cru_set_storage (r->ro_store, err) ? 1 : _cru_set_edges (&new_edges_out, err))
+	 goto a;
+  if (_cru_set_kill_switch (&(r->killed), err))
 	 goto a;
   limit = b->bu_sig.vertex_limit / r->lanes;
   limit = (limit ? limit : b->bu_sig.vertex_limit ? 1 : 0);
@@ -294,10 +296,10 @@ _cru_building_task (source, err)
   if ((! q) ? 0 : *err ? 0 : ! (b->connector))
 	 for (n = q->front; n; n = n->next_node)
 		n->edges_out = _cru_deduplicated_edges (n->edges_out, &(b->bu_sig.orders.e_order), b->bu_sig.destructors.e_free, err);
-  if (*err)
-	 _cru_free_node_queue (q, &(s->destructors), err);
-  return (*err ? NULL : q);
- a: return _cru_abort_packets (source, d, &(r->ro_sig.destructors), err);
+  if (! *err)
+	 return q;
+ a: _cru_free_node_queue (q, &(s->destructors), err);
+  return _cru_abort_packets (source, d, &(r->ro_sig.destructors), err);
 }
 
 
@@ -323,7 +325,7 @@ _cru_built (v, k, r, err)
 
   g = NULL;
   _cru_disable_killing (k, err);
-  if ((! r) ? IER(599) : (r->valid != ROUTER_MAGIC) ? IER(600) : (! (r->ro_sig.orders.v_order.hash)) ? IER(601) : 0)
+  if ((! r) ? IER(600) : (r->valid != ROUTER_MAGIC) ? IER(601) : (! (r->ro_sig.orders.v_order.hash)) ? IER(602) : 0)
 	 goto a;
   if (! _cru_graph_launched (k, v, (r->ro_sig.orders.v_order.hash) (v), r, &g, err))
 	 if (v ? r->ro_sig.destructors.v_free : NULL)

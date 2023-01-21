@@ -57,7 +57,7 @@ _cru_open_wrap (int *err);
 
 // release pthread resources and report errors to stderr
 extern void
-_cru_close_wrap ();
+_cru_close_wrap (void);
 
 // --------------- wrapper functions -----------------------------------------------------------------------
 

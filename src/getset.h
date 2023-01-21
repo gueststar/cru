@@ -32,7 +32,7 @@ extern "C"
 // library functions can set or clear a context and raise an error if
 // user code calls a control function before or afterwards
 
-typedef enum {IDLE, BUILDING, STRETCHING} context;
+typedef enum {IDLE, BUILDING, STRETCHING, GENERAL} context;
 
 extern int
 _cru_open_getset (int *err);
@@ -41,34 +41,40 @@ extern int
 _cru_set_context (context *c, int *err);
 
 extern context *
-_cru_get_context ();
+_cru_get_context (void);
 
 extern int
 _cru_set_edges (edge_list *edge, int *err);
 
 extern edge_list *
-_cru_get_edges ();
+_cru_get_edges (void);
 
 extern int
 _cru_set_edge_maps (edge_map *pair, int *err);
 
 extern edge_map *
-_cru_get_edge_maps ();
+_cru_get_edge_maps (void);
 
 extern int
 _cru_set_destructors (cru_destructor_pair destructors, int *err);
 
 extern cru_destructor_pair
-_cru_get_destructors ();
+_cru_get_destructors (void);
 
 extern int
 _cru_set_kill_switch (int *killed, int *err);
 
 extern int *
-_cru_get_kill_switch ();
+_cru_get_kill_switch (void);
+
+extern int
+_cru_set_storage (void *t, int *err);
+
+extern void *
+_cru_get_storage (void);
 
 extern void
-_cru_close_getset ();
+_cru_close_getset (void);
 
 #ifdef __cplusplus
 }

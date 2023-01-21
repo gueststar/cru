@@ -145,12 +145,12 @@ example because `cru` infers reasonable defaults.
 ## API overview
 
 Most API functions fit within the broad categories of building,
-control, analysis, classification, graph expansion, graph contraction,
-graph surgery, and reclamation. Most take a pointer to a `struct` like
-the `builder` above for additional options and fields specifying
-necessary user supplied functions. `Cru` ships with comprehensive
-documentation in `man` pages installed automatically and accessible
-off line on your development workstation, as well as [html
+control, attribution, analysis, classification, graph expansion, graph
+contraction, graph surgery, and reclamation. Most take a pointer to a
+`struct` like the `builder` above for additional options and fields
+specifying necessary user supplied functions. `Cru` ships with
+comprehensive documentation in `man` pages installed automatically and
+accessible off line on your development workstation, as well as [html
 documentation](https://gueststar.github.io/cru_docs/cru.html) both
 readable online and easily self-hostable, but here is a bird's eye
 view.
@@ -216,6 +216,27 @@ vertices between given vertices.
 * [`cru_kill`](https://gueststar.github.io/cru_docs/cru_kill.html) --
   terminate a job in progress using the kill switch previously passed
   to the API function that started it
+
+### Attribution
+
+The `cru_set` and `cru_get` functions serves as a way of passing
+additional parameters to user-defined predicates and operators called
+by cru library functions so that they need not depend entirely on
+their operands in the graph. Using `cru_set` to assign a value enables
+any user-defined callback function to retrieve that value by `cru_get`
+during the graph transformation.
+
+* [`cru_set`](https://gueststar.github.io/cru_docs/cru_set.html)
+  -- associate an arbitrary attribute with a graph
+
+* [`cru_get`](https://gueststar.github.io/cru_docs/cru_get.html)
+  -- retrieve an attribute previously associated with the current graph
+
+* [`cru_killed`](https://gueststar.github.io/cru_docs/cru_killed.html)
+  -- query the kill state of the current graph operation
+
+Although long-running callback functions are not pre-emptively stopped,
+they can poll `cru_killed` to detect kill events and stop themselves.
 
 ### Analysis
 
@@ -447,8 +468,8 @@ For the reassurance of users and the convenience of developers,
 here is a moderately detailed description of how `cru` is tested.
 
 There are 58 test programs at last count to exercise the API by
-building operating on graphs and partitions. The tests build graphs of
-a fixed size determined by the `DIMENSION` constant in 
+building and operating on graphs and partitions. The tests build
+graphs of a fixed size determined by the `DIMENSION` constant in
 [readme.h](https://github.com/gueststar/cru/blob/main/test/readme.h)
 under the `test` directory, with the number of threads fixed by the
 `LANES` constant. The test suite ships with these constants set to low

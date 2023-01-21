@@ -12,11 +12,11 @@
 // range of negative numbers reserved for all user-facing and internal error codes
 #define CRU_MIN_ERR 512
 #define CRU_INT_ERR (CRU_UNDVPR - 1)
-#define CRU_MAX_ERR 1776
+#define CRU_MAX_ERR 1792
 
 // internal error codes precede this number and test failure codes start from it
-#define CRU_MIN_FAIL 1777
-#define CRU_MAX_FAIL 6277
+#define CRU_MIN_FAIL 1793
+#define CRU_MAX_FAIL 6293
 
 // --------------- invalid api function parameters ---------------------------------------------------------
 
@@ -51,39 +51,40 @@
 
 // --------------- null api function parameters ------------------------------------------------------------
 
-#define CRU_NULCLS (-531)
-#define CRU_NULCSF (-532)
-#define CRU_NULKIL (-533)
-#define CRU_NULPRT (-534)
+#define CRU_NULGPH (-531)
+#define CRU_NULCLS (-532)
+#define CRU_NULCSF (-533)
+#define CRU_NULKIL (-534)
+#define CRU_NULPRT (-535)
 
 // --------------- partitioning errors ---------------------------------------------------------------------
 
-#define CRU_PARDPV (-535)
-#define CRU_PARVNF (-536)
+#define CRU_PARDPV (-536)
+#define CRU_PARVNF (-537)
 
 // --------------- type conflicts --------------------------------------------------------------------------
 
-#define CRU_TPCMPR (-537)
-#define CRU_TPCMUT (-538)
+#define CRU_TPCMPR (-538)
+#define CRU_TPCMUT (-539)
 
 // --------------- undefined required fields ---------------------------------------------------------------
 
-#define CRU_UNDANA (-539)
-#define CRU_UNDCAT (-540)
-#define CRU_UNDCBO (-541)
-#define CRU_UNDCON (-542)
-#define CRU_UNDCQO (-543)
-#define CRU_UNDCTO (-544)
-#define CRU_UNDEFB (-545)
-#define CRU_UNDEPR (-546)
-#define CRU_UNDEQU (-547)
-#define CRU_UNDEXP (-548)
-#define CRU_UNDHSH (-549)
-#define CRU_UNDMAP (-550)
-#define CRU_UNDPOP (-551)
-#define CRU_UNDRED (-552)
-#define CRU_UNDVAC (-553)
-#define CRU_UNDVFB (-554)
-#define CRU_UNDVPR (-555)
+#define CRU_UNDANA (-540)
+#define CRU_UNDCAT (-541)
+#define CRU_UNDCBO (-542)
+#define CRU_UNDCON (-543)
+#define CRU_UNDCQO (-544)
+#define CRU_UNDCTO (-545)
+#define CRU_UNDEFB (-546)
+#define CRU_UNDEPR (-547)
+#define CRU_UNDEQU (-548)
+#define CRU_UNDEXP (-549)
+#define CRU_UNDHSH (-550)
+#define CRU_UNDMAP (-551)
+#define CRU_UNDPOP (-552)
+#define CRU_UNDRED (-553)
+#define CRU_UNDVAC (-554)
+#define CRU_UNDVFB (-555)
+#define CRU_UNDVPR (-556)
 
 #endif

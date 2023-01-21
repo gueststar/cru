@@ -32,12 +32,23 @@ struct cru_graph_s
   node_list base_node;            // the node from which all other nodes are reachable through outgoing edges
   node_list nodes;                // a list whereby all nodes in the graph are accessible in an unspecified order
   struct cru_sig_s g_sig;         // description of the graph to be updated when built, merged, or mutated
+  void *g_store;                  // user defined storage associated with a graph
 };
 
 #ifdef __cplusplus
 extern "C"
 {
 #endif
+
+// --------------- initialization and teardown -------------------------------------------------------------
+
+// initialize pthread resources
+extern int
+_cru_open_graph (int *err);
+
+// done when the process exits
+extern void
+_cru_close_graph (void);
 
 // --------------- allocation ------------------------------------------------------------------------------
 
@@ -76,6 +87,16 @@ _cru_compatible (cru_graph g, cru_kernel b, int *err);
 // return non-zero both have all the same fields
 extern int
 _cru_identical (cru_sig l, cru_sig r, int *err);
+
+// --------------- storage ---------------------------------------------------------------------------------
+
+// associate arbitrary user-defined data with a graph
+extern void
+_cru_store (cru_graph g, void *s, int *err);
+
+// retrieve user-defined data previously associated with a graph
+extern void *
+_cru_retrieval (cru_graph g, int *err);
 
 #ifdef __cplusplus
 }

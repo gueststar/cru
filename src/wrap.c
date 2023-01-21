@@ -141,7 +141,7 @@ file_name (p, t, err)
 
   char *f;
 
-  if ((! t) ? IER(1714) : p ? 0 : IER(1715))
+  if ((! t) ? IER(1730) : p ? 0 : IER(1731))
 	 return NULL;
   for (f = p; *p; f = ((*(p++) == PATH_SEPARATOR) ? p : f));
   *t = ((strlen (f = (*f ? f : p))) < TAB_LENGTH) ? "\t" : "";
@@ -203,7 +203,7 @@ _cru_close_wrap ()
 			 fprintf (stderr, ((tracker[i][j]).count > 1) ? "%s\t\t(%lu times)\n" : "\n", t, (tracker[i][j]).count);
 			 err = (err ? err : CRU_DEVMLK);
 		  }
-  _cru_globally_throw ((! initialized) ? THE_IER(1716) : pthread_mutex_destroy (&wrap_lock) ? THE_IER(1717) : 0);
+  _cru_globally_throw ((! initialized) ? THE_IER(1732) : pthread_mutex_destroy (&wrap_lock) ? THE_IER(1733) : 0);
 #endif
 }
 
@@ -232,7 +232,7 @@ _cru_malloc_wrapper (line, file, s)
 	  // limit, or if soft limits are in effect, then only if the count
 	  // is not at the limit. The file names and line numbers of the
 	  // first denied allocations up to TEST_LIMIT are saved for
-	  // reporting on exit.  A record of memory in use indexed by size
+	  // reporting on exit. A record of memory in use indexed by size
 	  // and source file is kept in the heap tracker.
 {
   int err;
@@ -246,34 +246,34 @@ _cru_malloc_wrapper (line, file, s)
 #else
   if (! initialized)
 	 return malloc (s);
-  if ((err = (pthread_mutex_lock (&wrap_lock) ? THE_IER(1718) : 0)))
+  if ((err = (pthread_mutex_lock (&wrap_lock) ? THE_IER(1734) : 0)))
 	 goto a;
-  if (s ? 0 : (err = THE_IER(1719)))
+  if (s ? 0 : (err = THE_IER(1735)))
 	 goto b;
 #ifdef SOFT_LIMIT
   if (test_count ? (malloc_call_count += ! ! (p = malloc (s))) : 0)
 	 goto c;
 #else
-  if ((malloc_call_count > malloc_calls_allowed) ? (err = THE_IER(1720)) : 0)
+  if ((malloc_call_count > malloc_calls_allowed) ? (err = THE_IER(1736)) : 0)
 	 goto b;
 #endif
   if (! ((malloc_call_count < malloc_calls_allowed) ? (malloc_call_count += ! ! (p = malloc (s))) : 0))
 	 goto d;
- c: if ((s >>= QUANTUM) ? 0 : (err = THE_IER(1721)))
+ c: if ((s >>= QUANTUM) ? 0 : (err = THE_IER(1737)))
 	 goto b;
-  if ((--s >= SIZE_LIMIT) ? 1 : (t = tracker[s]) ? 0 : (err = THE_IER(1722)))
+  if ((--s >= SIZE_LIMIT) ? 1 : (t = tracker[s]) ? 0 : (err = THE_IER(1738)))
 	 goto b;
   for (i = 0; i < MALLOX; i++)
 	 if ((((t[i]).caller == file) ? 1 : (t[i]).caller ? 0 : ! ! ((t[i]).caller = file)) ? ++((t[i]).count) : 0)
 		break;
-  err = ((i >= MALLOX) ? THE_IER(1723) : (t[i]).count ? 0 : THE_IER(1724));
+  err = ((i >= MALLOX) ? THE_IER(1739) : (t[i]).count ? 0 : THE_IER(1740));
   goto b;
  d: if ((test_count >= TEST_LIMIT) ? test_count++ : 0)
 	 goto b;
   test_file[test_count] = file;
   test_line[test_count++] = line;
  b: if (pthread_mutex_unlock (&wrap_lock) ? (! err) : 0)
-	 err = THE_IER(1725);
+	 err = THE_IER(1741);
 #endif
  a: _cru_globally_throw (err);
   return p;
@@ -311,11 +311,11 @@ _cru_free_wrapper (line, file, s, p)
 	 goto a;
   free (p);
   return;
- a: if ((err = (pthread_mutex_lock (&wrap_lock) ? THE_IER(1726) : 0)))
+ a: if ((err = (pthread_mutex_lock (&wrap_lock) ? THE_IER(1742) : 0)))
 	 goto b;
-  if ((s >>= QUANTUM) ? 0 : (err = THE_IER(1727)))
+  if ((s >>= QUANTUM) ? 0 : (err = THE_IER(1743)))
 	 goto d;
-  if ((--s >= SIZE_LIMIT) ? 1 : (t = tracker[s]) ? 0 : (err = THE_IER(1728)))
+  if ((--s >= SIZE_LIMIT) ? 1 : (t = tracker[s]) ? 0 : (err = THE_IER(1744)))
 	 goto d;
   for (i = 0; (i < MALLOX) ? ((t[i]).caller ? ((t[i]).caller != file) : 0) : 0; i++);
   if (! (((i < MALLOX) ? (t[i]).count : 0) ? (! ((t[i]).count)--) : (double_free = err = CRU_DEVDBF)))
@@ -328,7 +328,7 @@ _cru_free_wrapper (line, file, s, p)
  d: free_call_count++;
  c: free (p);
   if (pthread_mutex_unlock (&wrap_lock) ? (! err) : 0)
-	 err = THE_IER(1729);
+	 err = THE_IER(1745);
 #endif
  b: _cru_globally_throw ((err == CRU_DEVDBF) ? 0 : err);
 }
@@ -371,15 +371,15 @@ _cru_allocation_allowed (line, file, err)
 #else
   if (! initialized)
 	 return 1;
-  if (pthread_mutex_lock (&wrap_lock) ? IER(1730) : 0)
+  if (pthread_mutex_lock (&wrap_lock) ? IER(1746) : 0)
 	 goto a;
-  if (double_free ? RAISE(CRU_DEVDBF) : (free_call_count > malloc_call_count) ? IER(1731) : 0)
+  if (double_free ? RAISE(CRU_DEVDBF) : (free_call_count > malloc_call_count) ? IER(1747) : 0)
 	 goto b;
 #ifdef SOFT_LIMIT
   if (test_count ? (malloc_call_count += ! ! (free_call_count += ! ! (result = 1))) : 0)
 	 goto b;
 #else
-  if ((malloc_call_count > malloc_calls_allowed) ? IER(1732) : 0)
+  if ((malloc_call_count > malloc_calls_allowed) ? IER(1748) : 0)
 	 goto b;
 #endif
   if ((malloc_call_count < malloc_calls_allowed) ? (malloc_call_count += ! ! (free_call_count += ! ! (result = 1))) : 0)
@@ -390,7 +390,7 @@ _cru_allocation_allowed (line, file, err)
   test_line[test_count++] = line;
  c: RAISE(ENOMEM);
  b: if (pthread_mutex_unlock (&wrap_lock))
-	 IER(1733);
+	 IER(1749);
 #endif
  a: return result;
 }
@@ -413,12 +413,12 @@ _crudev_limit_allocations (limit, err)
 #ifndef WRAP
   RAISE(CRU_DEVPBL);
 #else
-  if ((! initialized) ? IER(1734) : pthread_mutex_lock (&wrap_lock) ? IER(1735) : 0)
+  if ((! initialized) ? IER(1750) : pthread_mutex_lock (&wrap_lock) ? IER(1751) : 0)
 	 return;
   if (! ((limit < malloc_call_count) ? RAISE(CRU_DEVIAL) : 0))
 	 malloc_calls_allowed = limit;
   if (pthread_mutex_unlock (&wrap_lock))
-	 IER(1736);
+	 IER(1752);
 #endif
 }
 
@@ -446,11 +446,11 @@ _crudev_allocations_performed (err)
   result = 0;
   RAISE(CRU_DEVPBL);
 #else
-  if ((! initialized) ? IER(1737) : *err ? 1 : pthread_mutex_lock (&wrap_lock) ? IER(1738) : 0)
+  if ((! initialized) ? IER(1753) : *err ? 1 : pthread_mutex_lock (&wrap_lock) ? IER(1754) : 0)
 	 return 0;
   result = malloc_call_count;
  a: if (pthread_mutex_unlock (&wrap_lock))
-	 IER(1739);
+	 IER(1755);
 #endif
   return result;
 }
@@ -486,17 +486,17 @@ _crudev_all_clear (err)
 #ifdef WRAP
   uintptr_t reserved;
 
-  if (initialized ? 0 : IER(1740))
+  if (initialized ? 0 : IER(1756))
 	 goto a;
   reserved = _cru_reserved_packets (err) + _cru_reserved_crews (err);
-  if (*err ? 1 : pthread_mutex_lock (&wrap_lock) ? IER(1741) : 0)
+  if (*err ? 1 : pthread_mutex_lock (&wrap_lock) ? IER(1757) : 0)
 	 goto a;
-  if (double_free ? RAISE(CRU_DEVDBF) : (free_call_count > malloc_call_count) ? IER(1742) : 0)
+  if (double_free ? RAISE(CRU_DEVDBF) : (free_call_count > malloc_call_count) ? IER(1758) : 0)
 	 goto b;
   if (free_call_count + reserved < malloc_call_count)
 	 RAISE(CRU_DEVMLK);
  b: if (pthread_mutex_unlock (&wrap_lock))
-	 IER(1743);
+	 IER(1759);
 #endif
  a: return ! *err;
 }

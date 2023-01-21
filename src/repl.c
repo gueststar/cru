@@ -33,7 +33,7 @@ _cru_undefined_hash (v)
 
 	  // Complain and return no hash at all.
 {
-  _cru_globally_throw (THE_IER(1421));
+  _cru_globally_throw (THE_IER(1435));
   return 0;
 }
 
@@ -74,7 +74,7 @@ _cru_undefined_bpred (x, y, err)
 
 	  // Always raise an error and return zero.
 {
-  IER(1422);
+  IER(1436);
   return 0;
 }
 
@@ -183,7 +183,7 @@ _cru_undefined_nop (err)
 
 	  // Unconditionally raise an error.
 {
-  IER(1423);
+  IER(1437);
   return NULL;
 }
 
@@ -230,7 +230,7 @@ _cru_undefined_bop (x, y, err)
 {
   cru_destructor d;
 
-  IER(1424);
+  IER(1438);
   return NULL;
 }
 
@@ -310,7 +310,7 @@ _cru_undefined_top (l, m, r, err)
 
 	  // Unconditionally raise an internal error and return NULL.
 {
-  IER(1425);
+  IER(1439);
   return NULL;
 }
 

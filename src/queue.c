@@ -74,7 +74,7 @@ _cru_nodes_of (q, err)
   if ((result = q->front))
 	 result->previous = NULL;
   RAISE(q->qu_status);
-  q->qu_status = THE_IER(1409);
+  q->qu_status = THE_IER(1423);
   _cru_free (q);
   return result;
 }
@@ -120,15 +120,15 @@ _cru_enqueued_node (new_node, q, err)
 
 	  // Put a new node into a node queue at the end.
 {
-  if ((! q) ? IER(1410) : 0)
+  if ((! q) ? IER(1424) : 0)
 	 return 0;
-  if ((! new_node) ? 1 : new_node->next_node ? IER(1411) : new_node->previous ? IER(1412) : 0)
+  if ((! new_node) ? 1 : new_node->next_node ? IER(1425) : new_node->previous ? IER(1426) : 0)
 	 return 0;
   if (*q ? NULL : (*q = (node_queue) _cru_malloc (sizeof (**q))))
 	 memset (*q, 0, sizeof (**q));
   else if (*q ? 0 : RAISE(ENOMEM))
 	 return 0;
-  if (((!((*q)->front)) != !((*q)->back)) ? IER(1413) : (!((*q)->back)) ? 0 : (*q)->back->next_node ? IER(1414) : 0)
+  if (((!((*q)->front)) != !((*q)->back)) ? IER(1427) : (!((*q)->back)) ? 0 : (*q)->back->next_node ? IER(1428) : 0)
 	 return 0;
   if ((*q)->back)
 	 {
@@ -159,11 +159,11 @@ _cru_append_nodes (q, r, err)
 
 	  // Append one node queue to another.
 {
-  if (q ? 0 : IER(1415))
+  if (q ? 0 : IER(1429))
 	 return 0;
   if ((! r) ? 1 : *q ? 0 : ! ! (*q = r))
 	 return 1;
-  if (((!(r->front)) != ! (r->back)) ? IER(1416) : ((!((*q)->front)) != !((*q)->back)) ? IER(1417) : 0)
+  if (((!(r->front)) != ! (r->back)) ? IER(1430) : ((!((*q)->front)) != !((*q)->back)) ? IER(1431) : 0)
 	 return 0;
   (*q)->qu_status = ((*q)->qu_status ? (*q)->qu_status : r->qu_status);
   if ((! (r->front)) ? (! ((*q)->front)) : 0)
@@ -175,7 +175,7 @@ _cru_append_nodes (q, r, err)
 		(*q)->front->previous = &((*q)->front);
 		goto a;
 	 }
-  if (r->back->next_node ? IER(1418) : (*q)->back->next_node ? IER(1419) : (r->front->previous != &(r->front)) ? IER(1420) : 0)
+  if (r->back->next_node ? IER(1432) : (*q)->back->next_node ? IER(1433) : (r->front->previous != &(r->front)) ? IER(1434) : 0)
 	 return 0;
   (*q)->back->next_node = r->front;
   r->front->previous = &((*q)->back->next_node);

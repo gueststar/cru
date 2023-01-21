@@ -64,7 +64,7 @@ _cru_open_killers (int *err);
 
 // release static storage
 extern void
-_cru_close_killers ();
+_cru_close_killers (void);
 
 // --------------- kill switch operations ------------------------------------------------------------------
 
