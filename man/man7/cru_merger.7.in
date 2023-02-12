@@ -73,7 +73,7 @@ in the
 field.
 .P
 The sets of edges the kernel reduces are determined by the classes of
-mutually related vertices, and the result of reducing of a set of
+mutually related vertices, and the result of reducing a set of
 edges is allowed to depend on the results of reducing the classes
 containing the edges' origins and termini.
 .TP

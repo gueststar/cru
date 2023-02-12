@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.10.8
+  cru VERSION 0.10.9
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -131,7 +131,7 @@ execute_process(
   OUTPUT_VARIABLE MALLOX
   WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src
   COMMAND ${CMAKE_COMMAND} -E env ${FIND} . -name "*.c"
-  COMMAND ${CMAKE_COMMAND} -E env ${XARGS} ${GREP} -l ")\\ _cru_malloc"
+  COMMAND ${CMAKE_COMMAND} -E env ${XARGS} ${GREP} -l ")\ _cru_malloc"
   COMMAND ${CMAKE_COMMAND} -E env ${SED} -n $=
   OUTPUT_STRIP_TRAILING_WHITESPACE)
 
