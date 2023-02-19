@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.10.9
+  cru VERSION 0.10.10
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -52,7 +52,7 @@ elseif (CMAKE_C_COMPILER_ID MATCHES GNU)
          -Wnull-dereference -Wstack-protector -Wtrampolines -Walloca -Wvla
          -Warray-bounds=2 -Wimplicit-fallthrough=3 -Wtraditional-conversion
          -Wshift-overflow=2 -Wcast-qual -Wstringop-overflow=4 -Wconversion
-         -Warith-conversion -Wlogical-op -Wduplicated-cond -Wformat-signedness -Wshadow
+         -Wlogical-op -Wduplicated-cond -Wformat-signedness -Wshadow
          -Wstrict-overflow=4 -Wundef -Wswitch-default -Wswitch-enum
          -Wstack-usage=1000000 -Wcast-align=strict -fstack-protector-strong
          -fstack-clash-protection -fPIC -Wl,-z,relro -Wl,-z,now -Wl,-z,noexecstack
