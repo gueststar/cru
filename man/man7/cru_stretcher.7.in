@@ -47,7 +47,7 @@ operands, respectively.
 For each call to the
 .BR cru_stretch
 library function the predicate makes before returning, a new vertex
-inserted between the origin and the terminus, connected to them by two
+is inserted between the origin and the terminus and connected to them by two
 new edges with labels given by the parameters passed to
 .BR cru_stretch.
 .TP

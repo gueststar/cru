@@ -1,6 +1,6 @@
 .TH CRU_STRETCH 3 @DATE_VERSION_TITLE@
 .SH NAME
-cru_connect \- connect a new edge and a new vertex to a graph
+cru_stretch \- insert a new vertex between two vertices in a graph
 .SH SYNOPSIS
 #include <cru/cru.h>
 .sp

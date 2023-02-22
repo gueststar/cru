@@ -477,6 +477,7 @@ cru_vertex_count (g, lanes, err)
 	 goto x;
   if ((lanes > 1) ? _cru_counted (&count, g->base_node, _cru_router ((task) _cru_node_counting_task, lanes, err), err) : 0)
 	 goto x;
+  count = 0;
   for (n = g->nodes; n; n = n->next_node)
 	 count++;
  x: return count;
@@ -506,6 +507,7 @@ cru_terminus_count (g, lanes, err)
 	 goto x;
   if ((lanes > 1) ? _cru_counted (&count, g->base_node, _cru_router ((task) _cru_terminus_counting_task, lanes, err), err) : 0)
 	 goto x;
+  count = 0;
   for (n = g->nodes; n; n = n->next_node)
 	 count += ! (n->edges_out);
  x: return count;
@@ -536,6 +538,7 @@ cru_edge_count (g, lanes, err)
 	 goto x;
   if ((lanes > 1) ? _cru_counted (&count, g->base_node, _cru_router ((task) _cru_edge_counting_task, lanes, err), err) : 0)
 	 goto x;
+  count = 0;
   for (n = g->nodes; n; n = n->next_node)
 	 for (e = n->edges_out; e; e = e->next_edge)
 		count++;

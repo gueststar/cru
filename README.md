@@ -624,12 +624,12 @@ whatever form befits modern programming paradigms. That way your
 favorite language will attract more of a community by being able to do
 things most people's favorite languages can't.
 
-[^1]: Robert Ryan McCune, Tim Weninger, and Greg Madey. 2015. Thinking
+[^1]: Robert Ryan McCune, Tim Weninger, and Greg Madey. Thinking
   like a vertex: A survey of vertex-centric frameworks for
   large-scale distributed graph processing. ACM Comput. Surv. 48, 2,
   Article 25 (October 2015), 39 pages. DOI:
   http://dx.doi.org/10.1145/2818185
-[^2]: Stephen Kell Some were meant for C. Onward! 2017:
+[^2]: Stephen Kell. Some were meant for C. Onward! 2017:
   Proceedings of the 2017 ACM SIGPLAN International Symposium on New
   Ideas, New Paradigms, and Reflections on Programming and Software
   (October 2017), Pages 229–245. DOI:
