@@ -51,7 +51,7 @@ is consumed and should not be accessed or reclaimed afterwards.
 On successful completion, the returned value is a pointer to a graph
 derived from
 .I g
-collecting the vertices and edges into classes as specified by the
+by collecting the vertices and edges into classes as specified by the
 given
 .BR cru_merger
 structure

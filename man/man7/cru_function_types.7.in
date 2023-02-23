@@ -107,7 +107,7 @@ reported to the API function's caller. The order of detection is
 generally non-deterministic.
 .TP
 *
-In addition reporting POSIX standard error codes such as those defined in
+In addition to reporting POSIX standard error codes such as those defined in
 .I <errno.h>,
 applications may use arbitrary non-clashing error codes for any
 purpose.  However, negative integers from -1 down to
