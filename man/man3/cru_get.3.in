@@ -12,7 +12,7 @@ When called from within any user-written callback function invoked by
 a
 .BR cru
 library function operating on a graph, this function retrieves an
-attribute previously associated the graph by
+attribute previously associated with the graph by
 .BR cru_set.
 The relevant graph is determined automatically provided that
 .BR cru_get
