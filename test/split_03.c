@@ -580,7 +580,7 @@ valid (g, err)
 	  // the hard way by using redexes for numbers.
 {
 #define V (NUMBER_OF_VERTICES + (NUMBER_OF_VERTICES >> 1))
-#define E (NUMBER_OF_VERTICES * DIMENSION)
+#define E (NUMBER_OF_VERTICES * ((uintptr_t) DIMENSION))
 
   struct cru_mapreducer_s m = {
 	 .ma_prop = {

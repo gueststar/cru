@@ -15,7 +15,7 @@
 #define EDGE_MAGIC 1815008869
 #define REDEX_MAGIC 1845352406
 
-#define DEGREE ((DIMENSION - 1) << 1)
+#define DEGREE ((((uintptr_t) DIMENSION) - 1) << 1)
 
 // a count of allocated edges to detect memory leaks
 static uintptr_t edge_count;

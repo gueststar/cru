@@ -572,7 +572,7 @@ valid (g, err)
 	  // the hard way by using redexes for numbers.
 {
 #define V (1 << (DIMENSION - 1))
-#define E (V * (DIMENSION - 1))
+#define E (V * (((uintptr_t) DIMENSION) - 1))
 
   struct cru_mapreducer_s m = {
 	 .ma_prop = {

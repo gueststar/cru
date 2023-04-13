@@ -12,7 +12,7 @@
 #include "readme.h"
 
 // the number of adjacent vertices to each vertex after postponement
-#define DEGREE ((((DIMENSION >> 1) * ((DIMENSION >> 1) + 3)) >> 1) + (DIMENSION & 1))
+#define DEGREE ((((((uintptr_t) DIMENSION) >> 1) * ((((uintptr_t) DIMENSION) >> 1) + 3)) >> 1) + (DIMENSION & 1))
 
 #define VERTEX_MAGIC 1815108647
 #define EDGE_MAGIC 1721203194

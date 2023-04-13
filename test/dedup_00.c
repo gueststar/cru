@@ -10,7 +10,7 @@
 #include <cru.h>
 #include "readme.h"
 
-#define EDGES_PER_VERTEX (DIMENSION >> ((DIMENSION & 1) ? 0 : 1))
+#define EDGES_PER_VERTEX (((uintptr_t) DIMENSION) >> ((DIMENSION & 1) ? 0 : 1))
 
 #define VERTEX_MAGIC 1681134602
 #define EDGE_MAGIC 1647408281

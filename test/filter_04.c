@@ -495,7 +495,7 @@ valid (g, err)
 
 #define REMAINING_VERTICES (((NUMBER_OF_VERTICES >> 1) + ((! (DIMENSION & 1)) * (choose (DIMENSION, DIMENSION >> 1) >> 1))) - 1)
 #define CORRECTION ((DIMENSION <= 3) ? 1 : (choose (DIMENSION - 2, (DIMENSION - 2) >> 1)) * DIMENSION)
-#define REMAINING_EDGES ((((NUMBER_OF_VERTICES * DIMENSION) >> 2) - DIMENSION) - ((DIMENSION & 1) * CORRECTION))
+#define REMAINING_EDGES ((((NUMBER_OF_VERTICES * ((uintptr_t) DIMENSION)) >> 2) - DIMENSION) - ((DIMENSION & 1) * CORRECTION))
 
   struct cru_mapreducer_s m = {
 	 .ma_prop = {

@@ -159,7 +159,7 @@ valid (g, err)
 
   if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(3598))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == ((DIMENSION * NUMBER_OF_VERTICES) >> 1)) ? 0 : FAIL(3599))
+  if ((cru_edge_count (g, LANES, err) == ((((uintptr_t) DIMENSION) * NUMBER_OF_VERTICES) >> 1)) ? 0 : FAIL(3599))
 	 return 0;
   if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == (NUMBER_OF_VERTICES >> 1)) ? 0 : FAIL(3600))
 	 return 0;

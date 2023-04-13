@@ -473,7 +473,7 @@ vertex_checker (edges_in, given_vertex, edges_out, err)
 	 return NULL;
   if (given_vertex->v_value ? ((edges_out->r_value != DIMENSION) ? FAIL(6123) : 0) : 0)
 	 return NULL;
-  if (given_vertex->v_value ? 0 : (edges_in->r_value != ((NUMBER_OF_VERTICES - 1) * DIMENSION) + 1) ? FAIL(6124) : 0)
+  if (given_vertex->v_value ? 0 : (edges_in->r_value != ((NUMBER_OF_VERTICES - 1) * ((uintptr_t) DIMENSION)) + 1) ? FAIL(6124) : 0)
 	 return NULL;
   if (given_vertex->v_value ? 0 : (edges_out->r_value != NUMBER_OF_VERTICES) ? FAIL(6125) : 0)
 	 return NULL;
@@ -549,7 +549,7 @@ valid (g, err)
 
   if ((cru_vertex_count (g, LANES, err) == (NUMBER_OF_VERTICES)) ? 0 : FAIL(6130))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == ((DIMENSION + 1) * NUMBER_OF_VERTICES - DIMENSION)) ? 0 : FAIL(6131))
+  if ((cru_edge_count (g, LANES, err) == ((((uintptr_t) DIMENSION) + 1) * NUMBER_OF_VERTICES - DIMENSION)) ? 0 : FAIL(6131))
 	 return 0;
   if ((r = (redex) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) ? 0 : FAIL(6132))
 	 return 0;

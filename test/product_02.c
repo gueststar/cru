@@ -15,7 +15,7 @@
 #include <cru.h>
 #include "readme.h"
 
-#define HALF_DIMENSION (DIMENSION >> 1)
+#define HALF_DIMENSION ((uintptr_t) (DIMENSION >> 1))
 #define VERTEX_MAGIC 1982665750
 #define EDGE_MAGIC 1882637523
 #define REDEX_MAGIC 1331378400

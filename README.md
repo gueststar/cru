@@ -457,10 +457,11 @@ make
 make test             # optional
 sudo make install
 ```
-
-To uninstall, run `sudo make uninstall` from the original build
-directory or manually remove the files listed in the build directory's
-`install_manifest.txt`.
+Please ensure `/usr/local/lib` or the appropriate installation
+directory for your system is included in your `LD_LIBRARY_PATH`
+environment variable. To uninstall, run `sudo make uninstall`
+from the original build directory or manually remove the files
+listed in the build directory's `install_manifest.txt`.
 
 ## Testing
 

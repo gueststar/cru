@@ -895,7 +895,7 @@ valid (g, err)
 	 return 0;
   if ((cru_vertex_count (g, LANES, err) == (NUMBER_OF_VERTICES >> 1)) ? 0 : FAIL(4129))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == (((DIMENSION - 1) * NUMBER_OF_VERTICES) >> 1)) ? 0 : FAIL(4130))
+  if ((cru_edge_count (g, LANES, err) == ((((uintptr_t) (DIMENSION - 1)) * NUMBER_OF_VERTICES) >> 1)) ? 0 : FAIL(4130))
 	 return 0;
   if ((r = (redex) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) ? 0 : FAIL(4131))
 	 return 0;
