@@ -42,7 +42,7 @@ by the usual calling conventions of a
 The edge operation is allowed to depend on the label of an edge
 and on the vertices at either end. The function referenced by the
 .BR e_op.map
-field is called the edge label as the
+field is called with the edge label as the
 middle operand, the vertex currently being visited as its left operand,
 and the adjacent vertex as its right operand.
 .P
