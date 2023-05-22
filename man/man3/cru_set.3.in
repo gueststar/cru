@@ -1,6 +1,6 @@
 .TH CRU_SET 3 @DATE_VERSION_TITLE@
 .SH NAME
-cru_set \- associated a retrievable attribute with a graph
+cru_set \- associate a retrievable attribute with a graph
 .SH SYNOPSIS
 #include <cru/cru.h>
 .sp

@@ -87,7 +87,7 @@ NULL,
 .BR cru
 infers that the corresponding vertex, edge, or function
 result is a scalar value in no need of reclamation, and may also
-infer default hash functions and relations for them.
+infer default hash functions and relations for it.
 .P
 Applications ordinarily allocate separate storage locations for every
 vertex, edge, or function result. In this case case, no locking of the
