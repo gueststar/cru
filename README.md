@@ -219,12 +219,12 @@ vertices between given vertices.
 
 ### Attribution
 
-The `cru_set` and `cru_get` functions serves as a way of passing
+The `cru_set` and `cru_get` functions serve as a way of passing
 additional parameters to user-defined predicates and operators called
-by cru library functions so that they need not depend entirely on
-their operands in the graph. Using `cru_set` to assign a value enables
-any user-defined callback function to retrieve that value by `cru_get`
-during the graph transformation.
+by cru library functions so that they need not depend exclusively on
+the vertices and edges passed to them. Using `cru_set` to assign a
+value enables any user-defined callback function to retrieve that
+value by `cru_get` during the graph transformation.
 
 * [`cru_set`](https://gueststar.github.io/cru_docs/cru_set.html)
   -- associate an arbitrary attribute with a graph
