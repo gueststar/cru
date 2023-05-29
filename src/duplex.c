@@ -333,7 +333,7 @@ deduplicating_task (source, err)
 			 {
 				_cru_record_edge (_cru_scalar_hash ((*p)->carrier), EQUAL_CARRIERS, (*p)->carrier, &((*p)->seen_carriers), err);
 				continue;
-		  }
+			 }
 	 b: _cru_nack (_cru_unpacked (collisions), err);
 		collisions = NULL;
 	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
@@ -357,7 +357,7 @@ _cru_deduplicated (g, k, r, err)
 	  router r;
 	  int *err;
 
-	  // Launch an deduplication operation with a previously prepared
+	  // Launch a deduplication operation with a previously prepared
 	  // router and block until finished.
 {
   crew c;

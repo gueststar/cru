@@ -25,7 +25,7 @@ types.
    running the number of threads you request, distributing the work
    evenly over that number of cores if available, and invisibly
    handling all necessary locking and synchronization. `Cru` uses the
-   [Judy array](https://sourceforge.net/projects/judy) library for
+   [Judy array](https://judy.sourceforge.net) library for
    many of its internal performance critical operations such as
    key-value storage, which is a [very
    mature](https://en.wikipedia.org/wiki/Judy_array) and stable
