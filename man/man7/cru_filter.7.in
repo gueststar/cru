@@ -275,7 +275,7 @@ numerical vertices and the removal of all others, whereas this
          .e_op = {
             .map = (cru_top) even}}};
 .fi
-specifies the remove of odd-numbered edges in a graph whose
+specifies the removal of odd-numbered edges in a graph whose
 edges are numerically labeled.
 .SH NOTES
 It is not impossible for vertices outside of a zone of the graph
