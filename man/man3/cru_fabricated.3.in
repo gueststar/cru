@@ -38,7 +38,9 @@ specification
 .BR cru_fabricator
 calling conventions. If
 .I f
-is NULL, then a zero-filled fabricator is inferred, causing the graph
+is NULL (denotable alternatively as
+.BR COPYING_FABRICATOR),
+then a zero-filled fabricator is inferred, causing the graph
 to be copied. See the NOTES section for details.
 .\"killsw
 In this case, no graph is fabricated.
