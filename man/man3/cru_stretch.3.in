@@ -43,7 +43,7 @@ pointers that can be cast from any compatible types specific to the
 application. If they are pointers to dynamically allocated storage,
 then the caller must allocate and initialize the storage before
 calling
-.BR cru_connect.
+.BR cru_stretch.
 The caller must detect and prevent dangling pointers from being
 passed.
 .P
