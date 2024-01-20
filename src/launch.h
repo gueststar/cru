@@ -1,7 +1,7 @@
 /*
   cru -- co-recursion utilities
 
-  copyright (c) 2022-2023 Dennis Furey
+  copyright (c) 2022-2024 Dennis Furey
 
   Cru is free software: you can redistribute it and/or modify it under
   the terms of version 3 of the GNU General Public License as
