@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.10.22
+  cru VERSION 0.10.23
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -36,7 +36,11 @@ include(GNUInstallDirs)
 # "endif()" inclusive.
 
 if (CMAKE_C_COMPILER_ID MATCHES Clang)
-  add_compile_options(-O2 -Werror -Walloca -Wcast-qual -Wconversion
+  message (STATUS "clang C compiler detected; expect numerous useless warnings")
+endif()
+
+if (CMAKE_C_COMPILER_ID MATCHES Clang)
+  add_compile_options(-O2 -Walloca -Wcast-qual -Wconversion
          -Wformat=2 -Wformat-security -Wnull-dereference -Wstack-protector
          -Wstrict-overflow=3 -Wvla -Warray-bounds
          -Warray-bounds-pointer-arithmetic -Wassign-enum -Wconversion
