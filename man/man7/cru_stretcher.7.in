@@ -52,7 +52,7 @@ new edges with labels given by the parameters passed to
 .BR cru_stretch.
 .TP
 *
-If the predicate returns zero, the edge whose label it is passed
+If the predicate returns a non-zero value, the edge whose label it is passed
 is deleted.
 .TP
 *
