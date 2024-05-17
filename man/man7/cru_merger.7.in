@@ -14,7 +14,7 @@ struct
 .BR me_classifier;
 .br
 struct
-.BR cru_order_pair
+.BR cru_order_pair_s
 .BR me_orders;
 .br
 struct

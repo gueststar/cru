@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.10.24
+  cru VERSION 0.10.25
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
