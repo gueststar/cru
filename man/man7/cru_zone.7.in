@@ -51,9 +51,11 @@ oriented zone consists of all vertices reachable from the initial
 vertex.
 .P
 If the zone consists of the whole graph because no initial vertex is specified,
-then the
+and if the
 .BR backwards
-field is ignored and a forward orientation is inferred.
+field is non-zero, and if the initial vertex has no incident edges,
+then only the initial vertex is visited and the operation completes in
+constant time.
 .SH ERRORS
 If the
 .BR offset

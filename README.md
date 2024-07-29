@@ -425,7 +425,7 @@ memory more efficiently by reducing fragmentation.
 
 ## Installation
 
-`Cru` runs on GNU/Linux and maybe other Unix-like systems with git and
+`Cru` runs on GNU/Linux and maybe other Unix descendants with git and
 CMake. It also depends on 
 
 * the [nthm](https://github.com/gueststar/nthm) library, which is a

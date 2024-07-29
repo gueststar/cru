@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.10.25
+  cru VERSION 0.10.26
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -17,6 +17,10 @@ string (TOUPPER ${CMAKE_PROJECT_NAME} MANUAL_TITLE)
 set (MAINTAINER_EMAIL milonga@delayinsensitive.com)
 
 include(GNUInstallDirs)
+
+if (CMAKE_C_COMPILER_ID MATCHES Clang)
+  message (STATUS "clang C compiler detected; expect numerous useless warnings")
+endif()
 
 # See https://airbus-seclab.github.io/c-compiler-security/ for
 # explanations of these options and further verifications worth
@@ -34,10 +38,6 @@ include(GNUInstallDirs)
 # be treated as errors. If the repo is old and not building, try
 # disabling these options by deleting everything from "if" down to
 # "endif()" inclusive.
-
-if (CMAKE_C_COMPILER_ID MATCHES Clang)
-  message (STATUS "clang C compiler detected; expect numerous useless warnings")
-endif()
 
 if (CMAKE_C_COMPILER_ID MATCHES Clang)
   add_compile_options(-O2 -Walloca -Wcast-qual -Wconversion
