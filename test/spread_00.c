@@ -447,7 +447,7 @@ main (argc, argv)
 	 goto a;
   g = cru_built (&b, vertex_of (0, &err), UNKILLABLE, LANES, &err);
   half_built = 1;
-  g = cru_spread (g, &b, UNKILLABLE, 1, &err);
+  g = cru_spread (g, &b, UNKILLABLE, LANES, &err);
   v = valid (g, &err);
   cru_free_now (g, LANES, &err);
   nthm_sync (&err);
