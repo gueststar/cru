@@ -273,7 +273,7 @@ all_visited (e, r, s, unvisitable, err)
 	 return 0;
   for (visited = 1; (! e) ? 0 : *unvisitable ? 0 : visited; e = e->next_edge)
 	 {
-		if (((p = r->ports[_cru_scalar_hash (o = e->remote.node) % r->lanes]) ? 0 : IER(1779)) ? (r->valid = MUGGLE(76)) : 0)
+		if (((p = r->ports[MOD(_cru_scalar_hash (o = e->remote.node), r->lanes)]) ? 0 : IER(1779)) ? (r->valid = MUGGLE(76)) : 0)
 		  return 0;
 		if ((p->gruntled != PORT_MAGIC) ? IER(1780) : 0)
 		  return 0;

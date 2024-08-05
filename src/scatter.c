@@ -26,15 +26,13 @@
 #include "nodes.h"
 #include "pack.h"
 #include "pods.h"
+#include "ports.h"
 #include "repl.h"
 #include "scatter.h"
 #include "wrap.h"
 
-// a prime number exceeding the THREAD_LIMIT constant defined in route.c
-#define LARGE_PRIME 1031
 
-// a modified mod operator for better load balancing
-#define MOD(a,b) (((a) % LARGE_PRIME) % (b))
+
 
 // --------------- best effort scattering ------------------------------------------------------------------
 
@@ -55,7 +53,7 @@ _cru_scatter (p, t, err)
   if ((! t) ? IER(1494) : (! (t->pod)) ? IER(1495) : (! (t->arity)) ? IER(1496) : 0)
 	 return;
   while (*err ? NULL : p ? (o = _cru_popped_packet (&p, err)) : NULL)
-	 if (! _cru_push_packet (o, &(t->pod[o->hash_value % t->arity]), err))
+	 if (! _cru_push_packet (o, &(t->pod[MOD(o->hash_value, t->arity)]), err))
 		_cru_nack (o, err);
   _cru_nack (p, err);
 }
@@ -289,7 +287,7 @@ _cru_unscatterable_by_hashes (n, h, d, t, is_initial, err)
 	 else
 		{
 		  p->initial = is_initial;
-		  _cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		  _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 		}
   return 0;
 }
@@ -334,7 +332,7 @@ _cru_unscatterable (e, n, d, t, err)
 				break;
 			 }
 		  p->receiver = c->remote.node;
-		  _cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		  _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 		}
  a: return ! ! *e;
 }
@@ -422,7 +420,7 @@ _cru_scatter_and_stretch (z, e, m, h, t, err)
 		  goto a;
 		if ((p = _cru_packet_of (NO_PAYLOAD, q, NO_SENDER, e->ante, err)) ? *err : 1)
 		  goto b;
-		if (! _cru_push_packet (p, &(t->pod[q % t->arity]), err))
+		if (! _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err))
 		  goto c;
 		e->ante->remote.node->class_mark = STRETCHED;
 		e->ante = NULL;

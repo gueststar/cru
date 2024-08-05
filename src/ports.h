@@ -27,6 +27,12 @@
 // arbitrary magic number for consistency checks
 #define PORT_MAGIC 664161206
 
+// a prime number exceeding the THREAD_LIMIT constant defined in route.c
+#define LARGE_PRIME 1031
+
+// a modified mod operator for better load balancing
+#define MOD(a,b) (((a) % LARGE_PRIME) % (b))
+
 // a kill switch parameter to _cru_exchanged for workers that are killed but have to run anyway to avoid deadlock
 #define IGNORE_KILL_SWITCH 0
 

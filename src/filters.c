@@ -587,7 +587,7 @@ _cru_filtered (g, r, k, err)
 	 goto a;
   if ((r->tag != FIL) ? IER(979) : ! (i = _cru_initial_node (*g, k, r, err)))
 	 goto a;
-  s = (r->ports[_cru_scalar_hash (b = (*g)->base_node) % r->lanes])->reachable;
+  s = (r->ports[MOD(_cru_scalar_hash (b = (*g)->base_node), r->lanes)])->reachable;
   if (! ((s ? _cru_member (b, s) : 1) ? r->filter.thinner ? 0 : is_deletable (&(r->filter.fi_kernel.v_op), b, err) : 0))
 	 goto b;
   if (r->lanes == 1)

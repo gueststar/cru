@@ -61,7 +61,7 @@ _cru_launched (k, i, r, err)
   if (! i)
 	 started = _cru_ping (r->ports[0], &dblx);
   else if ((p = _cru_initial_packet_of (i, q = _cru_scalar_hash (i), &dblx)))
-	 started = _cru_assigned (r->ports[q % r->lanes], &p, &dblx);
+	 started = _cru_assigned (r->ports[MOD(q, r->lanes)], &p, &dblx);
   if (started)
 	 _cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
@@ -105,7 +105,7 @@ _cru_status_launched (k, i, h, r, err)
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_status_runner, r, &dblx))
 	 goto a;
   if (((p = _cru_packet_of ((r->tag == BUI) ? NULL : i, h, NO_SENDER, NO_CARRIER, &dblx))) ? (p->receiver = i) : NULL)
-	 if ((started = _cru_assigned (r->ports[h % r->lanes], &p, &dblx)))
+	 if ((started = _cru_assigned (r->ports[MOD(h, r->lanes)], &p, &dblx)))
 		_cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
  a: _cru_status_disjunction (c, &dblx);
@@ -154,7 +154,7 @@ _cru_count_launched (k, i, a, q, r, count, err)
   if (! i)
 	 started = _cru_ping (r->ports[0], &dblx);
   else if (((p = _cru_packet_of (a, q, NO_SENDER, NO_CARRIER, &dblx))) ? (a ? 1 : ! ! (p->receiver = i)) : 0)
-	 started = _cru_assigned (r->ports[q % r->lanes], &p, err);
+	 started = _cru_assigned (r->ports[MOD(q,  r->lanes)], &p, err);
   if (started)
 	 _cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
@@ -204,7 +204,7 @@ _cru_queue_launched (k, i, q, r, u, err)
 	 p = _cru_initial_packet_of (i, q, &dblx);
   else if ((p = _cru_packet_of (i->vertex, q, NO_SENDER, NO_CARRIER, &dblx)))
 	 p->receiver = i;
-  if (p ? ((started = _cru_assigned (r->ports[q % r->lanes], &p, &dblx))) : 0)
+  if (p ? ((started = _cru_assigned (r->ports[MOD(q, r->lanes)], &p, &dblx))) : 0)
 	 _cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
  a: *u = _cru_node_union (c, NO_BASE_BAY, NO_BASE, &dblx);
@@ -248,7 +248,7 @@ _cru_maybe_disjunction_launched (k, i, r, result, err)
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
   if ((p = _cru_initial_packet_of (i, q = _cru_scalar_hash (i), &dblx)))
-	 if ((started = _cru_assigned (r->ports[q % r->lanes], &p, &dblx)))
+	 if ((started = _cru_assigned (r->ports[MOD(q, r->lanes)], &p, &dblx)))
 		_cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
  b: _cru_maybe_disjunction (c, result, &dblx);
@@ -292,7 +292,7 @@ _cru_maybe_reduction_launched (k, i, r, result, err)
   if (! _cru_crewed (c = _cru_crew_of (&dblx), (runner) _cru_maybe_runner, r, &dblx))
 	 goto b;
   if ((p = _cru_initial_packet_of (i, q = _cru_scalar_hash (i), &dblx)))
-	 if ((started = _cru_assigned (r->ports[q % r->lanes], &p, &dblx)))
+	 if ((started = _cru_assigned (r->ports[MOD(q,  r->lanes)], &p, &dblx)))
 		_cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
  b: _cru_maybe_reduction (c, &(r->mapreducer.ma_prop.vertex), result, &dblx);
@@ -345,7 +345,7 @@ _cru_graph_launched (k, v, q, r, g, err)
 	 {
 		if (*g)
 		  p->receiver = (*g)->base_node;
-		if ((started = _cru_assigned (r->ports[q % r->lanes], &p, err)))
+		if ((started = _cru_assigned (r->ports[MOD(q,  r->lanes)], &p, err)))
 		  {
 			 v = NULL;
 			 if (*g)
@@ -354,7 +354,7 @@ _cru_graph_launched (k, v, q, r, g, err)
 		  }
 	 }
   _cru_dismiss (r, err);
- b: n = _cru_node_union (c, (unsigned) (q % r->lanes), &b, err);
+ b: n = _cru_node_union (c, (unsigned) MOD(q, r->lanes), &b, err);
   RAISE(r->ro_status);
   if (*err ? NULL : *g)
 	 (*g)->nodes = n;
