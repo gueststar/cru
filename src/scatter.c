@@ -30,7 +30,11 @@
 #include "scatter.h"
 #include "wrap.h"
 
+// a prime number exceeding the THREAD_LIMIT constant defined in route.c
+#define LARGE_PRIME 1031
 
+// a modified mod operator for better load balancing
+#define MOD(a,b) (((a) % LARGE_PRIME) % (b))
 
 // --------------- best effort scattering ------------------------------------------------------------------
 
@@ -80,7 +84,7 @@ _cru_scattered (e, t, err)
   for (; e; e = e->next_edge)
 	 {
 		p = _cru_initial_packet_of (e->remote.node, q = _cru_scalar_hash (e->remote.node), err);
-		if (! _cru_push_packet (p, &(t->pod[q % t->arity]), err))
+		if (! _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err))
 		  return 0;
 	 }
   return 1;
@@ -111,7 +115,7 @@ _cru_scatter_out (n, t, err)
 	 return NULL;
   for (e = n->edges_out; e; e = e->next_edge)
 	 if ((p = _cru_packet_of (e->remote.node, q = _cru_scalar_hash (e->remote.node), n, e, err)))
-		_cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		_cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 	 else
 		break;
   return e;
@@ -141,7 +145,7 @@ _cru_scatter_in (n, t, err)
 	 return;
   for (e = n->edges_in; e; e = e->next_edge)
 	 if ((p = _cru_packet_of (e->remote.node, q = _cru_scalar_hash (e->remote.node), n, e, err)))
-		_cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		_cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 	 else
 		break;
 }
@@ -168,7 +172,7 @@ _cru_send_from (v, c, sender, t, err)
   if ((! t) ? IER(1508) : (! (t->pod)) ? IER(1509) : (! (t->arity)) ? IER(1510) : 0)
 	 return;
   if ((p = _cru_packet_of (v, q = _cru_scalar_hash (c ? c->remote.node : sender), sender, c, err)))
-	 _cru_push_packet (p, &(t->pod[q % t->arity]), err);
+	 _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 }
 
 
@@ -198,7 +202,7 @@ _cru_received_by (v, c, recipient, t, err)
   if (! (p = _cru_packet_of (v, q = _cru_scalar_hash (recipient), NO_SENDER, c, err)))
 	 return 0;
   p->receiver = recipient;
-  _cru_push_packet (p, &(t->pod[q % t->arity]), err);
+  _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
   return 1;
 }
 
@@ -238,7 +242,7 @@ _cru_scattered_by_hashes (n, h, t, by_class, err)
 	 else if (! (p = _cru_packet_of (NO_PAYLOAD, q = h (by_class ? m->vertex_property : m->vertex), NO_SENDER, e, err)))
 		return 0;
 	 else
-		_cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		_cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
   return 1;
 }
 
@@ -364,7 +368,7 @@ _cru_scatter_out_or_consume (n, h, z, t, err)
 	 if ((p = _cru_packet_of ((*e)->remote.vertex, q = h ((*e)->remote.vertex), n, *e, err)))
 		{
 		  p->receiver = NULL;
-		  _cru_push_packet (p, &(t->pod[q % t->arity]), err);
+		  _cru_push_packet (p, &(t->pod[MOD(q, t->arity)]), err);
 		}
 	 else
 		break;

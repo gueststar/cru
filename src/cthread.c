@@ -24,7 +24,7 @@
 
 // the number of locks available for atomic read and write operations;
 // increasing it reduces contention but uses more memory
-#define LOCK_POOL_SIZE 0x100
+#define LOCK_POOL_SIZE 251
 
 // for atomic access to vertices
 static pthread_rwlock_t lock_pool[LOCK_POOL_SIZE];
@@ -245,7 +245,7 @@ _cru_read (v, err)
 	  // error.
 {
   void *x;
-  unsigned i;
+  uintptr_t i;
 
   if ((! v) ? IER(799) : pthread_rwlock_rdlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(800) : 0)
 	 return NULL;
@@ -266,7 +266,7 @@ _cru_write (v, x, err)
 	  // Write a value to v in a way that prevents concurrent reads
 	  // from it or writes to it.
 {
-  unsigned i;
+  uintptr_t i;
 
   if ((! v) ? IER(802) : pthread_rwlock_wrlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(803) : 0)
 	 return;
