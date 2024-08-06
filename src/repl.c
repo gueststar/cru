@@ -40,19 +40,27 @@ _cru_undefined_hash (v)
 
 
 
+
 uintptr_t
 _cru_scalar_hash (n)
 	  void *n;
 
-	  // Mix up a pointer based on an ad-hoc hash. This used to be
-	  // murmur3 prior to version 0.11.0 but strange non-deterministic
-	  // results stopped happening when it was replaced.
+	  // Mix up a pointer based on murmur3.
 {
+#define BIG_CONSTANT(x) (x##LLU)
+
   uintptr_t k;
 
   k = ((uintptr_t) n) + 1;
-  return ((k << 3) ^ (k >> 3));
+  k ^= k >> 33;
+  k *= BIG_CONSTANT(0xff51afd7ed558ccd);
+  k ^= k >> 33;
+  k *= BIG_CONSTANT(0xc4ceb9fe1a85ec53);
+  k ^= k >> 33;
+  return k;
 }
+
+
 
 
 
