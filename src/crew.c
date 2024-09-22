@@ -444,10 +444,11 @@ _cru_maybe_disjunction (c, result, err)
 
 
 void
-_cru_maybe_reduction (c, m, result, err)
+_cru_maybe_reduction (c, m, result, s, err)
 	  crew c;
 	  cru_fold m;
 	  void **result;
+	  void *s;
 	  int *err;
 
 	  // Join with all worker threads whose identifiers are given and
@@ -477,7 +478,7 @@ _cru_maybe_reduction (c, m, result, err)
 		  continue;
 		if (! (p = (NOMEM ? NULL : nthm_select (err))))
 		  break;
-		if ((z = _cru_maybe_paired (&x, (maybe) nthm_read (p, err), m->reduction, m->r_free, err)))
+		if ((z = _cru_maybe_paired (&x, (maybe) nthm_read (p, err), m->reduction, m->r_free, s, err)))
 		  if (NOMEM ? 1 : ! nthm_open ((nthm_worker) _cru_maybe_fused, z, err))
 			 _cru_free_maybe_pair (z, err);
 	 }

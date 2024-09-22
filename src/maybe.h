@@ -43,6 +43,7 @@ struct maybe_pair_s
 {
   maybe x;
   maybe y;
+  void *s;                // user defined storage
   cru_bop r;              // the way to combine them
   cru_destructor d;       // the way to reclaim them
 };
@@ -70,7 +71,7 @@ _cru_free_maybe_pair (maybe_pair p, int *err);
 
 // make a pair of maybe types
 extern maybe_pair
-_cru_maybe_paired (maybe *x, maybe y, cru_bop r, cru_destructor d, int *err);
+_cru_maybe_paired (maybe *x, maybe y, cru_bop r, cru_destructor d, void *s, int *err);
 
 // reduce a pair of maybe types to a single one
 extern maybe

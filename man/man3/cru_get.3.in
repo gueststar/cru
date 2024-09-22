@@ -13,7 +13,12 @@ a
 .BR cru
 library function operating on a graph, this function retrieves an
 attribute previously associated with the graph by
-.BR cru_set.
+.BR cru_set
+or initialized as the
+.BR attribute
+field of the
+.BR cru_builder
+used to build the graph.
 The relevant graph is determined automatically provided that
 .BR cru_get
 runs in the same thread as the callback function.

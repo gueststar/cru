@@ -295,7 +295,7 @@ _cru_maybe_reduction_launched (k, i, r, result, err)
 	 if ((started = _cru_assigned (r->ports[MOD(q,  r->lanes)], &p, &dblx)))
 		_cru_wait_for_quiescence (k, r, &dblx);
   _cru_dismiss (r, &dblx);
- b: _cru_maybe_reduction (c, &(r->mapreducer.ma_prop.vertex), result, &dblx);
+ b: _cru_maybe_reduction (c, &(r->mapreducer.ma_prop.vertex), result, r->ro_store, &dblx);
   RAISE(r->ro_status);
  a: RAISE(dblx);
   return started;
@@ -321,7 +321,7 @@ _cru_graph_launched (k, v, q, r, g, err)
 	  int *err;
 
 	  // Launch a traversal to build or spread a graph from the base
-	  // v. Consume v and the router. If *g is NULL, then assume the an
+	  // v. Consume v and the router. If *g is NULL, then assume an
 	  // existing graph is being spread. Otherwise assume a new graph
 	  // is being built.
 {

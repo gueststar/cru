@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include "errs.h"
+#include "getset.h"
 #include "maybe.h"
 #include "wrap.h"
 
@@ -113,11 +114,12 @@ _cru_free_maybe_pair (p, err)
 
 
 maybe_pair
-_cru_maybe_paired (x, y, r, d, err)
+_cru_maybe_paired (x, y, r, d, s, err)
 	  maybe *x;
 	  maybe y;
 	  cru_bop r;
 	  cru_destructor d;
+	  void *s;
 	  int *err;
 
 	  // Make a pair of maybe types. Discard either operand if it's
@@ -134,6 +136,7 @@ _cru_maybe_paired (x, y, r, d, err)
   if ((p = (maybe_pair) _cru_malloc (sizeof (*p))) ? 0 : RAISE(ENOMEM))
 	 goto b;
   memset (p, 0, sizeof (*p));
+  p->s = s;
   if (!((*x ? (*x)->extant : 0) ? (p->x = *x) : NULL))
 	 _cru_free_maybe (*x, d, err);
   if (!((y ? y->extant : 0) ? (p->y = y) : NULL))
@@ -176,6 +179,7 @@ _cru_maybe_fused (p, err)
 	 goto a;
   if ((p->r ? 0 : IER(1134)) ? (! (m = NULL)) : 0)
 	 goto b;
+  _cru_set_storage (p->s, err);
   v = (*err ? NULL : APPLIED(p->r, p->x->value, p->y->value));
   if (! (p->d))
 	 goto c;

@@ -9,6 +9,10 @@ typedef struct
 .br
 {
 .br
+.BR void
+.BR *
+.BR attribute;
+.br
 .BR cru_connector
 .BR connector;
 .br
@@ -25,7 +29,16 @@ struct
 This structure parameterizes the
 .BR cru_built
 library function with necessary information initialized by the
-application to build a graph. Exactly one
+application to build a graph. The
+.BR attribute
+field optionally contains or points to unspecified user-defined data
+that can be accessed while the graph is being built by the
+.BR connector
+or
+.BR subconnector
+function calling
+.BR cru_get.
+Exactly one
 .BR connector
 or
 .BR subconnector

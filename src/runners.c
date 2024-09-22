@@ -19,6 +19,7 @@
 #include <errno.h>
 #include <strings.h>
 #include "errs.h"
+#include "getset.h"
 #include "maybe.h"
 #include "ports.h"
 #include "queue.h"
@@ -78,6 +79,7 @@ _cru_maybe_runner (s)
 	 goto a;
   if ((err = (((r = s->local) ? ((r->valid == ROUTER_MAGIC) ? r->work : NULL) : 0) ? 0 : THE_IER(1487))))
 	 goto a;
+  _cru_set_storage (r->ro_store, &err);
   if ((m = (maybe) (r->work) (s, &err)) ? 0 : err)
 	 m = _cru_new_maybe (ABSENT, NULL, &err);             // report the error through the result if possible
   _cru_throw (r, &err);

@@ -165,10 +165,10 @@ bounding_task (source, err)
 	  // of the port.
 {
 #define RECORDED(x) (\
-_cru_member (x, seen) ? 1 :\
-(! *err) ? 0 :\
-_cru_listed (x, source->survivors) ? 1 :\
-_cru_listed(x, source->deletions))
+  _cru_member (x, seen) ? 1 : \
+  (! *err) ? 0 : \
+  _cru_listed (x, source->survivors) ? 1 : \
+  _cru_listed(x, source->deletions))
 
   int i;                // non-zero means vertex mutations don't depend on incident edges
   int o;                   // non-zero means vertex mutations don't depend on outgoing edges

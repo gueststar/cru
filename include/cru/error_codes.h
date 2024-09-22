@@ -16,7 +16,7 @@
 
 // internal error codes precede this number and test failure codes start from it
 #define CRU_MIN_FAIL 1792
-#define CRU_MAX_FAIL 6292
+#define CRU_MAX_FAIL 6304
 
 // --------------- invalid api function parameters ---------------------------------------------------------
 

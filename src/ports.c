@@ -469,7 +469,8 @@ circulate (source, destinations, err)
 	 _cru_undefer (source->local, err);
   if (source->backoff ? *err : 1)
 	 return;
-  usleep (MIN(MAX_PORTABLE_USLEEP_PARAMETER, 1 << source->backoff));
+  if (source->backoff > 1)
+	 usleep (MIN(MAX_PORTABLE_USLEEP_PARAMETER, 1 << source->backoff));
   if (source->backoff == BACKOFF_LIMIT)
 	 return;
   if ((pthread_mutex_lock (&(source->suspension)) ? IER(1348) : 0) ? (source->gruntled = MUGGLE(45)) : 0)

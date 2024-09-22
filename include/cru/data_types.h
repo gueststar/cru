@@ -159,6 +159,7 @@ typedef struct cru_sig_s
 
 typedef struct cru_builder_s
 {
+  void *attribute;                           // initialized to user defined data accessible by the cru_get function
   cru_connector connector;                   // calls cru_connect unconditionally for every outgoing edge from a given vertex
   cru_subconnector subconnector;             // calls cru_connect for each of a subset of edges determined by an incident edge
   struct cru_sig_s bu_sig;                   // summary of graph vertex and edge properties

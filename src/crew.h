@@ -90,7 +90,7 @@ _cru_maybe_disjunction (crew c, void **result, int *err);
 
 // join with all worker threads returning a maybe and reduce their results
 extern void
-_cru_maybe_reduction (crew c, cru_fold m, void **result, int *err);
+_cru_maybe_reduction (crew c, cru_fold m, void **result, void *s, int *err);
 
 #ifdef __cplusplus
 }

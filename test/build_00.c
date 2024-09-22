@@ -121,7 +121,6 @@ valid (g, err)
 	 return 0;
   if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(1799))
 	 return 0;
-  cru_mapreduced (g, &m, UNKILLABLE, LANES, err);
   return 1;
 }
 

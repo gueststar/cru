@@ -247,7 +247,7 @@ _cru_read (v, err)
   void *x;
   uintptr_t i;
 
-  if ((! v) ? IER(799) : pthread_rwlock_rdlock (&(lock_pool[i = ((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])) ? IER(800) : 0)
+  if ((! v) ? IER(799) : pthread_rwlock_rdlock (&(lock_pool[i = (_cru_scalar_hash (v) % LOCK_POOL_SIZE)])) ? IER(800) : 0)
 	 return NULL;
   x = *v;
   return ((pthread_rwlock_unlock (&(lock_pool[i])) ? IER(801) : 0) ? NULL : x);
@@ -288,7 +288,7 @@ _cru_lock_for_writing (v, err)
 {
   if ((! v) ? IER(805) : 0)
 	 return;
-  if (pthread_rwlock_wrlock (&(lock_pool[((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])))
+  if (pthread_rwlock_wrlock (&(lock_pool[_cru_scalar_hash (v) % LOCK_POOL_SIZE])))
 	 IER(806);
 }
 
@@ -308,7 +308,7 @@ _cru_unlock_for_reading (v, x, err)
   if ((! v) ? IER(807) : 0)
 	 return;
   *v = x;
-  if (pthread_rwlock_unlock (&(lock_pool[((_cru_scalar_hash (v)) % LOCK_POOL_SIZE)])))
+  if (pthread_rwlock_unlock (&(lock_pool[_cru_scalar_hash (v) % LOCK_POOL_SIZE])))
 	 IER(808);
 }
 

@@ -208,6 +208,7 @@ cru_built (b, v, k, lanes, err)
   if ((r = _cru_building_router (b, (task) _cru_building_task, lanes ? lanes : NPROC ? NPROC : 1, err)))
 	 {
 		g = _cru_built (v, k, r, err);
+		g->g_store = b->attribute;
 		v = NULL;
 	 }
   _cru_free_builder (b);
@@ -810,7 +811,10 @@ cru_spread (g, b, k, lanes, err)
 	 goto a;
   lanes = (lanes ? lanes : NPROC ? NPROC : 1);
   if ((r = _cru_stored (g, _cru_building_router (b, (task) _cru_prespreading_task, lanes, err), err)))
-	 g = _cru_spread (g, k, r, err);
+	 {
+		r->ro_store = g->g_store;
+		g = _cru_spread (g, k, r, err);
+	 }
  a: _cru_free_builder (b);
  x: if (*err)
 	 cru_free_now (g, lanes, err);
@@ -856,6 +860,7 @@ cru_merged (g, c, k, lanes, err)
 	 goto x;
   if (! (r = _cru_stored (g, _cru_merging_router (c, &(g->g_sig), lanes ? lanes : NPROC ? NPROC : 1, err), err)))
 	 goto x;
+  r->ro_store = g->g_store;
   g = _cru_merged (g, k, r, &new_sig, err);
   _cru_free_merger (c);
  x: if (*err)
@@ -925,6 +930,7 @@ cru_deduplicated (g, k, lanes, err)
   if (! (r = _cru_stored (g, _cru_merging_router (c, &(g->g_sig), lanes, err), err)))
 	 goto a;
   r->tag = DED;
+  r->ro_store = g->g_store;
   g = _cru_deduplicated (g, k, r, err);
  a: _cru_free_merger (c);
  x: if (*err)

@@ -1,13 +1,13 @@
-// Create a hypercubic graph with exogenous vertices and edges,
-// fabricate a copy and check that it's all there.
+// Create a hypercubic graph with endogenous vertices and labels and
+// test setting and getting of graph attributes.
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <cru.h>
 #include "readme.h"
 
 
+static int test_attribute;
 
 
 
@@ -26,6 +26,8 @@ building_rule (given_vertex, err)
   uintptr_t outgoing_edge;
   uintptr_t remote_vertex;
 
+  if (cru_get () != &test_attribute)
+	 FAIL(1992);
   for (outgoing_edge = 0; outgoing_edge < DIMENSION; outgoing_edge++)
 	 {
 		remote_vertex = (given_vertex ^ (uintptr_t) (1 << outgoing_edge));
@@ -50,7 +52,9 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // Return 1 if an edge is labeled by the index of the bit in
 	  // which its endpoints differ, and 0 otherwise.
 {
-  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(2750) : 0);
+  if (cru_get () != &test_attribute)
+	 FAIL(1993);
+  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(1994) : 0);
 }
 
 
@@ -70,7 +74,9 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // Validate a vertex based on the incoming and outgoing
 	  // edges being valid.
 {
-  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(2751) : (edges_out != DIMENSION) ? FAIL(2752) : 0);
+  if (cru_get () != &test_attribute)
+	 FAIL(1995);
+  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(1996) : (edges_out != DIMENSION) ? FAIL(1997) : 0);
 }
 
 
@@ -89,7 +95,9 @@ sum (l, r, err)
 {
   uintptr_t s;
 
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(2753) : (s < r) ? FAIL(2754) : 0) ? 0 : s);
+  if (cru_get () != &test_attribute)
+	 FAIL(1998);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(1999) : (s < r) ? FAIL(2000) : 0) ? 0 : s);
 }
 
 
@@ -116,13 +124,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  uintptr_t n;
-
-  if (((n = cru_vertex_count (g, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2755))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(2001))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == ((uintptr_t) DIMENSION) * NUMBER_OF_VERTICES) ? 0 : FAIL(2756))
+  if ((cru_edge_count (g, LANES, err) == ((uintptr_t) DIMENSION) * NUMBER_OF_VERTICES) ? 0 : FAIL(2002))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2757))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2003))
 	 return 0;
   return 1;
 }
@@ -139,24 +145,21 @@ main (argc, argv)
 	  int argc;
 	  char **argv;
 {
-  struct cru_fabricator_s a;
   uintptr_t limit;
-  cru_graph g, f;
+  cru_graph g;
   int err;
   int v;
 
   struct cru_builder_s b = {
+	 .attribute = &test_attribute,
 	 .connector = (cru_connector) building_rule};
 
   err = 0;
-  memset (&a, 0, sizeof (a));
   if ((argc > 1) ? (limit = strtoull (argv[1], NULL, 0)) : 0)
 	 crudev_limit_allocations (limit, &err);
   g = cru_built (&b, 0, UNKILLABLE, LANES, &err);
-  f = cru_fabricated (g, &a, UNKILLABLE, LANES, &err);
-  v = valid (f, &err);
+  v = valid (g, &err);
   cru_free_now (g, LANES, &err);
-  cru_free_now (f, LANES, &err);
   if (err ? 1 : (! v) ? 1 : ! crudev_all_clear (&err))
 	 printf (err ? "%s failed\n%s\n" : "%s failed\n", argv[0], cru_strerror (err));
   else if ((argc > 1) ? (! limit) : 0)

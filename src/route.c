@@ -214,7 +214,7 @@ plan (p, r, err)
 		(r->ports[i])->backoff = 1;
 	 }
 }
- 
+
 
 
 
@@ -575,9 +575,13 @@ _cru_building_router (b, t, lanes, err)
 	  // Allocate a router with a builder.
 {
   cru_sig s;
+  router r;
 
   s = (b ? &(b->bu_sig) : NULL);
-  return router_of (b, NOMUT, NOMAP, NOCLU, NOFIL, NOCOM, NOIND, NOEXT, NOSPL, NOPOS, NOCRO, NOFAB, t, s, lanes, err);
+  r = router_of (b, NOMUT, NOMAP, NOCLU, NOFIL, NOCOM, NOIND, NOEXT, NOSPL, NOPOS, NOCRO, NOFAB, t, s, lanes, err);
+  if (r)
+	 r->ro_store = (b ? b->attribute : NULL);
+  return r;
 }
 
 
