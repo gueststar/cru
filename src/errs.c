@@ -63,12 +63,12 @@ _cru_open_errs (err)
 	 global_error[i] = 0;
   if (! _cru_error_checking_mutex_type (&a, err))
 	 return 0;
-  if (pthread_mutex_init (&error_lock, &a) ? IER(911) : 0)
+  if (pthread_mutex_init (&error_lock, &a) ? IER(912) : 0)
 	 {
 		pthread_mutexattr_destroy (&a);
 		return 0;
 	 }
-  if (pthread_mutexattr_destroy (&a) ? (! IER(912)) : 1)
+  if (pthread_mutexattr_destroy (&a) ? (! IER(913)) : 1)
 	 return 1;
   pthread_mutex_destroy (&error_lock);
   return 0;
@@ -91,7 +91,7 @@ _cru_close_errs ()
 
   last_error = 0;
   nthm_sync (&last_error);
-  if (deadlocked ? 0 : (last_error = (pthread_mutex_destroy (&error_lock) ? THE_IER(913) : 0)) ? (error_count + 1) : 0)
+  if (deadlocked ? 0 : (last_error = (pthread_mutex_destroy (&error_lock) ? THE_IER(914) : 0)) ? (error_count + 1) : 0)
 	 {
 		if (error_count < ERROR_LIMIT)
 		  global_error[error_count] = last_error;
@@ -126,9 +126,9 @@ _cru_error_checking_mutex_type (a, err)
 
 	  // Initialize the attributes for a mutex to use for error checking.
 {
-  if ((! a) ? IER(914) : pthread_mutexattr_init (a) ? IER(915) : 0)
+  if ((! a) ? IER(915) : pthread_mutexattr_init (a) ? IER(916) : 0)
 	 return 0;
-  if (! (pthread_mutexattr_settype (a, PTHREAD_MUTEX_ERRORCHECK) ? IER(916) : 0))
+  if (! (pthread_mutexattr_settype (a, PTHREAD_MUTEX_ERRORCHECK) ? IER(917) : 0))
 	 return 1;
   pthread_mutexattr_destroy (a);
   return 0;

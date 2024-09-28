@@ -69,6 +69,7 @@ typedef struct cru_destructor_pair_s
 typedef struct cru_fold_s
 {
   cru_top map;                               // takes an individual vertex or edge to a redex of a user-defined type
+  cru_bop bmap;                              // alternative map taking fewer arguments
   cru_bop reduction;                         // combines two redexes into a single redex
   cru_nop vacuous_case;                      // returns the result associated with an empty set of vertices or edges
   cru_destructor r_free;                     // deallocates the reduction result type

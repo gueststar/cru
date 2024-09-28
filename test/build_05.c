@@ -27,7 +27,7 @@ building_rule (given_vertex, err)
   uintptr_t remote_vertex;
 
   if (cru_get () != &test_attribute)
-	 FAIL(1992);
+	 FAIL(1993);
   for (outgoing_edge = 0; outgoing_edge < DIMENSION; outgoing_edge++)
 	 {
 		remote_vertex = (given_vertex ^ (uintptr_t) (1 << outgoing_edge));
@@ -53,8 +53,8 @@ edge_checker (local_vertex, connecting_edge, remote_vertex, err)
 	  // which its endpoints differ, and 0 otherwise.
 {
   if (cru_get () != &test_attribute)
-	 FAIL(1993);
-  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(1994) : 0);
+	 FAIL(1994);
+  return ! (*err ? 1 : ((local_vertex ^ remote_vertex) != (1 << connecting_edge)) ? FAIL(1995) : 0);
 }
 
 
@@ -75,8 +75,8 @@ vertex_checker (edges_in, vertex, edges_out, err)
 	  // edges being valid.
 {
   if (cru_get () != &test_attribute)
-	 FAIL(1995);
-  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(1996) : (edges_out != DIMENSION) ? FAIL(1997) : 0);
+	 FAIL(1996);
+  return ! (*err ? 1 : (edges_in != DIMENSION) ? FAIL(1997) : (edges_out != DIMENSION) ? FAIL(1998) : 0);
 }
 
 
@@ -96,8 +96,8 @@ sum (l, r, err)
   uintptr_t s;
 
   if (cru_get () != &test_attribute)
-	 FAIL(1998);
-  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(1999) : (s < r) ? FAIL(2000) : 0) ? 0 : s);
+	 FAIL(1999);
+  return ((*err ? 1 : ((s = l + r) < l) ? FAIL(2000) : (s < r) ? FAIL(2001) : 0) ? 0 : s);
 }
 
 
@@ -124,11 +124,11 @@ valid (g, err)
 		  .reduction = (cru_bop) sum,
 		  .map = (cru_top) edge_checker}}};
 
-  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(2001))
+  if ((cru_vertex_count (g, LANES, err) == NUMBER_OF_VERTICES) ? 0 : FAIL(2002))
 	 return 0;
-  if ((cru_edge_count (g, LANES, err) == ((uintptr_t) DIMENSION) * NUMBER_OF_VERTICES) ? 0 : FAIL(2002))
+  if ((cru_edge_count (g, LANES, err) == ((uintptr_t) DIMENSION) * NUMBER_OF_VERTICES) ? 0 : FAIL(2003))
 	 return 0;
-  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2003))
+  if ((((uintptr_t) cru_mapreduced (g, &m, UNKILLABLE, LANES, err)) == NUMBER_OF_VERTICES) ? 0 : FAIL(2004))
 	 return 0;
   return 1;
 }

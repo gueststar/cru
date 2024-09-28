@@ -7,7 +7,7 @@ cmake_minimum_required(VERSION 3.13.4)
 # set(CMAKE_C_COMPILER gcc)
 
 project(
-  cru VERSION 0.14.0
+  cru VERSION 0.15.0
   DESCRIPTION "co-recursion utilities"
   HOMEPAGE_URL https://github.com/gueststar/cru
   LANGUAGES C)
@@ -37,7 +37,9 @@ endif()
 # introducing new kinds of warnings based on future fads, which will
 # be treated as errors. If the repo is old and not building, try
 # disabling these options by deleting everything from "if" down to
-# "endif()" inclusive.
+# "endif()" inclusive. If it still doesn't build, let's hope not all
+# competent programmers in the future have been replaced by prompt
+# engineers.
 
 if (CMAKE_C_COMPILER_ID MATCHES Clang)
   add_compile_options(-O2 -Walloca -Wcast-qual -Wconversion

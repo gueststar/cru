@@ -67,20 +67,20 @@ scattered (n, x, s, d, err)
   int deletable, ux, ut;
   edge_map *new_edge_map;
 
-  if ((! n) ? IER(1619) : n->edges_in ? IER(1620) : 0)
+  if ((! n) ? IER(1620) : n->edges_in ? IER(1621) : 0)
 	 return 0;
   l = NULL;
-  if ((! s) ? IER(1621) : 0)
+  if ((! s) ? IER(1622) : 0)
 	 return 0;
   if (! _cru_scattered_by_hashes (n, s->orders.v_order.hash, d, BY_TERMINUS, err))
 	 return 0;
-  if ((! x) ? IER(1622) : (! (x->expander)) ? IER(1623) : 0)
+  if ((! x) ? IER(1623) : (! (x->expander)) ? IER(1624) : 0)
 	 return 0;
-  if ((new_edge_map = _cru_get_edge_maps ()) ? 0 : IER(1624))
+  if ((new_edge_map = _cru_get_edge_maps ()) ? 0 : IER(1625))
 	 return 0;
   for (e = &(n->edges_out); *err ? NULL : *e;)
 	 {
-		if (((m = (*e)->remote.node)) ? 0 : IER(1625))
+		if (((m = (*e)->remote.node)) ? 0 : IER(1626))
 		  return 0;
 		*new_edge_map = NULL;
 		deletable = (*err ? 1 : PASSED(x->expander, n->vertex_property, (*e)->label, m->vertex_property));
@@ -115,9 +115,9 @@ grown (i, limit, count, err)
 {
   packet_list c;
 
-  if (count ? (limit ? ((*count)++ >= limit) : 0) : ! IER(1626))
+  if (count ? (limit ? ((*count)++ >= limit) : 0) : ! IER(1627))
 	 RAISE(CRU_INTOVF);
-  if ((c = _cru_popped_packet (i, err)) ? 0 : IER(1627))
+  if ((c = _cru_popped_packet (i, err)) ? 0 : IER(1628))
 	 return NULL;
   c->receiver = _cru_half_severed (c->receiver);
   _cru_record_edge (_cru_scalar_hash (c->carrier), EQUAL_CARRIERS, (void *) c->carrier, &(c->seen_carriers), err);
@@ -145,9 +145,9 @@ graft (i, c, s, err)
 	  // successors. This is done when an incoming node with an
 	  // stretch class mark matches one previously stored.
 {
-  if ((! i) ? IER(1628) : (! (i->carrier)) ? IER(1629) : (! (i->receiver)) ? IER(1630) : 0)
+  if ((! i) ? IER(1629) : (! (i->carrier)) ? IER(1630) : (! (i->receiver)) ? IER(1631) : 0)
 	 return;
-  if ((! c) ? IER(1631) : (! (c->receiver)) ? IER(1632) : (i == c) ? IER(1633) : s ? 0 : IER(1634))
+  if ((! c) ? IER(1632) : (! (c->receiver)) ? IER(1633) : (i == c) ? IER(1634) : s ? 0 : IER(1635))
 	 return;
   c->receiver->edges_out = _cru_cat_edges (i->receiver->edges_out, c->receiver->edges_out);
   i->receiver->edges_out = NULL;
@@ -182,7 +182,7 @@ overwrite (i, c, s, d, err)
 	  // by an equivalant one recieved later with a non-stretch
 	  // class mark.
 {
-  if ((! i) ? IER(1635) : (! (i->receiver)) ? IER(1636) : (! c) ? IER(1637) : (! (c->receiver)) ? IER(1638) : s ? 0 : IER(1639))
+  if ((! i) ? IER(1636) : (! (i->receiver)) ? IER(1637) : (! c) ? IER(1638) : (! (c->receiver)) ? IER(1639) : s ? 0 : IER(1640))
 	 return;
   _cru_redirect (c->seen_carriers, i->receiver, err);
   i->receiver->edges_out = _cru_cat_edges (c->receiver->edges_out, i->receiver->edges_out);
@@ -216,9 +216,9 @@ _cru_cull (i, b, h, q, d, by_class, err)
 {
   node_list n;
 
-  if ((! i) ? IER(1640) : (! *i) ? IER(1641) : 0)
+  if ((! i) ? IER(1641) : (! *i) ? IER(1642) : 0)
 	 return;
-  if ((! b) ? IER(1642) : (! q) ? IER(1643) : (! d) ? IER(1644) : (! (n = (*i)->receiver)) ? IER(1645) : 0)
+  if ((! b) ? IER(1643) : (! q) ? IER(1644) : (! d) ? IER(1645) : (! (n = (*i)->receiver)) ? IER(1646) : 0)
 	 goto a;
   if (n->class_mark == RETIRED)
 	 goto b;
@@ -263,7 +263,7 @@ stretching_task (source, err)
 	  // non-null if there is a net increase in the number of vertices.
 {
 #define UNEQUAL(a,b) \
-((! b) ? (! IER(1646)) : (a == b->vertex) ? 0 : FAILED(r->ro_sig.orders.v_order.equal, a, b->vertex))
+((! b) ? (! IER(1647)) : (a == b->vertex) ? 0 : FAILED(r->ro_sig.orders.v_order.equal, a, b->vertex))
 
   struct packet_list_s buffer;  // needed if only if there's not enough memory to allocate a packet
   packet_table collisions;      // previous incoming packets
@@ -292,13 +292,13 @@ stretching_task (source, err)
   _cru_set_context (&x, err);
   memset (&buffer, 0, sizeof (buffer));
   _cru_set_edge_maps (&new_edge_map, err);
-  if ((! source) ? IER(1647) : (source->gruntled != PORT_MAGIC) ? IER(1648) : 0)
+  if ((! source) ? IER(1648) : (source->gruntled != PORT_MAGIC) ? IER(1649) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(1649) : (r->valid != ROUTER_MAGIC) ? IER(1650) : 0)
+  if ((!(r = source->local)) ? IER(1650) : (r->valid != ROUTER_MAGIC) ? IER(1651) : 0)
 	 goto b;
-  if ((!(d = source->peers)) ? IER(1651) : (r->tag != EXT) ? IER(1652) : 0)
+  if ((!(d = source->peers)) ? IER(1652) : (r->tag != EXT) ? IER(1653) : 0)
 	 goto b;
-  if ((r->ro_sig.orders.v_order.equal) ? 0 : IER(1653))
+  if ((r->ro_sig.orders.v_order.equal) ? 0 : IER(1654))
 	 goto b;
   if (_cru_set_context (&x, err) ? 1 : _cru_set_storage (r->ro_store, err) ? 1 : _cru_set_kill_switch (&(r->killed), err))
 	 goto b;
@@ -309,7 +309,7 @@ stretching_task (source, err)
 	 {
 		KILL_SITE(31);
 		killed = (killed ? 1 : KILLED);
-		if ((! (n = incoming->receiver)) ? IER(1654) : 0)
+		if ((! (n = incoming->receiver)) ? IER(1655) : 0)
 		  goto c;
 		if (*err ? 1 : killed ? 1 : (c = _cru_collision (incoming->hash_value, &collisions, err)) ? *err : 1)
 		  goto d;
@@ -326,11 +326,11 @@ stretching_task (source, err)
 	 e: if (*c ? (! unequal) : 0)
 		  goto f;
 		_cru_push_packet (grown (&incoming, limit, &count, err), p = (*c ? &((*c)->next_packet) : c), err);
-		if ((! *p) ? IER(1655) : ((*p)->receiver->class_mark != STRETCHED) ? 1 : ++changed ? 1 : IER(1656))
+		if ((! *p) ? IER(1656) : ((*p)->receiver->class_mark != STRETCHED) ? 1 : ++changed ? 1 : IER(1657))
 		  continue;
 	 f: if (n->class_mark == STRETCHED)
 		  graft (incoming, *c, &(r->ro_sig), err);
-		else if (changed-- ? 1 : IER(1657))
+		else if (changed-- ? 1 : IER(1658))
 		  overwrite (incoming, *c, &(r->ro_sig), r->stretcher.st_prop.vertex.m_free, err);
 	 c: _cru_nack (_cru_popped_packet (&incoming, err), err);
 		continue;
@@ -378,18 +378,18 @@ _cru_pruning_task (source, err)
   d = NULL;
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(1658) : (source->gruntled != PORT_MAGIC) ? IER(1659) : (killed = 0))
+  if ((! source) ? IER(1659) : (source->gruntled != PORT_MAGIC) ? IER(1660) : (killed = 0))
 	 return NULL;
-  if ((!(r = source->local)) ? IER(1660) : (r->valid != ROUTER_MAGIC) ? IER(1661) : 0)
+  if ((!(r = source->local)) ? IER(1661) : (r->valid != ROUTER_MAGIC) ? IER(1662) : 0)
 	 return NULL;
   s = &(r->ro_sig);
-  if (((d = source->peers)) ? 0 : IER(1662))
+  if (((d = source->peers)) ? 0 : IER(1663))
 	 return (node_queue) _cru_abort (source, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (source, d, err));)
 	 {
 		KILL_SITE(32);
 		killed = (killed ? 1 : KILLED);
-		if (killed ? 1 : (! (n = incoming->receiver)) ? IER(1663) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
+		if (killed ? 1 : (! (n = incoming->receiver)) ? IER(1664) : _cru_test_and_set_membership (n, &seen, err) ? 1 : *err)
 		  goto a;
 		if (_cru_enqueued_node (_cru_severed (n, err), &q, err))
 		  _cru_scattered_by_hashes (n, s->orders.v_order.hash, d, (r->tag == CLU) ? BY_CLASS : BY_TERMINUS, err);
@@ -429,11 +429,11 @@ _cru_stretched (g, k, r, err)
   uintptr_t count;   // non-zero when any worker detects a change
 
   _cru_disable_killing (k, err);
-  if (*err ? 1 : (! g) ? 1 : (! (b = g->base_node)) ? IER(1664) : 0)
+  if (*err ? 1 : (! g) ? 1 : (! (b = g->base_node)) ? IER(1665) : 0)
 	 goto a;
-  if ((! r) ? IER(1665) : (r->valid != ROUTER_MAGIC) ? IER(1666) : (r->tag != EXT) ? IER(1667) : 0)
+  if ((! r) ? IER(1666) : (r->valid != ROUTER_MAGIC) ? IER(1667) : (r->tag != EXT) ? IER(1668) : 0)
 	 goto a;
-  if ((! (r->ports)) ? IER(1668) : r->ro_sig.orders.v_order.hash ? 0 : IER(1669))
+  if ((! (r->ports)) ? IER(1669) : r->ro_sig.orders.v_order.hash ? 0 : IER(1670))
 	 goto a;
   if (_cru_half_duplex (g, err))
 	 goto b;

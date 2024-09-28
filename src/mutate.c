@@ -93,11 +93,11 @@ coverage_analyzing_task (source, err)
   sample = 0;
   killed = 0;
   seen = NULL;
-  if ((! source) ? IER(1194) : (source->gruntled != PORT_MAGIC) ? IER(1195) : 0)
+  if ((! source) ? IER(1195) : (source->gruntled != PORT_MAGIC) ? IER(1196) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1196) : (r->valid != ROUTER_MAGIC) ? IER(1197) : 0)
+  if ((! (r = source->local)) ? IER(1197) : (r->valid != ROUTER_MAGIC) ? IER(1198) : 0)
 	 return NULL;
-  if (! (destinations = source->peers) ? IER(1198) : *err)
+  if (! (destinations = source->peers) ? IER(1199) : *err)
 	 return _cru_abort_status (source, destinations, err);
   _cru_set_storage (r->ro_store, err);
   _cru_set_kill_switch (&(r->killed), err);
@@ -107,7 +107,7 @@ coverage_analyzing_task (source, err)
 		killed = (killed ? 1 : KILLED);
 		if (killed)
 		  goto a;
-		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1199))
+		if ((n = (node_list) incoming->payload) ? (_cru_test_and_set_membership (n, &seen, err) ? 1 : *err) : IER(1200))
 		  goto a;
 		_cru_scattered (n->edges_out, destinations, err);
 		if (! _cru_member (n, source->reachable))
@@ -139,7 +139,7 @@ bound (n, r, i, o, s, d, np, err)
 	  // Store nodes n on the initial boundary of the mutable region in
 	  // s, and interior or unreachable nodes in d.
 {
-  if ((! n) ? IER(1200) : 0)
+  if ((! n) ? IER(1201) : 0)
 	 return;
   if ((! r) ? NULL : _cru_member (n, r) ? NULL : (n->marked = UNREACHABLE))
 	 _cru_pushed_node (n, d, err);
@@ -188,11 +188,11 @@ bounding_task (source, err)
   sample = 0;
   seen = NULL;
   memset (&buffer, 0, sizeof (buffer));
-  if ((! source) ? IER(1201) : (source->gruntled != PORT_MAGIC) ? IER(1202) : 0)
+  if ((! source) ? IER(1202) : (source->gruntled != PORT_MAGIC) ? IER(1203) : 0)
 	 return NULL;
-  if ((! (r = source->local)) ? IER(1203) : (r->valid != ROUTER_MAGIC) ? IER(1204) : 0)
+  if ((! (r = source->local)) ? IER(1204) : (r->valid != ROUTER_MAGIC) ? IER(1205) : 0)
 	 return NULL;
-  if ((! (d = source->peers)) ? IER(1205) : (r->tag != MUT) ? IER(1206) : 0)
+  if ((! (d = source->peers)) ? IER(1206) : (r->tag != MUT) ? IER(1207) : 0)
 	 return _cru_abort_status (source, d, err);
   _cru_set_storage (r->ro_store, err);
   _cru_set_kill_switch (&(r->killed), err);
@@ -206,7 +206,7 @@ bounding_task (source, err)
 	 {
 		KILL_SITE(23);
 		killed = (killed ? 1 : KILLED);
-		if (((n = (node_list) incoming->payload)) ? RECORDED(n) : IER(1207))
+		if (((n = (node_list) incoming->payload)) ? RECORDED(n) : IER(1208))
 		  goto b;
 		if (*err ? 0 : killed ? 0 : _cru_scattered (n->edges_out, d, err))
 		  goto c;
@@ -254,18 +254,20 @@ permeate (e, mutated_vertex, o, z, fwd, blocked, err)
 
 	  // Mutate the edge labels in e. Clear whatever can't be mutated.
 {
+#define MAP(w,x,y,z) (w->bmap ? APPLIED(w->bmap, x, y) : APPLIED(w->map, x, y, z))
+
   void *mutated_edge;
   edge_list t;
   void *ua;
   int ux;
 
-  if ((! o) ? IER(1208) : (! (o->map)) ? IER(1209) : (! z) ? IER(1210) : 0)
+  if ((! o) ? IER(1209) : (! (o->map ? 1 : ! ! (o->bmap))) ? IER(1210) : (! z) ? IER(1211) : 0)
 	 return;
   for (t = e; *err ? NULL : e; e = e->next_edge)
 	 {
-		if (e->remote.node ? 0 : IER(1211))
+		if (e->remote.node ? 0 : IER(1212))
 		  break;
-		mutated_edge = (blocked ? NULL : APPLIED(o->map, mutated_vertex, e->label, e->remote.node->vertex));
+		mutated_edge = (blocked ? NULL : MAP(o, mutated_vertex, e->label, e->remote.node->vertex));
 		if (*err)
 		  {
 			 if (o->m_free ? mutated_edge : NULL)
@@ -307,7 +309,7 @@ reflect (n, k, z, fwd, err)
 
   for (e = (fwd ? n->edges_out : n->edges_in); e; e = e->next_edge)
 	 {
-		if (e->remote.node ? 0 : IER(1212))
+		if (e->remote.node ? 0 : IER(1213))
 		  goto a;
 		i = 0;
 		for (f = fwd ? n->edges_out : n->edges_in; f != e; f = f->next_edge)
@@ -316,7 +318,7 @@ reflect (n, k, z, fwd, err)
 		do
 		  {
 			 for (; f ? (f->remote.node != n) : 0; f = f->next_edge);
-			 if (f ? 0 : IER(1213))
+			 if (f ? 0 : IER(1214))
 				goto a;
 			 f = (i ? f->next_edge : f);
 		  }
@@ -349,9 +351,9 @@ undo_reflection (n, d, fwd, err)
   int ux;
   edge_list e, f;
 
-  if (n ? (! fwd) : ! IER(1214))
+  if (n ? (! fwd) : ! IER(1215))
 	 for (e = n->edges_in; e; e = e->next_edge)
-		if (e->remote.node ? 1 : ! IER(1215))
+		if (e->remote.node ? 1 : ! IER(1216))
 		  for (f = e->remote.node->edges_out; f; f = f->next_edge)
 			 if (f->remote.node == n)
 				{
@@ -384,7 +386,7 @@ mutate (n, k, z, fwd, blocked, err)
   int mtv;                 // non-zero means no vertex mutation is defined
   int ux;
 
-  if ((! k) ? IER(1216) : (! z) ? IER(1217) : (! n) ? IER(1218) : 0)
+  if ((! k) ? IER(1217) : (! z) ? IER(1218) : (! n) ? IER(1219) : 0)
 	 return;
   mtv = _cru_empty_prop (&(k->v_op));
   mutated_vertex = ((blocked ? 1 : mtv ? 1 : *err) ? NULL : _cru_mapped_node (&(k->v_op), n, err));
@@ -443,7 +445,7 @@ start (s, d, k, z, fwd, t, err)
 
   node_list *m;
 
-  if (d ? 0 : IER(1219))
+  if (d ? 0 : IER(1220))
 	 return;
   for (m = s; *m; m = &((*m)->next_node))
 	 {
@@ -479,11 +481,11 @@ all_quiescent (e, blocked, err)
 {
   void *t;
 
-  if (blocked ? 0 : IER(1220))
+  if (blocked ? 0 : IER(1221))
 	 return 0;
   for (*blocked = 0; e; e = e->next_edge)
 	 {
-		if (e->remote.node ? 0 : IER(1221))
+		if (e->remote.node ? 0 : IER(1222))
 		  goto a;
 		if ((t = _cru_read (&(e->remote.node->marked), err)) == BLOCKED)
 		  *blocked = 1;
@@ -517,11 +519,11 @@ mutating_task (s, err)
   packet_list incoming;
   int started, killed, blocked;
 
-  if ((! s) ? IER(1222) : (s->gruntled != PORT_MAGIC) ? IER(1223) : (int) (sample = 0))
+  if ((! s) ? IER(1223) : (s->gruntled != PORT_MAGIC) ? IER(1224) : (int) (sample = 0))
 	 goto a;
-  if ((! (r = s->local)) ? IER(1224) : (r->valid != ROUTER_MAGIC) ? IER(1225) : (killed = 0))
+  if ((! (r = s->local)) ? IER(1225) : (r->valid != ROUTER_MAGIC) ? IER(1226) : (killed = 0))
 	 goto a;
-  if ((!(d = s->peers)) ? IER(1226) : (r->tag != MUT) ? IER(1227) : (started = 0))
+  if ((!(d = s->peers)) ? IER(1227) : (r->tag != MUT) ? IER(1228) : (started = 0))
 	 return _cru_abort_status (s, d, err);
   k = &(r->mutator.mu_kernel);
   _cru_set_storage (r->ro_store, err);
@@ -575,9 +577,9 @@ queuing_task (s, err)
   node_list n;
   router r;
 
-  if ((! s) ? IER(1228) : (s->gruntled != PORT_MAGIC) ? IER(1229) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1229) : (s->gruntled != PORT_MAGIC) ? IER(1230) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1230) : (r->valid != ROUTER_MAGIC) ? IER(1231) : 0)
+  if ((! (r = s->local)) ? IER(1231) : (r->valid != ROUTER_MAGIC) ? IER(1232) : 0)
 	 return NULL;
   if (*err ? 1 : ! (q = _cru_queue_of (s->deletions, err)))
 	 goto a;
@@ -612,7 +614,7 @@ unbound (s, d, err)
 {
   node_list n;
 
-  if ((! s) ? IER(1232) : (s->gruntled != PORT_MAGIC) ? IER(1233) : (! d) ? IER(1234) : 0)
+  if ((! s) ? IER(1233) : (s->gruntled != PORT_MAGIC) ? IER(1234) : (! d) ? IER(1235) : 0)
 	 return;
   _cru_free_nodes (s->survivors, d, err);
   s->survivors = NULL;
@@ -637,9 +639,9 @@ unbounding_task (s, err)
 {
   router r;
 
-  if ((! s) ? IER(1235) : (s->gruntled != PORT_MAGIC) ? IER(1236) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1236) : (s->gruntled != PORT_MAGIC) ? IER(1237) : ! _cru_pingback (s, err))
 		return NULL;
-  if ((! (r = s->local)) ? IER(1237) : (r->valid != ROUTER_MAGIC) ? IER(1238) : (r->tag != MUT) ? IER(1239) : 0)
+  if ((! (r = s->local)) ? IER(1238) : (r->valid != ROUTER_MAGIC) ? IER(1239) : (r->tag != MUT) ? IER(1240) : 0)
 		return NULL;
   unbound (s, &(r->ro_sig.destructors), err);
   return NULL;
@@ -685,9 +687,9 @@ retracting_task (s, err)
 {
   router r;
 
-  if ((! s) ? IER(1240) : (s->gruntled != PORT_MAGIC) ? IER(1241) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1241) : (s->gruntled != PORT_MAGIC) ? IER(1242) : ! _cru_pingback (s, err))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1242) : (r->valid != ROUTER_MAGIC) ? IER(1243) : (r->tag != MUT) ? IER(1244) : 0)
+  if ((! (r = s->local)) ? IER(1243) : (r->valid != ROUTER_MAGIC) ? IER(1244) : (r->tag != MUT) ? IER(1245) : 0)
 	 return NULL;
   retract (s->survivors, r->mutator.mu_kernel.e_op.m_free, err);
   return NULL;
@@ -711,9 +713,9 @@ unmutate (s, err)
   router r;
   struct cru_destructor_pair_s z;
 
-  if ((! s) ? IER(1245) : (s->gruntled != PORT_MAGIC) ? IER(1246) : 0)
+  if ((! s) ? IER(1246) : (s->gruntled != PORT_MAGIC) ? IER(1247) : 0)
 	 return;
-  if ((! (r = s->local)) ? IER(1247) : (r->valid != ROUTER_MAGIC) ? IER(1248) : (r->tag != MUT) ? IER(1249) : 0)
+  if ((! (r = s->local)) ? IER(1248) : (r->valid != ROUTER_MAGIC) ? IER(1249) : (r->tag != MUT) ? IER(1250) : 0)
 	 return;
   memset (&z, 0, sizeof (z));
   if (_cru_empty_prop (&(r->mutator.mu_kernel.v_op)))
@@ -749,7 +751,7 @@ unmutating_task (s, err)
 {
   router r;
 
-  if ((! s) ? IER(1250) : (s->gruntled != PORT_MAGIC) ? IER(1251) : ! _cru_pingback (s, err))
+  if ((! s) ? IER(1251) : (s->gruntled != PORT_MAGIC) ? IER(1252) : ! _cru_pingback (s, err))
 	 return NULL;
   unmutate (s, err);
   return NULL;
@@ -780,11 +782,11 @@ propagate (g, k, r, n, s, err)
   unsigned i;
   uintptr_t q;
 
-  if ((! r) ? IER(1252) : (r->valid != ROUTER_MAGIC) ? IER(1253) : (! g) ? IER(1254) : (! (g->base_node)) ? IER(1255) : *err)
+  if ((! r) ? IER(1253) : (r->valid != ROUTER_MAGIC) ? IER(1254) : (! g) ? IER(1255) : (! (g->base_node)) ? IER(1256) : *err)
 	 return;
-  if (((! (r->ports)) ? IER(1256) : (! (r->lanes)) ? IER(1257) : 0) ? (r->valid = MUGGLE(34)) : s ? 0 : IER(1258))
+  if (((! (r->ports)) ? IER(1257) : (! (r->lanes)) ? IER(1258) : 0) ? (r->valid = MUGGLE(34)) : s ? 0 : IER(1259))
 	 return;
-  if ((r->tag != MUT) ? IER(1259) : 0)
+  if ((r->tag != MUT) ? IER(1260) : 0)
 	 return;
   _cru_reset (r, (task) bounding_task, err);
   if (! _cru_status_launched (k, g->base_node, _cru_scalar_hash (g->base_node), r, err))
@@ -835,9 +837,9 @@ _cru_mutated (g, k, r, s, err)
 {
   node_list n;
 
-  if (*err ? 1 : (! g) ? IER(1260) : (! r) ? IER(1261) : (r->valid != ROUTER_MAGIC) ? IER(1262) : 0)
+  if (*err ? 1 : (! g) ? IER(1261) : (! r) ? IER(1262) : (r->valid != ROUTER_MAGIC) ? IER(1263) : 0)
 	 goto a;
-  if ((r->tag != MUT) ? IER(1263) : ! (n = _cru_initial_node (g, k, r, err)))
+  if ((r->tag != MUT) ? IER(1264) : ! (n = _cru_initial_node (g, k, r, err)))
 	 goto a;
   if (n != g->base_node)
 	 if (_cru_compatible (g, &(r->mutator.mu_kernel), err))

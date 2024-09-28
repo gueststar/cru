@@ -13,6 +13,9 @@ typedef struct
 .BR map;
 .br
 .BR cru_bop
+.BR bmap;
+.br
+.BR cru_bop
 .BR reduction;
 .br
 .BR cru_nop
@@ -39,11 +42,12 @@ graph.
 There are two main ways of organizing the computation. The simpler
 way starts with the
 .BR map
+or the
+.BR bmap
 function being applied to every member of the set of operands. Then
 the
 .BR reduction
-is applied to pairs of result values returned by the
-.BR map
+is applied to pairs of result values returned by it
 if there are more than one, which are discarded afterwards. Then the
 .BR reduction
 is further applied to pairs of results obtained by previous reductions
@@ -53,6 +57,8 @@ result remains.
 .P
 In the other way of organizing the computation, the
 .BR map
+or
+.BR bmap
 is also applied initially to every member of the set, and in addition, the
 .BR vacuous_case
 is evaluated. If there are any operands in the set, the
@@ -63,7 +69,6 @@ result as its left operand and the
 .BR vacuous_case
 result as its right, both of which are discarded.
 While any unused
-.BR map
 results remain, the
 .BR reduction
 is evaluated with one of them as its left operand
@@ -119,6 +124,8 @@ must match its result type.
 *
 The
 .BR map
+or
+.BR bmap
 can have any result type, but the left operand type of the
 .BR reduction
 must match it.
@@ -131,7 +138,9 @@ function reclaims results returned by the
 and the
 .BR m_free
 function reclaims results returned by the
-.BR map.
+.BR map
+or
+.BR bmap.
 These destructors must be suitable for their operand types. Either or
 both of these fields can be set to
 NULL,
@@ -141,15 +150,16 @@ infers that the corresponding result type is a scalar in no need of
 reclamation. Some other inferences are then possible:
 .TP
 *
-If both the
-.BR m_free
-and the
+If all of the
+.BR m_free,
 .BR map
+and
+.BR bmap
 fields are
 NULL,
 then
 .BR cru
-infers a default
+may infer a default
 .BR map
 operator that unconditionally returns its middle operand.
 .TP
@@ -166,6 +176,29 @@ infers a default
 .BR reduction
 operator that returns the lesser of its two operands
 cast as unsigned integers.
+.P
+At most one
+.BR map
+or
+.BR bmap
+function may be defined in any
+.BR cru_fold.
+The
+.BR bmap,
+being a
+.BR cru_bop,
+is expected to take
+only two operands and an error code as arguments,
+whereas the
+.BR map,
+being a
+.BR cru_top,
+is expected to take three operands and an error code.
+If a
+.BR bmap
+is defined, it is passed only the left and middle operands
+that would have been passed to a
+.BR map.
 .SH ERRORS
 It is an error to omit a destructor when the corresponding result is
 dynamically allocated. This error is not detectable by
@@ -214,17 +247,6 @@ defined.
 If neither destructor is specified because both result types are scalars,
 type conflicts are still an error but are not detected.
 .SH NOTES
-The
-.BR cru_fold
-structure is part of the
-.BR cru_prop
-and
-.BR cru_kernel
-derived structures,
-and the
-.BR cru_inducer
-top level structure.
-.P
 Applications should ensure that the vacuous case result is
 semantically appropriate for the reduction. For example, the sum of an
 empty set of numbers is zero, the product of an empty set of numbers
@@ -262,6 +284,49 @@ and
 if there is a
 .BR vacuous_case
 defined, or must be associative and commutative otherwise.
+.P
+The
+.BR cru_fold
+structure is part of the
+.BR cru_prop
+and
+.BR cru_kernel
+derived structures,
+and the
+.BR cru_inducer
+top level structure. Defining a
+.BR bmap
+instead of a
+.BR map
+is useful when an application requires a vertex mutation to depend on
+the incident or outgoing edges of the vertices, but it is prohibited
+from depending on adjacent vertices because the graph is cyclic and
+the traversal order therefore must be unconstrained. When the
+.BR cru_fold
+in the
+.BR incident
+or
+.BR outgoing
+field in a
+.BR cru_prop
+specifies a
+.BR bmap
+instead of a
+.BR map,
+and the
+.BR cru_prop
+is the
+.BR v_op
+field in a
+.BR cru_kernel
+that is the
+.BR mu_kernel
+field in a
+.BR cru_mutator,
+the
+.BR bmap
+function's operands are the mutable vertex and the edge label,
+but not the adjacent vertex.
 .SH EXAMPLE
 Given two user-defined functions as shown,
 .nf

@@ -90,14 +90,14 @@ fan_out (n, s, d, a, z, err)
   int a_cond, c_cond, ux, ut, received;
 
   received = 0;
-  if ((! n) ? IER(1543) : n->doppleganger ? IER(1544) : (! s) ? IER(1545) : (!(s->fissile)) ? IER(1546) : *err)
+  if ((! n) ? IER(1544) : n->doppleganger ? IER(1545) : (! s) ? IER(1546) : (!(s->fissile)) ? IER(1547) : *err)
 	 return;
   o = &(s->sp_ctops.outward);
-  if ((! z) ? IER(1547) : ! PASSED(s->fissile, n->vertex, n->vertex_property))
+  if ((! z) ? IER(1548) : ! PASSED(s->fissile, n->vertex, n->vertex_property))
 	 goto a;
-  if ((!(s->ana)) ? IER(1548) : (!(o->ana_labeler.tpred)) ? IER(1549) : (!(o->ana_labeler.top)) ? IER(1550) : 0)
+  if ((!(s->ana)) ? IER(1549) : (!(o->ana_labeler.tpred)) ? IER(1550) : (!(o->ana_labeler.top)) ? IER(1551) : 0)
 	 return;
-  if ((!(s->cata)) ? IER(1551) : (!(o->cata_labeler.tpred)) ? IER(1552) : (!(o->cata_labeler.top)) ? IER(1553) : 0)
+  if ((!(s->cata)) ? IER(1552) : (!(o->cata_labeler.tpred)) ? IER(1553) : (!(o->cata_labeler.top)) ? IER(1554) : 0)
 	 return;
   t = APPLIED(s->cata, n->vertex, n->vertex_property);
   if (*err ? 1 : ! ((c = _cru_node_of (z, t, NO_EDGES_IN, NO_EDGES_OUT, err))))
@@ -116,7 +116,7 @@ fan_out (n, s, d, a, z, err)
   _cru_write (&(n->vertex), t, err);
   for (e = &(n->edges_out); *err ? NULL : *e;)
 	 {
-		if (((*e)->remote.node) ? 0 : IER(1554))
+		if (((*e)->remote.node) ? 0 : IER(1555))
 		  return;
 		l = (*e)->label;
 		a_label = c_label = NULL;
@@ -177,14 +177,14 @@ fan_in (n, sender, carrier, s, d, z, err)
   void *c_label;
   int a_cond, c_cond, ux, ut;
 
-  if (*err ? 1 : (! n) ? IER(1555) : (! s) ? IER(1556) : (! d) ? IER(1557) : ! ((c = n->doppleganger)))
+  if (*err ? 1 : (! n) ? IER(1556) : (! s) ? IER(1557) : (! d) ? IER(1558) : ! ((c = n->doppleganger)))
 	 return;
   i = &(s->sp_ctops.inward);
-  if ((! z) ? IER(1558) : (sender ? carrier : NULL) ? 0 : sender ? IER(1559) : carrier ? IER(1560) : 1)
+  if ((! z) ? IER(1559) : (sender ? carrier : NULL) ? 0 : sender ? IER(1560) : carrier ? IER(1561) : 1)
 	 return;
-  if ((! (i->ana_labeler.tpred)) ? IER(1561) : (! (i->ana_labeler.top)) ? IER(1562) : 0)
+  if ((! (i->ana_labeler.tpred)) ? IER(1562) : (! (i->ana_labeler.top)) ? IER(1563) : 0)
 	 return;
-  if ((! (i->cata_labeler.tpred)) ? IER(1563) : (! (i->cata_labeler.top)) ? IER(1564) : 0)
+  if ((! (i->cata_labeler.tpred)) ? IER(1564) : (! (i->cata_labeler.top)) ? IER(1565) : 0)
 	 return;
   l = carrier->label;
   a_label = c_label = NULL;
@@ -236,11 +236,11 @@ splitting_task (source, err)
   count = 0;
   sample = 0;
   seen = NULL;
-  if ((! source) ? IER(1565) : (source->gruntled != PORT_MAGIC) ? IER(1566) : 0)
+  if ((! source) ? IER(1566) : (source->gruntled != PORT_MAGIC) ? IER(1567) : 0)
 	 goto a;
-  if ((!(r = source->local)) ? IER(1567) : (r->valid != ROUTER_MAGIC) ? IER(1568) : (killed = 0))
+  if ((!(r = source->local)) ? IER(1568) : (r->valid != ROUTER_MAGIC) ? IER(1569) : (killed = 0))
 	 goto a;
-  if ((!(d = source->peers)) ? IER(1569) : (r->tag != SPL) ? IER(1570) : 0)
+  if ((!(d = source->peers)) ? IER(1570) : (r->tag != SPL) ? IER(1571) : 0)
 	 return _cru_abort_status (source, d, err);
   _cru_set_storage (r->ro_store, err);
   _cru_set_kill_switch (&(r->killed), err);
@@ -254,7 +254,7 @@ splitting_task (source, err)
 	 {
 		KILL_SITE(28);
 		killed = (killed ? 1 : KILLED);
-		if ((! (n = incoming->receiver)) ? IER(1571) : *err ? 1 : killed)
+		if ((! (n = incoming->receiver)) ? IER(1572) : *err ? 1 : killed)
 		  {
 			 if (incoming->payload == CONNECT)
 				_cru_free_edges_and_labels (z->e_free, incoming->carrier, err);
@@ -300,11 +300,11 @@ _cru_split (g, k, r, err)
   node_list b;
 
   _cru_disable_killing (k, err);
-  if (*err ? 1 : (! g) ? IER(1572) : (! *g) ? 1 : (! (b = (*g)->base_node)) ? IER(1573) : 0)
+  if (*err ? 1 : (! g) ? IER(1573) : (! *g) ? 1 : (! (b = (*g)->base_node)) ? IER(1574) : 0)
 	 goto a;
-  if ((! r) ? IER(1574) : (r->valid != ROUTER_MAGIC) ? IER(1575) : (r->tag != SPL) ? IER(1576) : 0)
+  if ((! r) ? IER(1575) : (r->valid != ROUTER_MAGIC) ? IER(1576) : (r->tag != SPL) ? IER(1577) : 0)
 	 goto b;
-  if ((! (r->ports)) ? IER(1577) : r->ro_sig.orders.v_order.hash ? 0 : IER(1578))
+  if ((! (r->ports)) ? IER(1578) : r->ro_sig.orders.v_order.hash ? 0 : IER(1579))
 	 goto b;
   if (! _cru_set_properties (*g, k, r, err))
 	 goto b;

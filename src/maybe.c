@@ -76,7 +76,7 @@ _cru_free_maybe (x, d, err)
 	 APPLY(d, x->value);
   x->value = NULL;
   RAISE(x->ma_status);
-  x->ma_status = THE_IER(1131);
+  x->ma_status = THE_IER(1132);
   _cru_free (x);
 }
 
@@ -128,10 +128,10 @@ _cru_maybe_paired (x, y, r, d, s, err)
 {
   maybe_pair p;
 
-  if (x ? 0 : IER(1132))
+  if (x ? 0 : IER(1133))
 	 goto a;
   RAISE(*x ? (*x)->ma_status : y ? y->ma_status : 0);
-  if ((! r) ? IER(1133) : (*x ? (*x)->extant : 0) ? 0 : y ? y->extant : 0)
+  if ((! r) ? IER(1134) : (*x ? (*x)->extant : 0) ? 0 : y ? y->extant : 0)
 	 goto b;
   if ((p = (maybe_pair) _cru_malloc (sizeof (*p))) ? 0 : RAISE(ENOMEM))
 	 goto b;
@@ -177,7 +177,7 @@ _cru_maybe_fused (p, err)
 	 return NULL;
   if ((m = (p->x ? p->x : p->y)) ? (!(p->x ? p->y : NULL)) : 1)
 	 goto a;
-  if ((p->r ? 0 : IER(1134)) ? (! (m = NULL)) : 0)
+  if ((p->r ? 0 : IER(1135)) ? (! (m = NULL)) : 0)
 	 goto b;
   _cru_set_storage (p->s, err);
   v = (*err ? NULL : APPLIED(p->r, p->x->value, p->y->value));

@@ -76,6 +76,8 @@ _cru_empty_fold (m)
 	 return 1;
   if (m->map ? ((m->map != (cru_top) _cru_undefined_top) ? (m->map != (cru_top) _cru_disjoining_top) : 0) : 0)
 	 return 0;
+  if (m->bmap ? (m->bmap != (cru_bop) _cru_undefined_bop) : 0)
+	 return 0;
   if (m->reduction ? (m->reduction != (cru_bop) _cru_undefined_bop) : 0)
 	 return 0;
   if (m->vacuous_case ? (m->vacuous_case != (cru_nop) _cru_undefined_nop) : 0)
@@ -229,11 +231,16 @@ _cru_filled_fold (m, err)
 	  // have compatible result types, as indicated by having identical
 	  // destructors.
 {
-  if (m ? 0 : IER(819))
+  if ((! m) ? IER(819) : (m->map ? m->bmap : NULL) ? IER(820) : 0)
 	 return 0;
   if (m->m_free ? 0 : ! (m->r_free))
-	 ALLOW (m->map, (cru_top) _cru_identity_top);
-  else if (m->map ? 0 : RAISE(CRU_UNDMAP))
+	 {
+		if (! (m->bmap))
+		  ALLOW(m->map, (cru_top) _cru_identity_top);
+		else if (! (m->map))
+		  ALLOW(m->bmap, (cru_bop) _cru_identity_bop);
+	 }
+  else if ((m->map ? 1 : ! ! (m->bmap)) ? 0 : RAISE(CRU_UNDMAP))
 	 return 0;
   if (m->r_free ? 0 : ! (m->m_free))
 	 ALLOW (m->reduction, (cru_bop) _cru_minimizing_bop);
@@ -264,7 +271,7 @@ filled_ctop (p, err)
 	  // Check for a defined mark and allow a default always true
 	  // condition in a ctop.
 {
-  if (p ? 0 : IER(820))
+  if (p ? 0 : IER(821))
 	 return 0;
   if (p->top ? 0 : RAISE(CRU_UNDCTO))
 	 return 0;
@@ -284,7 +291,7 @@ _cru_filled_ctops (f, err)
 
 	  // Confirm that a ctops can be initialized with default fields.
 {
-  if (f ? 0 : IER(821))
+  if (f ? 0 : IER(822))
 	 return 0;
   return (filled_ctop (&(f->ana_labeler), err) ? filled_ctop (&(f->cata_labeler), err) : 0);
 }
@@ -301,7 +308,7 @@ _cru_filled_map (f, err)
 
 	  // Infer a fold as above where only the map is required.
 {
-  if (f ? 0 : IER(822))
+  if (f ? 0 : IER(823))
 	 return 0;
   ALLOW (f->reduction, (cru_bop) _cru_undefined_bop);
   return _cru_filled_fold (f, err);
@@ -323,7 +330,7 @@ _cru_filled_prop (p, err)
 	  // edge map reductions is allowed to be empty, in which case it
 	  // is ignored.
 {
-  if (p ? 0 : IER(823))
+  if (p ? 0 : IER(824))
 	 return 0;
   if (_cru_empty_fold (&(p->incident)) ? 0 : ! _cru_filled_fold (&(p->incident), err))
 	 return 0;
@@ -352,7 +359,7 @@ _cru_filled_sig (s, err)
 	  // either case, then the corresponding hashes and relations must
 	  // also be defined by the user.
 {
-  if (s ? 0 : IER(824))
+  if (s ? 0 : IER(825))
 	 return 0;
   if (! (s->destructors.e_free))                                                   // if edge labels are endogenous
 	 _cru_allow_scalar_order (&(s->orders.e_order), err);
@@ -377,7 +384,7 @@ _cru_filled_classifier (c, err)
 	  // Return non-zero if replacement functions are assigned to a
 	  // partially specified classifer.
 {
-  if ((! c) ? IER(825) : 0)
+  if ((! c) ? IER(826) : 0)
 	 return 0;
   ALLOW (c->cl_prop.vertex.reduction, (cru_bop) _cru_undefined_bop);
   if (! _cru_filled_prop (&(c->cl_prop), err))

@@ -64,7 +64,7 @@ visit (n, b, lock, visited, i, result, err)
   void *a;
   int ux;
 
-  if ((! n) ? IER(1036) : (! b) ? IER(1037) : (! i) ? IER(1038) : (! result) ? IER(1039) : *result ? IER(1040) : *err)
+  if ((! n) ? IER(1037) : (! b) ? IER(1038) : (! i) ? IER(1039) : (! result) ? IER(1040) : *result ? IER(1041) : *err)
 	 return;
   if (((e = (i->in_zone.backwards ? n->edges_in : n->edges_out))) ? NULL : i->boundary_value)
 	 a = APPLIED(i->boundary_value, n->vertex);
@@ -78,11 +78,11 @@ visit (n, b, lock, visited, i, result, err)
 	 goto a;
   return;
  b: n->accumulator = a;
-  if (pthread_rwlock_wrlock (lock) ? IER(1041) : 0)    // visited needs locking because it's read by other workers
+  if (pthread_rwlock_wrlock (lock) ? IER(1042) : 0)    // visited needs locking because it's read by other workers
 	 return;
   _cru_set_membership (n, visited, err);
   if (pthread_rwlock_unlock (lock))
-	 IER(1042);
+	 IER(1043);
   return;
  a: if (a ? i->in_fold.r_free : NULL)
 	 APPLY(i->in_fold.r_free, a);
@@ -118,11 +118,11 @@ _cru_inducing_task (s, err)
 
   seen = NULL;
   result = NULL;
-  if ((! s) ? IER(1043) : (s->gruntled != PORT_MAGIC) ? IER(1044) : (int) (sample = 0))
+  if ((! s) ? IER(1044) : (s->gruntled != PORT_MAGIC) ? IER(1045) : (int) (sample = 0))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1045) : (r->valid != ROUTER_MAGIC) ? IER(1046) : (killed = 0))
+  if ((! (r = s->local)) ? IER(1046) : (r->valid != ROUTER_MAGIC) ? IER(1047) : (killed = 0))
 	 return NULL;
-  if ((!(destinations = s->peers)) ? IER(1047) : (r->tag != IND) ? IER(1048) : (unvisitable = 0))
+  if ((!(destinations = s->peers)) ? IER(1048) : (r->tag != IND) ? IER(1049) : (unvisitable = 0))
 	 return _cru_abort (s, destinations, err);
   _cru_set_storage (r->ro_store, err);
   _cru_set_kill_switch (&(r->killed), err);
@@ -132,7 +132,7 @@ _cru_inducing_task (s, err)
 		killed = (killed ? 1 : KILLED);
 		if (s->disabled)
 		  goto a;
-		if (*err ? 1 : killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(1049))
+		if (*err ? 1 : killed ? 1 : (n = (node_list) incoming->payload) ? 0 : IER(1050))
 		  goto b;
 		if (_cru_member (n, s->visited))
 		  goto a;
@@ -194,17 +194,17 @@ deducing_task (s, err)
   int ux;
 
   seen = NULL;
-  if ((! s) ? IER(1050) : (s->gruntled != PORT_MAGIC) ? IER(1051) : (killed = 0))
+  if ((! s) ? IER(1051) : (s->gruntled != PORT_MAGIC) ? IER(1052) : (killed = 0))
 	 return NULL;
-  if ((! (r = s->local)) ? IER(1052) : (r->valid != ROUTER_MAGIC) ? IER(1053) : (int) (sample = 0))
+  if ((! (r = s->local)) ? IER(1053) : (r->valid != ROUTER_MAGIC) ? IER(1054) : (int) (sample = 0))
 	 return NULL;
-  if ((! (d = s->peers)) ? IER(1054) : (r->tag != IND) ? IER(1055) : 0)
+  if ((! (d = s->peers)) ? IER(1055) : (r->tag != IND) ? IER(1056) : 0)
 	 return _cru_abort_status (s, d, err);
   for (incoming = NULL; incoming ? incoming : (incoming = _cru_exchanged (s, d, err));)
 	 {
 		KILL_SITE(18);
 		killed = (killed ? 1 : KILLED);
-		if ((n = (node_list) incoming->payload) ? 0 : IER(1056))
+		if ((n = (node_list) incoming->payload) ? 0 : IER(1057))
 		  goto a;
 		if (_cru_test_and_set_membership (n, &seen, err) ? 0 : ! *err)
 		  _cru_scattered (r->ro_plan.zone.backwards ? n->edges_in : n->edges_out, d, err);

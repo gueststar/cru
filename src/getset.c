@@ -55,17 +55,17 @@ _cru_open_getset (err)
 
 	  // Initialize static storage.
 {
-  if (pthread_key_create (&edge_storage, NULL) ? IER(991) : 0)
+  if (pthread_key_create (&edge_storage, NULL) ? IER(992) : 0)
 	 return 0;
-  if (pthread_key_create (&killed_storage, NULL) ? IER(992) : 0)
+  if (pthread_key_create (&killed_storage, NULL) ? IER(993) : 0)
 	 goto a;
-  if (pthread_key_create (&graph_specific_storage, NULL) ? IER(993) : 0)
+  if (pthread_key_create (&graph_specific_storage, NULL) ? IER(994) : 0)
 	 goto b;
-  if (pthread_key_create (&destructors_storage, NULL) ? IER(994) : 0)
+  if (pthread_key_create (&destructors_storage, NULL) ? IER(995) : 0)
 	 goto c;
-  if (pthread_key_create (&edge_map_storage, NULL) ? IER(995) : 0)
+  if (pthread_key_create (&edge_map_storage, NULL) ? IER(996) : 0)
 	 goto d;
-  if (pthread_key_create (&context_storage, NULL) ? IER(996) : 0)
+  if (pthread_key_create (&context_storage, NULL) ? IER(997) : 0)
 	 goto e;
   return 1;
  e: pthread_key_delete (edge_map_storage);
@@ -89,17 +89,17 @@ release_pthread_resources (err)
 	  // Release pthread related resources.
 {
   if (pthread_key_delete (context_storage))
-	 IER(997);
-  if (pthread_key_delete (edge_map_storage))
 	 IER(998);
-  if (pthread_key_delete (edge_storage))
+  if (pthread_key_delete (edge_map_storage))
 	 IER(999);
-  if (pthread_key_delete (graph_specific_storage))
+  if (pthread_key_delete (edge_storage))
 	 IER(1000);
-  if (pthread_key_delete (killed_storage))
+  if (pthread_key_delete (graph_specific_storage))
 	 IER(1001);
-  if (pthread_key_delete (destructors_storage))
+  if (pthread_key_delete (killed_storage))
 	 IER(1002);
+  if (pthread_key_delete (destructors_storage))
+	 IER(1003);
 }
 
 
@@ -138,7 +138,7 @@ _cru_set_context (c, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (context_storage, (void *) c) ? IER(1003) : 0);
+  return (pthread_setspecific (context_storage, (void *) c) ? IER(1004) : 0);
 }
 
 
@@ -154,7 +154,7 @@ _cru_set_edges (edge, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(1004) : 0);
+  return (pthread_setspecific (edge_storage, (void *) edge) ? IER(1005) : 0);
 }
 
 
@@ -171,7 +171,7 @@ _cru_set_edge_maps (pair, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(1005) : 0);
+  return (pthread_setspecific (edge_map_storage, (void *) pair) ? IER(1006) : 0);
 }
 
 
@@ -189,7 +189,7 @@ _cru_set_destructors (destructors, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(1006) : 0);
+  return (pthread_setspecific (destructors_storage, (void *) destructors) ? IER(1007) : 0);
 }
 
 
@@ -208,7 +208,7 @@ _cru_set_kill_switch (killed, err)
 {
   if (NOMEM)
          return *err;
-  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(1007) : 0);
+  return (pthread_setspecific (killed_storage, (void *) killed) ? IER(1008) : 0);
 }
 
 
@@ -226,7 +226,7 @@ _cru_set_storage (t, err)
 {
   if (NOMEM)
 	 return *err;
-  return (pthread_setspecific (graph_specific_storage, t) ? IER(1008) : 0);
+  return (pthread_setspecific (graph_specific_storage, t) ? IER(1009) : 0);
 }
 
 

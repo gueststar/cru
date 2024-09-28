@@ -468,7 +468,7 @@ listed in the build directory's `install_manifest.txt`.
 For the reassurance of users and the convenience of developers,
 here is a moderately detailed description of how `cru` is tested.
 
-There are 58 test programs at last count to exercise the API by
+There are 60 test programs at last count to exercise the API by
 building and operating on graphs and partitions. The tests build
 graphs of a fixed size determined by the `DIMENSION` constant in
 [readme.h](https://github.com/gueststar/cru/blob/main/test/readme.h)
@@ -505,13 +505,13 @@ To ensure complete coverage of all kill switch polling sites,
 `ktest` exercises each site individually. It prepares a polling
 site by defining a macro to simulate a kill switch event after several
 event loop iterations only at that specific site, and then rebuilds
-the library. It tests the site by running all 58 test programs
+the library. It tests the site by running all 60 test programs
 against the modified library, additionally through Valgrind if
 available.
 
 For the kill test to succeed, every test program must either terminate
 normally or report an error code of `CRU_INTKIL` in each of the
-33 $\times$ 58 $\times$ 3 cases, with no unreclaimed storage or memory access
+33 $\times$ 60 $\times$ 3 cases, with no unreclaimed storage or memory access
 violations.
 
 ### Heap overflow testing
@@ -551,7 +551,7 @@ Heap overflow testing is performed by the manually invoked `mtest`
 script created under the build directory from
 [mtest.in](https://github.com/gueststar/cru/blob/main/test/mtest.in)
 under the `test` directory at configuration time. This
-script runs each of the 58 test programs multiple times under various
+script runs each of the 60 test programs multiple times under various
 simulated memory constraints against a version of the library
 specially built with diagnostic tooling to control and monitor memory
 allocation and deallocation.
@@ -563,7 +563,7 @@ granting its first two allocations but denying the rest. Then it runs
 the program again granting three, and so on, granting one more request
 on each subsequent run up to the number of memory allocations
 sufficient for normal termination. On a second pass, `mtest`
-follows a similar procedure with each of the 58 test programs, but
+follows a similar procedure with each of the 60 test programs, but
 rather than denying every allocation request after the first
 denial, it grants all of them (just to mess with it, or more
 seriously, to simulate intermittent heap overflow).
