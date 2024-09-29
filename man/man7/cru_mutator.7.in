@@ -106,6 +106,25 @@ then the middle operand is a modified edge label, but is otherwise an
 unmodified edge label. In all other cases, the middle and right
 operands are in their initial unmodified forms.
 .P
+If a 
+.BR mu_kernel.v_op.outgoing.bmap
+is defined instead of a
+.BR mu_kernel.v_op.outgoing.map,
+then only the left and middle operands described above are available to it,
+with the right operand being irrelevant. Similar considerations apply to a
+.BR mu_kernel.v_op.incident.bmap
+and a
+.BR mu_kernel.e_op.bmap.
+However, the
+.BR bmap
+in this context has the advantage of being usable even with
+unconstrained traversal priorities, unlike the
+.BR map,
+because it makes vertex mutations expressible that depend on a vertex
+being visited and its edges but not on its adjacent vertices.
+Unconstrained traversal priorities are required for operations on
+cyclic graphs to avoid deadlock.
+.P
 The zone orientation, as given by the
 .BR cru_zone
 in the
@@ -224,10 +243,10 @@ possible only by disallowing dependences on concurrently updated
 adjacent vertices or edges.
 .P
 These conditions imply that vertices can be modified in a way that
-depends on adjacent vertices and edges only when the order is
-constrained, but cyclic graphs admit only unconstrained traversal
-orders. Applications may work around this limitation by performing
-the required operations in sequence through multiple calls to
+depends on adjacent vertices only when the order is constrained, but
+cyclic graphs admit only unconstrained traversal orders. Applications
+may work around this limitation by performing the required operations
+in sequence through multiple calls to
 .BR cru_mutated,
 thereby implicity barrier synchronizing the operations as of each call.
 For example, modifying both the vertices and the edges in a cyclic

@@ -301,7 +301,7 @@ instead of a
 is useful when an application requires a vertex mutation to depend on
 the incident or outgoing edges of the vertices, but it is prohibited
 from depending on adjacent vertices because the graph is cyclic and
-the traversal order therefore must be unconstrained. When the
+the traversal priority therefore must be unconstrained. When the
 .BR cru_fold
 in the
 .BR incident
