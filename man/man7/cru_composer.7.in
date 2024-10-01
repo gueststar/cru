@@ -82,10 +82,10 @@ The
 field may be omitted or initialized as
 NULL,
 in which case the
-.BR label.qop
+.BR labeler.qop
 function is invoked unconditionally. If the composition pertains to a graph whose
 edge labels are scalar values, then the
-.BR label.qop
+.BR labeler.qop
 field also may be omitted or initialized as
 NULL.
 In that case, the created edge is labeled identically to the incident edge.
