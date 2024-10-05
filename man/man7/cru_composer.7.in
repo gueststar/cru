@@ -48,8 +48,8 @@ for every outgoing edge from the adjacent vertex, the quarternary
 predicate in the
 .BR labeler.qpred
 field is passed the local property of the vertex as its first operand,
-the adjacent property of the adjacent vertex as its second operand,
-the label on the incident edge to the adjacent vertex as its next
+the label on the incident edge to the adjacent vertex as its second
+operand, the adjacent property of the adjacent vertex as its next
 operand, and the label on the outgoing edge from the adjacent vertex
 its last operand.
 .TP
