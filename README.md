@@ -1,5 +1,8 @@
 # `cru` -- co-recursion utilities
 
+Note: This repo is no longer maintained, having been migrated to
+[Codeberg](https://codeberg.org/metroman/cru).
+
 `Cru` is a C library for *high-performance*, *high-level* operations
 on memory-resident graphs, typically on the order of millions to tens
 of millions of vertices, with possible applications to model checking,
